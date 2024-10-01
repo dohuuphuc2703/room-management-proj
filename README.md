@@ -12,6 +12,7 @@
 
 ## 2. Tác vụ của Người cho thuê
 - Đăng ký phòng trọ để cho thuê.
+- Đăng bài tìm người cho thuê
 - Quản lý danh sách phòng trọ của mình: thêm, sửa, xóa phòng trọ.
 - Xem danh sách người thuê đang ở các phòng của mình.
 - Quản lý hợp đồng thuê nhà: tạo, sửa, kết thúc hợp đồng.
@@ -28,3 +29,21 @@
 - Đánh giá, phản hồi về phòng trọ.
 - Kết thúc hợp đồng, trả phòng.
 
+## 4. Chức năng của hệ thống
+- Đề xuất theo địa chỉ/đánh giá
+- Chat giữa admin - người cho thuê - người thuê
+- danh sách phòng quan tâm/ yêu thích
+
+## 5. Các bảng
+- User - Admin - Tenants - Landlords
+- 
+- room
+- category
+- 
+- Contract
+- Invoice
+- MaintenanceRequest
+- 
+- Review
+- Chat
+- 
