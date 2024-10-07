@@ -65,4 +65,4 @@ const MaintenanceRequestSchema = new Schema({
     timestamps : true,
 });
 
-module.exports = mongoose.model("Contract", ContractSchema, "tblContract");
+module.exports = mongoose.model("MaintenanceRequest", MaintenanceRequestSchema, "tblMaintenanceRequest");
