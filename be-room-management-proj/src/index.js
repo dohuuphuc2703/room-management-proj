@@ -10,7 +10,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-// const route = require("./routes");
+const route = require("./routes");
 // const { runMessageService } = require("./app/controllers/MessageService");
 
 const db = require("./config/database");
@@ -37,7 +37,7 @@ app.use(cors({
 db.connect();
 
 // Route app
-// route(app);
+route(app);
 
 // // Connect message service
 // runMessageService(server);
