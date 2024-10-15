@@ -13,7 +13,7 @@ class RoomController {
                 .skip((page - 1) * size)
                 .limit(size)
                 .select("-__v -updatedAt -hiddenAt -hiddenBy")
-                .populate("categories");
+                .populate("category");
         
             return res.json({
                 rooms,
@@ -53,7 +53,7 @@ class RoomController {
                 .skip((page - 1) * size)
                 .limit(size)
                 .select("-__v -updatedAt -hiddenAt -hiddenBy")
-                .populate("categories");
+                .populate("category");
         
             return res.json({
                 rooms,
@@ -79,7 +79,7 @@ class RoomController {
                 hidden: false,
             })
                 .select("-__v -updatedAt -hiddenAt -hiddenBy")
-                .populate("categories");
+                .populate("category");
         
             return res.json({
                 info: room,
