@@ -38,7 +38,7 @@ db.connect();
 
 // Route app
 route(app);
-
+// require("../src/app/models/Landlord.model");
 // // Connect message service
 // runMessageService(server);
 
