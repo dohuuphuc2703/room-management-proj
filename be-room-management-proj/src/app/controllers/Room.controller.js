@@ -70,6 +70,7 @@ class RoomController {
             });
         }
     }
+
     // [GET] /api/room/info/:roomId
     async getRoomInfo(req, res) {
         const { roomId } = req.params;
@@ -89,6 +90,66 @@ class RoomController {
             return res.status(500).json({
                 message: error.toString(),
             });
+        }
+    }
+
+    // [POST] /api/room/:roomId
+    async updateRoomInfo(req, res) {
+        const { roomId } = req.params;
+        const info = req.body;
+        try {
+
+        const room = await Room.findOneAndUpdate({
+            _id: roomId,
+        }, info, { new: true }).select("-__v -updatedAt -hiddenAt -hiddenBy").populate({
+            path: "category"
+        });
+
+        return res.json({
+            info: room,
+        });
+        } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: error.toString(),
+        });
+        }
+    }
+
+    // [POST] /api/room/add-room
+    async addRoom(req, res) {
+        const info = req.body;
+
+        try {
+        const room = await Room.create({
+            ...info,
+        });
+
+        return res.json({
+            info: room
+        })
+        } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: error.toString(),
+        });
+        }
+    }
+
+    // [DELETE] /api/room/delete
+    async deleteRoom(req, res) {
+        const { rooms } = req.body;
+        try {
+        await Room.deleteMany({
+            _id: { $in: rooms }
+        });
+
+        return res.sendStatus(200);
+        } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: `Có lỗi xảy ra: Error code <${error.code}>`,
+        });
         }
     }
 }
