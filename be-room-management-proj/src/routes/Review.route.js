@@ -6,8 +6,8 @@ const ReviewController = require("../app/controllers/Review.controller")
 const { roleVerify } = require("../app/middlewares/roleMiddleware");
 
 router.get("/room/:roomId", ReviewController.getReviewsByRoom);
-router.post("/create",roleVerify("tenant"), ReviewController.createReview);
-router.post("/update/:reviewId",roleVerify("tenant"), ReviewController.updateReview);
-router.delete("/delete/:reviewId",roleVerify("tenant"), ReviewController.deleteReview);
+router.post("/create", ReviewController.createReview);
+router.post("/update/:reviewId", ReviewController.updateReview);
+router.delete("/delete/:reviewId", ReviewController.deleteReview);
 
 module.exports = router;

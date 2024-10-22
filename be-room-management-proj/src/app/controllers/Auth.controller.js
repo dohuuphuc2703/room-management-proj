@@ -64,6 +64,7 @@ class AuthController {
           return res.json({
             ...payload,
             avatar: user.avatar,
+            token: token,
           });
         } else {
           return res.status(401).json({

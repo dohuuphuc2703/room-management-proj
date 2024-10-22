@@ -9,3 +9,5 @@ router.post("/info/", TenantController.updateInfo);
 router.get("/info/", TenantController.getInfo);
 router.get("/all-saved-rooms/", TenantController.getAllSavedRooms);
 router.post("/save-room/", TenantController.saveRoom);
+
+module.exports = router;

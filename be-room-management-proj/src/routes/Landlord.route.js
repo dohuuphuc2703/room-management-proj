@@ -7,3 +7,5 @@ const { roleVerify } = require("../app/middlewares/roleMiddleware");
 
 router.post("/info/", LandlordController.updateInfo);
 router.get("/info/", LandlordController.getInfo);
+
+module.exports = router;
