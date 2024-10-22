@@ -2,6 +2,7 @@ const authRoute = require("./Auth.route");
 const roomRoute = require("./Room.route");
 const roomCategoryRoute = require("./RoomCategory.route");
 const reviewRoute = require("./Review.route")
+const contractRoute = require("./Contract.route")
 const landlordRoute = require("./Landlord.route");
 const tenantRoute = require("./Tenant.route");
 
@@ -13,6 +14,7 @@ module.exports = (app) => {
   app.use("/api/room", roomRoute);
   app.use("/api/room-category", roomCategoryRoute);
   app.use("/api/review", reviewRoute);
+  app.use("/api/contract", contractRoute);
   app.use("/api/landlord", landlordRoute);
   app.use("/api/tenant", tenantRoute);
   app.get("/", (req, res) => {
