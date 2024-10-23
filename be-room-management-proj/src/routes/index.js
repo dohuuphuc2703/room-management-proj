@@ -19,7 +19,7 @@ module.exports = (app) => {
   app.use("/api/tenant", tenantRoute);
   app.get("/", (req, res) => {
     res.json({
-      message: "Initial backend for job protal website",
+      message: "Initial backend for room protal website",
     })
   })
 };

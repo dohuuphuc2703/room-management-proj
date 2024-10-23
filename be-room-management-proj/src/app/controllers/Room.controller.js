@@ -129,15 +129,15 @@ class RoomController {
   // [POST] /api/room/add-room
   async addRoom(req, res) {
     const info = req.body;
-    const user = req.user;
-
+    const userId = req.user.id;
+    
     try {
       const room = await Room.create({
         ...info,
+        landlord: userId,
       });
 
       return res.json({
-        user: user.id,
         room: room 
       });
     } catch (error) {
