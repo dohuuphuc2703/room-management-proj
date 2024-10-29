@@ -1,4 +1,4 @@
-const Invoice = require('../models/Invoice');
+const Invoice = require('../models/Invoice.model');
 
 class InvoiceController {
     // [POST] /api/invoices/ - Tạo hóa đơn mới (Create)
