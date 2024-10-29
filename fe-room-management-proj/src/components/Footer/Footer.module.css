@@ -1,0 +1,98 @@
+.footer {
+    background-color: white;
+    padding: 20px;
+    border-top: 1px solid #e0e0e0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .top_section {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .logo_section {
+    flex: 1;
+  }
+  
+  .logo_section img {
+    height: 50px;
+  }
+  
+  .logo_section p {
+    margin: 5px 0;
+    color: #555;
+  }
+  
+  .links_section, .support_section {
+    flex: 1;
+  }
+  
+  h4 {
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  ul li {
+    margin: 5px 0;
+  }
+  
+  ul li a {
+    text-decoration: none;
+    color: #555;
+  }
+  
+  ul li a:hover {
+    text-decoration: underline;
+  }
+  
+  .social_section {
+    flex: 1;
+  }
+  
+  .social_icons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .social_icons img {
+    height: 30px;
+  }
+  
+  .payment_methods {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .payment_methods img {
+    height: 25px;
+  }
+  
+  .bottom_section {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .partner_logos {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .partner_logos img {
+    height: 30px;
+  }
+  
+  p {
+    color: #888;
+    font-size: 14px;
+  }
+  
