@@ -1,0 +1,78 @@
+.header {
+    width: 100%;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.header_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px;
+}
+
+.logo span {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #888;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+.heart {
+    font-size: 16px;
+    margin-right: 20px;
+}
+
+.login_button, .register_button, .post_button {
+    margin-left: 10px;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.post_button {
+    background-color: #f44336;
+    color: white;
+    border-radius: 20px;
+}
+
+.nav {
+    background-color: #1e73e8;
+}
+
+.nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.nav li {
+    margin: 0 15px;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.nav a:hover {
+    text-decoration: underline;
+}
