@@ -1,0 +1,72 @@
+.signUpForm {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+  }
+  
+  .title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .label {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f2f6fe;
+    font-size: 1em;
+  }
+  
+  .accountTypeContainer {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border: 2px dashed #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .submitButton {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submitButton:hover {
+    background-color: #0056b3;
+  }
+  
+  .agreementText {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .agreementText a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .agreementText a:hover {
+    text-decoration: underline;
+  }
+  
