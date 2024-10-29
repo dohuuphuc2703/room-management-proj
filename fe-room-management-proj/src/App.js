@@ -4,6 +4,7 @@ import { ConfigProvider } from "antd";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 import { themes } from "./helper";
 import Home from "./pages/Home/Home";
+import Login from "./pages/Login/Login";
 
 
 function App() {
@@ -11,7 +12,8 @@ function App() {
     <div className="App">
       <ConfigProvider theme={themes}>
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUpForm />} />
         </Routes>
       </ConfigProvider>

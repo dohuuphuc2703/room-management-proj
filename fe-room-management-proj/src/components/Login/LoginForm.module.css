@@ -1,0 +1,55 @@
+.login_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+/* Đảm bảo căn giữa theo chiều dọc */
+  padding: 20px;
+}
+
+.login {
+  width: 100%;
+  max-width: 400px; /* Đặt giới hạn cho chiều rộng form */
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.lbLoginFrm {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.forgotPassword {
+  text-align: right;
+  margin-bottom: 16px;
+}
+
+.forgotPassword .resetPassword {
+  cursor: pointer;
+}
+
+.forgotPassword .resetPassword:hover {
+  text-decoration: underline;
+}
+
+.btnLogin {
+  font-size: 14px;
+}
+
+.btnLogin:hover {
+  opacity: 0.8;
+}
+
+.field input {
+  font-size: 14px;
+}

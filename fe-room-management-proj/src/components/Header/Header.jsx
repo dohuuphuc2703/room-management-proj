@@ -13,7 +13,7 @@ function Header() {
     navigate("/login");
   };
   const handleRegisterClick = () => {
-    navigate("/register");
+    navigate("/sign-up");
   };
 
   return (
