@@ -5,6 +5,7 @@ import SignUpForm from "./components/SignUpForm/SignUpForm";
 import { themes } from "./helper";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
+import SearchRoom from "./components/Tenant/SearchRoom/SearchRoom";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUpForm />} />
+          <Route path="/search" element={<SearchRoom />} />
         </Routes>
       </ConfigProvider>
 
