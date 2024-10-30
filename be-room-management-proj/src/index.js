@@ -35,6 +35,7 @@ app.use(cors({
 
 // Connect to database
 db.connect();
+// require("../src/app/models/Tenant.model");
 
 // Route app
 route(app);
