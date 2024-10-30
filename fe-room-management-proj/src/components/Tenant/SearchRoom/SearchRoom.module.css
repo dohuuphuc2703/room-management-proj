@@ -1,0 +1,73 @@
+.pages_room_search {
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1200px;
+  }
+  
+  .section_header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .content {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  h1 {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  p {
+    color: #666;
+  }
+  
+  .highlight {
+    color: #ff4d4f;
+    font-weight: bold;
+  }
+  
+  .search_container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .search_room {
+    width: 200px;
+  }
+  
+  .search_room_input {
+    width: 100%;
+  }
+  
+  .search_location {
+    width: 100%;
+  }
+  
+  .btn_search {
+    background-color: #ff4d4f;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 0 20px;
+  }
+  
+  .list_room {
+    margin-top: 30px;
+  }
+  
+  .title_list_room {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .list_room_content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  

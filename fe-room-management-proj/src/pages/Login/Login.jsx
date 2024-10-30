@@ -1,13 +1,53 @@
 import Header from "../../components/Header/Header";
 import styles from "./Login.module.css";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, message } from "antd";
 
+import axios from "axios";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import { login } from "../../actions";
 import Footer from "../../components/Footer/Footer";
 import LoginForm from "../../components/Login/LoginForm";
 
 import { Outlet } from "react-router-dom";
 
 function Login() {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const handleSubmitLoginFrm = (values) => {
+    setLoading(true);
+    axios.post("http://localhost:8000/auth/login", values, {
+      withCredentials: true,
+    })
+      .then(res => {
+        console.log(res.data);
+        dispatch(login(res.data));
+        messageApi.success("Đăng nhập thành công", 1).then(() => {
+          switch (res.data.role) {
+            case "admin":
+              nav("/admin/dashboard");
+              break;
+            case "landlord":
+              nav("/sign-up");
+              break;
+            default:
+              nav("/");
+          }
+        });
+      })
+      .catch(err => {
+        console.error(err.response?.data);
+        console.log(err)
+        messageApi.error(`Đăng nhập thất bại. ${err.response?.data.message || ""}`, 10);
+      })
+      .finally(() => setLoading(false))
+  }
   return (
     <ConfigProvider
       theme={{
@@ -21,11 +61,15 @@ function Login() {
         },
       }}
     >
+      {contextHolder}
       <div>
         <Header />
         <div className={styles.content}>
           <Outlet />
-          <LoginForm />
+          <LoginForm 
+            loading={loading}
+            handleSubmitLoginFrm={handleSubmitLoginFrm}
+          />
         </div>
         <div
           className={styles.footer_main}
