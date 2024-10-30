@@ -21,7 +21,6 @@ const TenantSchema = new Schema({
     saveRooms: [{ 
         type: Schema.Types.ObjectId, 
         ref: "Room",
-        unique: true,
     }]
 });
 
