@@ -12,9 +12,9 @@ const SignUpForm = ({
   handleResendEmail,
   loading,
   openModal,
+  resend,
+  sendMail
 }) => {
-  const [sendMail, setSendMail] = useState(null);
-  const [resend, setResend] = useState(false);
   const [role, setRole] = useState("NGƯỜI DÙNG");
   const [confirmPolicy, setConfirmPolicy] = useState(false);
 
