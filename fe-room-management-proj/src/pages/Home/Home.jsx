@@ -1,12 +1,40 @@
 import Header from "../../components/Header/Header";
 import styles from "./Home.module.css";
 import { ConfigProvider } from "antd";
-
+import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { setTenantInfo } from '../../actions';
+import axios from "axios";
 import Footer from "../../components/Footer/Footer";
 
 import { Outlet } from "react-router-dom";
 
 function Home() {
+  const user = useSelector(state => state.userReducer);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/tenant/info", {
+          withCredentials: true,
+        });
+        if (res.data) {
+          dispatch(setTenantInfo({
+            uid: res.data.info._id,
+            ...res.data.info.user,
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+  
+    if (user === null) {
+      fetchUser();
+    }
+  }, [dispatch, user]);
+
   return (
     <ConfigProvider
       theme={{
@@ -21,7 +49,9 @@ function Home() {
       }}
     >
       <div>
-        <Header />
+        <Header 
+         user={user}
+        />
         <div className={styles.content}>
           <Outlet />
         </div>

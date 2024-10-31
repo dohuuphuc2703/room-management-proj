@@ -63,7 +63,7 @@ function SearchRoom() {
       axios.get("http://localhost:8000/api/room-category/all"),
       axios.get("https://vapi.vnappmob.com/api/province/"),
     ]).then(([resRoomCates, resCities]) => {
-      resCities.data.results.push({
+      resCities.data.results.unshift({
         province_name: "Tất cả địa điểm",
       });
 
@@ -74,7 +74,7 @@ function SearchRoom() {
         }))
       );
 
-      resRoomCates.data.categories.push({
+      resRoomCates.data.categories.unshift({
         _id: 0,
         category: "Tất cả loại phòng",
       });

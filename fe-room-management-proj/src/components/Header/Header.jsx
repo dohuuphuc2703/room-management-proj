@@ -1,16 +1,15 @@
 import { Button, Layout, message } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../actions";
 import styles from "./Header.module.css";
 
-function Header() {
+function Header({user}) {
   const [hoverLogin, setHoverLogin] = useState(false);
   const [hoverRegister, setHoverRegister] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
 
   const handleLoginClick = () => {
@@ -32,7 +31,8 @@ function Header() {
       message.error("Có lỗi xảy ra khi đăng xuất");
     }
   };
-  console.log(user);
+  
+  
 
   return (
     <div>
