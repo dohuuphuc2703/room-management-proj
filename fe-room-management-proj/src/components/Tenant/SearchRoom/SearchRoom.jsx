@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function SearchRoom() {
-  const [location, setLocation] = useState("Tất cả địa điểm");
+  const [address, setAddress] = useState("Tất cả địa điểm");
   const [category, setCategory] = useState("Tất cả loại phòng");
 
   const [messageApi, contextHolder] = message.useMessage();
-  const [locations, setLocations] = useState([]);
+  const [addresses, setAddresses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
   const [rooms, setRooms] = useState([]);
@@ -21,7 +21,7 @@ function SearchRoom() {
   const [form] = Form.useForm();
 
   const handleChangeLocation = (value) => {
-    setLocation(value);
+    setAddress(value);
   };
 
   const handleChangeCategory = (value) => {
@@ -34,12 +34,12 @@ function SearchRoom() {
       .then(async (values) => {
         const payload = {};
         payload.q = values.q || "";
-        payload.location = values.location === "Tất cả địa điểm" ? "" : values.location || "";
+        payload.address = values.address === "Tất cả địa điểm" ? "" : values.address || "";
         payload.category = values.category === "Tất cả loại phòng" ? "" : values.category || "";
 
         try {
           const res = await axios.get(
-            `http://localhost:8000/api/room/search?q=${payload.q}&location=${payload.location}&category=${payload.category}&page=${page}&size=${pageSize}`
+            `http://localhost:8000/api/room/search?q=${payload.q}&address=${payload.address}&category=${payload.category}&page=${page}&size=${pageSize}`
           );
           setRooms(res.data.rooms);
           setTotalItems(res.data.info.total);
@@ -67,7 +67,7 @@ function SearchRoom() {
         province_name: "Tất cả địa điểm",
       });
 
-      setLocations(
+      setAddresses(
         resCities.data.results.map((city) => ({
           label: city.province_name,
           value: city.province_name,
@@ -102,13 +102,13 @@ function SearchRoom() {
             <div className={styles.search_container}>
               <div className={styles.search_room}>
                 <Form.Item name="q">
-                  <Input placeholder="Loại phòng" className={styles.search_room_input} />
+                  <Input placeholder="Mô tả" className={styles.search_room_input} />
                 </Form.Item>
               </div>
               <div className={styles.search_room}>
-                <Form.Item name="location" initialValue={location}>
+                <Form.Item name="address" initialValue={address}>
                   <Select onChange={handleChangeLocation} className={styles.search_location}>
-                    {locations.map((loc) => (
+                    {addresses.map((loc) => (
                       <Select.Option key={loc.value} value={loc.value}>
                         {loc.label}
                       </Select.Option>
@@ -141,9 +141,14 @@ function SearchRoom() {
         <div className={styles.list_room_content}>
           <ListRoom
             rooms={rooms}
+            setRooms={setRooms}
             page={page}
+            setPage={setPage}
             pageSize={pageSize}
+            setPageSize={setPageSize}
             totalItems={totalItems}
+            setTotalItems={setTotalItems}
+            messageApi={messageApi} 
             handleSearchRoom={handleSearchRoom}
             isSearch={isSearch}
           />

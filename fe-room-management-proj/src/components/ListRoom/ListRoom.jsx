@@ -100,8 +100,8 @@ const ListRoom = ({ handleSearchRoom, isSearch, rooms, setRooms, messageApi,
             />
             {item.description}
             <p>Price: {item.price} </p>
-            <p>Address: {landlord.address}</p>
-            Landlord: {landlord.name}
+            <p>Address: {item.address[0].detail}, {item.address[0].ward}, {item.address[0].district}, {item.address[0].province}</p>
+            Landlord: {item.landlord.name}
           </List.Item>
         );
       }}
