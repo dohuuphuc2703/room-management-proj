@@ -71,6 +71,7 @@ function SignUp() {
             handleSubmitSignUpFrm={handleSubmitSignUpFrm}
             handleResendEmail={handleResendEmail}
             openModal={openModal}
+            resend={resend}
           />
         </div>
         <div
