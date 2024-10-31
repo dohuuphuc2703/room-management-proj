@@ -13,7 +13,9 @@ function App() {
     <div className="App">
       <ConfigProvider theme={themes}>
         <Routes>
-          <Route path="" element={<Home />} />
+          <Route path="" element={<Home />}>
+            <Route path="/" element={<SearchRoom />} />
+          </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/search" element={<SearchRoom />} />

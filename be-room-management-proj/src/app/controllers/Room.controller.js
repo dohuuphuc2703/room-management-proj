@@ -3,12 +3,12 @@ const Room = require("../models/Room.model");
 class RoomController {
   //[GET] /api/room/suggestion?page=<number>&size=<number>
   async getAllRooms(req, res) {
-    const { page = 1, size = 0 } = req.query;
+    const { page = 1, size = 3 } = req.query;
 
     try {
       const total = await Room.countDocuments();
       const rooms = await Room.find({
-        hidden: false,
+        // hidden: false,
       })
         .sort({ createdAt: -1 })
         .skip((page - 1) * size)
@@ -34,13 +34,13 @@ class RoomController {
 
   //[GET] /api/room/rating?page=<number>&size=<number>
 
-  // [GET] api/room/search?q=<string>&location=<string>&category=<ObjectId>&page=<number>&size=<number>
+  // [GET] api/room/search?q=<string>&address=<string>&category=<ObjectId>&page=<number>&size=<number>
   async searchRooms(req, res) {
     const {
       page = 1,
       size = 0,
       q = null,
-      location = null,
+      address = null,
       category = null,
     } = req.query;
     console.log(q);
@@ -48,9 +48,9 @@ class RoomController {
     try {
       const conditions = {};
       if (q) conditions.title = { $regex: q, $options: "i" };
-      if (location)
-        conditions.locations = { $elemMatch: { province: location } };
-      if (category) conditions.categories = category;
+      if (address)
+        conditions.address = { $elemMatch: { province: address } };
+      if (category) conditions.category = category;
       const total = await Room.countDocuments(conditions);
 
       const rooms = await Room.find(conditions)
