@@ -1,9 +1,5 @@
-
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Marker } from '@react-google-maps/api';
-import { Button, Carousel, Space, Typography, message } from "antd";
-
-
+import { PhoneOutlined, HeartOutlined, WechatOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { Avatar, List, Space, Typography, message, Button, Carousel } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -224,6 +220,42 @@ function RoomDetail() {
 
       {/* Sidebar for Featured and Latest Rooms */}
       <div className={styles.sidebar}>
+      <div className={styles.infoLandlordRoom}>
+          {roomInfo && roomInfo.landlord && (
+            <div className={styles.landlordInfo}>
+              <Avatar
+                className={styles.landlordAvatar}
+                size={64}
+                src={roomInfo.landlord.avatar || "/logo192.png"}
+              />
+              <div className={styles.landlordDetails}>
+                <Text className={styles.landlordName}>{roomInfo.landlord.fullName}</Text>
+                <div className={styles.landlordStatus}>
+                  <span className={styles.statusIndicator} style={{ backgroundColor: roomInfo.landlord.active ? '#4caf50' : '#999' }}></span>
+                  {roomInfo.landlord.active ? 'Hoạt động' : 'Không hoạt động'}
+                </div>
+
+                <div >
+
+                  <Button className={styles.phoneButton} type="primary" block>{<PhoneOutlined />} {roomInfo.landlord.phone}</Button>
+                  <Button
+                    className={styles.favoriteButton}
+                    type="link"
+                    block
+                    onClick={() => handleZaloMessage(roomInfo.landlord.phone)}
+                  >
+                    {<HeartOutlined />} Nhắn Zalo
+                  </Button>
+                  <Button className={styles.favoriteButton} type="link" block>{<WechatOutlined />} Nhắn tin trực tiếp</Button>
+                  <Button className={styles.favoriteButton} type="link" block>{<HeartOutlined />} Yêu thích</Button>
+
+                </div>
+
+              </div>
+            </div>
+          )}
+        </div>
+        
         <div className={styles.featuredSection}>
           <h3>Tin nổi bật</h3>
           <div className={styles.featuredList}>
