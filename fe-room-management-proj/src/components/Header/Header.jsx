@@ -1,4 +1,13 @@
-import { Button, Layout, message } from "antd";
+import {
+  BellOutlined,
+  HeartOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+  MessageOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Avatar, Badge, Button, Dropdown, Layout, Menu, message } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -31,7 +40,27 @@ function Header({user}) {
       message.error("Có lỗi xảy ra khi đăng xuất");
     }
   };
-  
+  const userMenu = (
+    <Menu>
+      <Menu.Item key="0" icon={<UserOutlined />}>
+        {user?.fullName}
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="1" icon={<SettingOutlined />} onClick={() => navigate("/account")}>
+        Quản lý tài khoản
+      </Menu.Item>
+      <Menu.Item key="2" icon={<HomeOutlined />} onClick={() => navigate("/my-rooms")}>
+        Phòng trọ của tôi
+      </Menu.Item>
+      <Menu.Item key="3" icon={<HeartOutlined />} onClick={() => navigate("/saved-rooms")}>
+        Yêu thích
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="4" icon={<LogoutOutlined />} onClick={handleLogout}>
+        Đăng xuất
+      </Menu.Item>
+    </Menu>
+  );
   
 
   return (
@@ -44,12 +73,26 @@ function Header({user}) {
               <span>Kênh thông tin phòng trọ số 1 Việt Nam</span>
             </div>
             <div className={styles.actions}>
-              
               {user && user.fullName ? (
                 <div className={styles.userInfo}>
-                  <span>Xin chào, {user.fullName}</span>
-                  <Button>❤️ Yêu thích</Button>
-                  <Button onClick={handleLogout}>Đăng xuất</Button>
+                  <Badge count={5} offset={[10, 0]} style={{marginRight: "20px"}}>
+                    <BellOutlined
+                      className={styles.icon}
+                      style={{ fontSize: "18px", marginRight: "20px" }}
+                    />
+                  </Badge>
+                  <Badge count={3} offset={[10, 0]} style={{marginRight: "20px"}}>
+                    <MessageOutlined
+                      className={styles.icon}
+                      style={{ fontSize: "18px", marginRight: "20px" }}
+                    />
+                  </Badge>
+                  <Dropdown overlay={userMenu} trigger={["click"]}>
+                    <Avatar
+                      style={{ cursor: "pointer", backgroundColor: "#87d068" }}
+                      icon={<UserOutlined />}
+                    />
+                  </Dropdown>
                 </div>
               ) : (
                 <>
