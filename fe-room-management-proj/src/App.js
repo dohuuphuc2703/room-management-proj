@@ -6,6 +6,7 @@ import { themes } from "./helper";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
+import RoomDetail from "./components/Tenant/RoomDetail/RoomDetail";
 
 
 function App() {
@@ -15,10 +16,12 @@ function App() {
         <Routes>
           <Route path="" element={<Home />}>
             <Route path="/" element={<SearchRoom />} />
+            <Route path="/detail-room/:roomId" element={<RoomDetail />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/search" element={<SearchRoom />} />
+          
         </Routes>
       </ConfigProvider>
 

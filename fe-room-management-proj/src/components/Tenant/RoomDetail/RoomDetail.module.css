@@ -1,0 +1,237 @@
+.container {
+  display: flex; /* Sử dụng Flexbox để đưa các phần tử con nằm ngang */
+  gap: 20px; /* Khoảng cách giữa .mainContent và .sidebar */
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1200px;
+}
+
+.mainContent {
+  flex: 5;
+  border: 1px solid #d9d9d9; /* Add a light gray border */
+  border-radius: 8px; /* Optional: add border radius for rounded corners */
+}
+
+.sidebar {
+  flex: 2;
+  /* padding: 0px 16px 16px 16px; */
+  border-radius: 8px;
+}
+
+.sidebar h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.featuredSection,
+.latestSection {
+  background-color: #f9f9f9;
+  padding: 2px 10px 10px 10px;
+  margin-bottom: 20px; /* Space between sections */
+  border: 1px solid #d9d9d9; /* Add a light gray border */
+  border-radius: 8px; /* Optional: add border radius for rounded corners */
+}
+
+.featuredList,
+.latestList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.featuredItem,
+.latestItem {
+  border: 1px solid #f0f0f0; /* Match room items */
+  padding: 8px; /* Reduced padding */
+  border-radius: 8px; /* Consistent border radius */
+  overflow: hidden;
+  display: flex; /* Align image and text in one row */
+  align-items: center; /* Center items vertically */
+}
+
+.featuredDetails,
+.latestDetails {
+  display: flex; /* Flex container for details */
+  flex-direction: column; /* Stack title and info vertically */
+  flex: 1; /* Allow details to take the remaining space */
+}
+
+.featuredTitle,
+.latestTitle {
+  font-size: 12px; /* Smaller font size */
+  color: #fa541c;
+  font-weight: bold;
+}
+
+.featuredInfo,
+.latestInfo {
+  display: flex; /* Align price and time on the same line */
+  justify-content: space-between; /* Space between price and time */
+  font-size: 12px; /* Smaller font size for price and time */
+  margin-top: 4px; /* Add some space above */
+}
+
+.featuredPrice,
+.latestPrice {
+  color: #52c41a; /* Price color */
+  margin-right: auto; /* Push price to the left */
+}
+
+.featuredTime,
+.latestTime {
+  color: #999; /* Time color */
+  margin-left: auto; /* Push time to the right */
+}
+
+
+.featuredImage {
+  width: 50px; /* Adjust width */
+  height: 50px; /* Adjust height */
+  object-fit: cover; /* Maintain aspect ratio */
+  border-radius: 4px; /* Consistent border radius */
+  margin-right: 8px; /* Space between image and text */
+}
+
+
+.roomTitle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fa541c;
+  }
+  
+  .roomAddress {
+    color: #666;
+    margin-bottom: 8px;
+  }
+  
+  .roomDetails {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+  }
+  
+  .roomPrice {
+    color: #52c41a;
+    font-weight: bold;
+  }
+  
+  .roomArea {
+    color: #333;
+  }
+  
+  .roomPostedTime {
+    color: #999;
+  }
+  
+  .roomDescription {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .imageCarousel {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .roomImage {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .textContent {
+    padding: 15px;
+  }
+  
+  .infoLandlordRoom { 
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #ffeb3b; /* Màu nền vàng */
+    border-radius: 8px; /* Bo góc */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+    text-align: center; /* Căn giữa nội dung */
+    padding: 15px; /* Thêm padding cho box */
+    border: 1px solid #d9d9d9; /* Đường viền nhẹ */
+}
+
+.landlordInfo {
+    width: 100%;
+    display: flex; /* Sắp xếp theo hàng */
+    flex-direction: column; /* Căn hàng dọc */
+    align-items: center; /* Căn giữa theo chiều ngang */
+}
+
+.landlordDetails {
+    margin-top: 10px;
+}
+
+.landlordName {
+    font-size: 1.2em; /* Kích thước chữ lớn cho tên */
+    font-weight: bold; /* Đậm chữ */
+    color: #333; /* Màu chữ tối */
+}
+
+.landlordStatus {
+    font-size: 0.9em; /* Kích thước chữ nhỏ hơn cho trạng thái */
+    color: #666; /* Màu chữ cho trạng thái */
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+}
+
+.statusIndicator {
+    width: 8px; /* Đường kính chấm */
+    height: 8px; /* Đường kính chấm */
+    border-radius: 50%; /* Hình tròn */
+    margin-right: 5px; /* Khoảng cách giữa chấm và chữ */
+}
+
+
+.landlordEmail {
+  width: 260px;
+  height: 30px;
+  margin: 5px; /* Khoảng cách giữa các nút */
+  padding: 5px 10px; /* Padding cho các nút */
+  border: 1px solid #292626; /* Add a light gray border */
+  border-radius: 5px; /* Bo góc cho nút */
+  background-color: #f7f8f7; /* Màu nền nút xanh */
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer; /* Hiển thị con trỏ khi hover */
+}
+
+.icon {
+    margin-right: 5px; /* Khoảng cách giữa icon và chữ */
+}
+
+.phoneButton {
+
+    margin: 5px; /* Khoảng cách giữa các nút */
+    padding: 5px 10px; /* Padding cho các nút */
+   
+    border-radius: 5px; /* Bo góc cho nút */
+    background-color: #4caf50; /* Màu nền nút xanh */
+    color: white;
+    font-size: 1.2em; /* Kích thước chữ lớn cho tên */
+    font-weight: bold;
+    cursor: pointer; /* Hiển thị con trỏ khi hover */
+}
+
+.favoriteButton {
+    margin: 5px; /* Khoảng cách giữa các nút */
+    padding: 5px 10px; /* Padding cho các nút */
+    border: 1px solid #292626; /* Add a light gray border */
+    border-radius: 5px; /* Bo góc cho nút */
+    background-color: #ffffff; /* Màu nền nút xanh */
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer; /* Hiển thị con trỏ khi hover */
+}
+
