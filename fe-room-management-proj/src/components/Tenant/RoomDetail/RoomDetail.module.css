@@ -138,8 +138,8 @@
   }
   
   .roomImage {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 400px;
     object-fit: cover;
     border-radius: 4px;
   }
@@ -233,5 +233,11 @@
     font-weight: bold;
     font-size: 1em;
     cursor: pointer; /* Hiển thị con trỏ khi hover */
+}
+
+.carouselContainer {
+  position: relative;
+  max-width: 500px;
+  margin: auto;
 }
 

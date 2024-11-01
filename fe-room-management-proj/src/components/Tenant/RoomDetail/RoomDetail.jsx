@@ -1,12 +1,17 @@
-import { PhoneOutlined, HeartOutlined, WechatOutlined } from "@ant-design/icons";
-import { Avatar, List, Space, Typography, message, Button } from "antd";
+
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { Marker } from '@react-google-maps/api';
+import { Button, Carousel, Space, Typography, message } from "antd";
+
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./RoomDetail.module.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import 'leaflet/dist/leaflet.css';
+
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, Popup, TileLayer } from "react-leaflet";
 
 // Thiết lập lại hình ảnh marker mặc định
 delete L.Icon.Default.prototype._getIconUrl;
@@ -128,16 +133,24 @@ function RoomDetail() {
       <div className={styles.mainContent}>
         {roomInfo && (
           <>
-            <div className={styles.imageCarousel}>
-              {roomInfo.images &&
-                roomInfo.images.map((img, index) => (
-                  <img
-                    src={img}
-                    alt={`Room image ${index + 1}`}
-                    key={index}
-                    className={styles.roomImage}
-                  />
-                ))}
+            <div className={styles.carouselContainer}>
+              <Carousel
+                arrows
+                prevArrow={<Button icon={<LeftOutlined />} />}
+                nextArrow={<Button icon={<RightOutlined />} />}
+                dots
+              >
+                {roomInfo.images &&
+                  roomInfo.images.map((img, index) => (
+                    <div key={index}>
+                      <img
+                        src={img}
+                        alt={`Room image ${index + 1}`}
+                        className={styles.roomImage}
+                      />
+                    </div>
+                  ))}
+              </Carousel>
             </div>
 
             <div className={styles.textContent}>
