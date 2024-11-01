@@ -82,9 +82,13 @@ class RoomController {
     try {
       const room = await Room.findOne({
         _id: roomId,
-        hidden: false,
+        // hidden: false,
       })
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
+        .populate({
+          path: "landlord",
+          select: "email fullName phone avatar online onlineAt" // Chỉ lấy các trường mong muốn
+      })
         .populate("category");
 
       return res.json({
@@ -164,6 +168,47 @@ class RoomController {
       });
     }
   }
+
+  // [GET] /api/room/latest
+async getLatestRooms(req, res) {
+  try {
+    const latestRooms = await Room.find()
+      .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+      .limit(6) // Limit to 6 results
+      .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
+      .populate("category"); // Populate the category field
+
+    return res.json({
+      rooms: latestRooms,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: error.toString(),
+    });
+  }
+}
+// [GET] /api/room/top-rated
+async getTopRatedRooms(req, res) {
+  try {
+    const topRatedRooms = await Room.find()
+      .sort({ rating: -1 }) // Sort by rating in descending order
+      .limit(6) // Limit to 6 results
+      .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
+      .populate("category"); // Populate the category field
+
+    return res.json({
+      rooms: topRatedRooms,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: error.toString(),
+    });
+  }
+}
+
 }
 
 module.exports = new RoomController();
+

@@ -56,7 +56,7 @@ const RoomSchema = new Schema({
 
     landlord: {
         type: Schema.Types.ObjectId,
-        ref: "Landlord",
+        ref: "User",
         required: true,
     },
     
@@ -72,7 +72,7 @@ const RoomSchema = new Schema({
             required: true,
         },
         price: {
-            type: String,
+            type: Number,
             default: null,
         },
         description: {
@@ -80,11 +80,10 @@ const RoomSchema = new Schema({
             default: null,
         }
     }],
-    images: [
-        {
-            type: String,
-        }
-    ]
+    images: [{
+        type: String,
+        default: null,
+    }]
 
 },{
     timestamps : true,

@@ -39,7 +39,7 @@ require("../src/app/models/Room.model");
 
 // Route app
 route(app);
-// require("../src/app/models/Landlord.model");
+require("../src/app/models/Room.model");
 // // Connect message service
 // runMessageService(server);
 
