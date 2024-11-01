@@ -79,7 +79,12 @@ const RoomSchema = new Schema({
             type: String,
             default: null,
         }
-    }]
+    }],
+    images: [
+        {
+            type: String,
+        }
+    ]
 
 },{
     timestamps : true,

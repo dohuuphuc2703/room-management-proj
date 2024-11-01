@@ -135,9 +135,7 @@ function SearchRoom() {
         </div>
       </div>
       <div className={styles.list_room}>
-        <div className={styles.title_list_room}>
-          <h2>Phòng cho thuê tốt nhất</h2>
-        </div>
+    
         <div className={styles.list_room_content}>
           <ListRoom
             rooms={rooms}
