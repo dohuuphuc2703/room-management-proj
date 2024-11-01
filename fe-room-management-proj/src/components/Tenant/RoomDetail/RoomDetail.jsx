@@ -4,9 +4,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./RoomDetail.module.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import 'leaflet/dist/leaflet.css';
+
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, Popup, TileLayer } from "react-leaflet";
 
 // Thiết lập lại hình ảnh marker mặc định
 delete L.Icon.Default.prototype._getIconUrl;
