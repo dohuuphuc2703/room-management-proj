@@ -39,7 +39,10 @@ const ListRoom = ({
   handleSearchRoom,
   isSearch,
   page,
+  rooms,
+  setRooms,
   setPage,
+  
   pageSize,
   setPageSize,
   totalItems,
@@ -47,8 +50,7 @@ const ListRoom = ({
   messageApi,
 }) => {
   const nav = useNavigate();
-  const user = useSelector((state) => state.userReducer);
-  const [rooms, setRooms] = useState([]); // To hold all rooms
+  const user = useSelector((state) => state.userReducer); // To hold all rooms
   const [featuredRooms, setFeaturedRooms] = useState([]); // Top-rated rooms
   const [latestRooms, setLatestRooms] = useState([]); // Latest rooms
 
@@ -130,11 +132,14 @@ const ListRoom = ({
                   <img
                     src={item.images[0] || "/logo512.png"}
                     alt="room"
+                    onClick={() => {
+                      nav(user.role ? `/detail-room/${item._id}` : `/view-detail-room/${item._id}`);
+                    }}
                     className={styles.roomImage}
                   />
                   <div className={styles.roomDetails}>
                     <List.Item.Meta
-                      avatar={<Avatar src={landlord.avatar || "https://www.w3schools.com/howto/img_avatar.png"} />}
+                      
                       title={
                         <span
                           className={styles.title_room}
@@ -148,13 +153,13 @@ const ListRoom = ({
                       description={<Text type="secondary">{landlord.introduction}</Text>}
                     />
                     <Text strong className={styles.price}>
-                      Giá: {item.price}
+                      Giá: {item.price.toLocaleString()}VNĐ/Tháng
                     </Text>
                     <Text className={styles.area}>
-                      Diện tích: 30m²
+                      Diện tích: {item.acreage}m²
                     </Text>
                     <p>Địa chỉ: {item.address[0].detail}, {item.address[0].ward}, {item.address[0].district}, {item.address[0].province}</p>
-                    Chủ phòng: {item.landlord.name}
+                    Chủ phòng: {item.landlord.fullName}
                   </div>
                 </div>
               </List.Item>

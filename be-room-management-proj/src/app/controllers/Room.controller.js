@@ -14,6 +14,10 @@ class RoomController {
         .skip((page - 1) * size)
         .limit(size)
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
+        .populate({
+          path: "landlord",
+          select: "email fullName phone avatar online onlineAt" // Chỉ lấy các trường mong muốn
+      })
         .populate("category");
 
       return res.json({
@@ -39,27 +43,50 @@ class RoomController {
     const {
       page = 1,
       size = 0,
-      q = null,
       address = null,
       category = null,
+      minArea = 0, // Giá trị mặc định cho diện tích tối thiểu
+      maxArea = 100, // Giá trị mặc định cho diện tích tối đa
+      minPrice = 0, // Giá trị mặc định cho giá tối thiểu
+      maxPrice = 10000000, // Giá trị mặc định cho giá tối đa
     } = req.query;
-    console.log(q);
-
+  
     try {
       const conditions = {};
-      if (q) conditions.title = { $regex: q, $options: "i" };
-      if (address)
+  
+      // Thêm điều kiện cho địa chỉ
+      if (address) {
         conditions.address = { $elemMatch: { province: address } };
-      if (category) conditions.category = category;
+      }
+  
+      // Thêm điều kiện cho danh mục
+      if (category) {
+        conditions.category = category;
+      }
+  
+      // Thêm điều kiện cho diện tích
+      if (minArea || maxArea) {
+        conditions.acreage  = { $gte: minArea, $lte: maxArea }; // Thay thế "area" với trường hợp đúng trong model của bạn
+      }
+  
+      // Thêm điều kiện cho giá
+      if (minPrice || maxPrice) {
+        conditions.price = { $gte: minPrice, $lte: maxPrice }; // Thay thế "price" với trường hợp đúng trong model của bạn
+      }
+  
       const total = await Room.countDocuments(conditions);
-
+  
       const rooms = await Room.find(conditions)
         .sort({ createdAt: -1 })
         .skip((page - 1) * size)
         .limit(size)
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
-        .populate("category");
-
+        .populate("category")
+        .populate({
+          path: "landlord",
+          select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+        });
+  
       return res.json({
         rooms,
         info: {
@@ -75,6 +102,7 @@ class RoomController {
       });
     }
   }
+  
 
   // [GET] /api/room/info/:roomId
   async getRoomInfo(req, res) {

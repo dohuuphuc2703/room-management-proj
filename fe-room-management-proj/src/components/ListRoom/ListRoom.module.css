@@ -99,6 +99,7 @@
   width: 200px;
   height: 200px;
   border-radius: 8px;
+  cursor: pointer;
   object-fit: cover;
   margin-right: 16px;
 }
