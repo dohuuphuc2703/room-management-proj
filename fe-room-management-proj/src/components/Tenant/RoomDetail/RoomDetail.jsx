@@ -1,5 +1,5 @@
-import { PhoneOutlined, HeartOutlined, WechatOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Avatar, List, Space, Typography, message, Button, Carousel } from "antd";
+import { HeartOutlined, LeftOutlined, PhoneOutlined, RightOutlined, WechatOutlined } from "@ant-design/icons";
+import { Avatar, Button, Carousel, Space, Typography, message } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -7,7 +7,7 @@ import styles from "./RoomDetail.module.css";
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 // Thiết lập lại hình ảnh marker mặc định
 delete L.Icon.Default.prototype._getIconUrl;
