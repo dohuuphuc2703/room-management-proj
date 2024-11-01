@@ -1,11 +1,10 @@
-import { PhoneOutlined, HeartOutlined, WechatOutlined, } from "@ant-design/icons";
-import { Avatar, List, Space, Typography, message, Button } from "antd";
+import { HeartOutlined, LeftOutlined, PhoneOutlined, RightOutlined, WechatOutlined } from "@ant-design/icons";
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { Avatar, Button, Carousel, Space, Typography, message } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styles from "./RoomDetail.module.css";
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 const { Text } = Typography;
 
@@ -113,16 +112,24 @@ function RoomDetail() {
       <div className={styles.mainContent}>
         {roomInfo && (
           <>
-            <div className={styles.imageCarousel}>
-              {roomInfo.images &&
-                roomInfo.images.map((img, index) => (
-                  <img
-                    src={img}
-                    alt={`Room image ${index + 1}`}
-                    key={index}
-                    className={styles.roomImage}
-                  />
-                ))}
+            <div className={styles.carouselContainer}>
+              <Carousel
+                arrows
+                prevArrow={<Button icon={<LeftOutlined />} />}
+                nextArrow={<Button icon={<RightOutlined />} />}
+                dots
+              >
+                {roomInfo.images &&
+                  roomInfo.images.map((img, index) => (
+                    <div key={index}>
+                      <img
+                        src={img}
+                        alt={`Room image ${index + 1}`}
+                        className={styles.roomImage}
+                      />
+                    </div>
+                  ))}
+              </Carousel>
             </div>
 
             <div className={styles.textContent}>

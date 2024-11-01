@@ -73,6 +73,17 @@
     font-size: 16px;
 }
 
-.nav a:hover {
-    text-decoration: underline;
+
+.nav ul li a:hover {
+    background-color: #f0f0f0;
+    /* Màu nền khi di chuột qua */
+    text-decoration: none;
+}
+
+.nav ul li a:active {
+    background-color: #cccccc;
+    /* Màu nền xám nhẹ khi giữ chuột */
+    color: #333;
+    /* Giữ màu chữ đậm để dễ đọc */
+    text-decoration: none;
 }
