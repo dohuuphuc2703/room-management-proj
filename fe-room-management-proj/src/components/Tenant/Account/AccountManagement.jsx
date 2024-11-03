@@ -2,6 +2,8 @@ import { CalendarOutlined, HomeOutlined, LockOutlined, PhoneOutlined, UserOutlin
 import { Button, Col, Form, Input, Layout, message, Row, Tabs } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setTenantInfo } from "../../../actions";
 import styles from "./AccountManagement.module.css";
 
 const { Content } = Layout;
@@ -10,6 +12,7 @@ const { TabPane } = Tabs;
 const AccountManagement = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -37,10 +40,15 @@ const AccountManagement = () => {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      await axios.post("http://localhost:8000/api/tenant/info/", values, {
+        const response = await axios.post("http://localhost:8000/api/tenant/info/", values, {
         withCredentials: true,
       });
+      
       message.success("Thông tin đã được cập nhật thành công");
+      dispatch(setTenantInfo({
+        uid: response.data.info._id,
+        ...response.data.info.user,
+      }));
     } catch (error) {
       message.error("Có lỗi xảy ra khi cập nhật thông tin");
     } finally {

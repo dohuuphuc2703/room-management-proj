@@ -1,11 +1,11 @@
+import { ConfigProvider } from "antd";
+import axios from "axios";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTenantInfo } from '../../actions';
+import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import styles from "./Home.module.css";
-import { ConfigProvider } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect } from "react";
-import { setTenantInfo } from '../../actions';
-import axios from "axios";
-import Footer from "../../components/Footer/Footer";
 
 import { Outlet } from "react-router-dom";
 
