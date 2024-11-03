@@ -16,7 +16,6 @@ const ReviewSchema = new Schema({
     tenant: { 
         type: Schema.Types.ObjectId, 
         ref: "Tenant",
-        unique: true,
         required: true,
     },
 
