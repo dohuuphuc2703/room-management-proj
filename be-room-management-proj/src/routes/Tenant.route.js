@@ -7,8 +7,9 @@ const { roleVerify } = require("../app/middlewares/roleMiddleware");
 const { verifyJwt } = require("../app/middlewares/jwtMiddleware");
 
 router.post("/info/", TenantController.updateInfo);
-router.get("/info/",verifyJwt, TenantController.getInfo);
+router.get("/info/", TenantController.getInfo);
 router.get("/all-saved-rooms/", TenantController.getAllSavedRooms);
 router.post("/save-room/", TenantController.saveRoom);
+router.post('/change-password', verifyJwt, TenantController.changePassword);
 
 module.exports = router;
