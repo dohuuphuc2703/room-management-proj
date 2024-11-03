@@ -11,7 +11,7 @@ const renderStars = (rating) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     stars.push(
-      <StarFilled key={i} style={{ color: i <= rating ? '#fa8c16' : '#eaeaea', fontSize: '16px' }} />
+      <StarFilled key={i} style={{ color: i <= rating ? 'rgb(250, 219, 20)' : '#eaeaea', fontSize: '16px' }} />
     );
   }
   return stars;
@@ -32,10 +32,6 @@ const ListReviewRoom = ({ roomId }) => {
       const { reviews: reviewsData, ratingCounts: counts } = response.data;
       setReviews(reviewsData);
       setRatingCounts(counts);
-      
-      // Tính điểm trung bình
-      const totalRating = reviewsData.reduce((sum, review) => sum + review.rating, 0);
-      setAverageRating(reviewsData.length > 0 ? (totalRating / reviewsData.length).toFixed(1) : 0);
     } catch (error) {
       console.error("Error fetching reviews:", error);
     } finally {

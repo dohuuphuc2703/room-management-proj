@@ -7,16 +7,20 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 function SearchRoom() {
-  const [address, setAddress] = useState("Tất cả địa điểm");
+  const [province, setProvince] = useState("Tất cả tỉnh");
+  const [district, setDistrict] = useState("Tất cả quận");
+  const [ward, setWard] = useState("Tất cả phường");
   const [category, setCategory] = useState("Tất cả loại phòng");
   const [minArea, setMinArea] = useState(0);
-  const [maxArea, setMaxArea] = useState(100); // Đặt giá trị tối đa phù hợp
-  const [minPrice, setMinPrice] = useState(0); // Giá tối thiểu
-  const [maxPrice, setMaxPrice] = useState(10000000); // Giá tối đa (có thể điều chỉnh)
+  const [maxArea, setMaxArea] = useState(100);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(10000000);
   const [isModalVisible, setIsModalVisible] = useState(false);
   
   const [messageApi, contextHolder] = message.useMessage();
-  const [addresses, setAddresses] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
   const [rooms, setRooms] = useState([]);
@@ -26,8 +30,33 @@ function SearchRoom() {
 
   const [form] = Form.useForm();
 
-  const handleChangeLocation = (value) => {
-    setAddress(value);
+  const handleChangeProvince = async (value) => {
+    setProvince(value);
+    setDistrict("Tất cả quận");
+    setWard("Tất cả phường");
+    
+    // Lấy danh sách quận dựa trên tỉnh đã chọn
+    try {
+      const res = await axios.get(`https://vapi.vnappmob.com/api/province/district/${value}`);
+      setDistricts(res.data.results.map(d => ({ label: d.district_name, value: d.district_id })));
+    } catch (error) {
+      console.error(error);
+      messageApi.error("Có lỗi khi tải danh sách quận.");
+    }
+  };
+
+  const handleChangeDistrict = async (value) => {
+    setDistrict(value);
+    setWard("Tất cả phường");
+    
+    // Lấy danh sách phường dựa trên quận đã chọn
+    try {
+      const res = await axios.get(`https://vapi.vnappmob.com/api/province/ward/${value}`);
+      setWards(res.data.results.map(w => ({ label: w.ward_name, value: w.ward_id })));
+    } catch (error) {
+      console.error(error);
+      messageApi.error("Có lỗi khi tải danh sách phường.");
+    }
   };
 
   const handleChangeCategory = (value) => {
@@ -35,39 +64,34 @@ function SearchRoom() {
   };
 
   const handleSearchRoom = async (page = 1, pageSize = 3) => {
-    form
-      .validateFields()
-      .then(async (values) => {
-        const payload = {
-          address: values.address === "Tất cả địa điểm" ? "" : values.address || "",
-          category: values.category === "Tất cả loại phòng" ? "" : values.category || "",
-          minArea: minArea,
-          maxArea: maxArea,
-          minPrice: minPrice,
-          maxPrice: maxPrice,
-        };
-        console.log("Payload gửi đi:", payload); 
-        try {
-          const res = await axios.get(
-            `http://localhost:8000/api/room/search?address=${payload.address}&category=${payload.category}&minArea=${payload.minArea}&maxArea=${payload.maxArea}&minPrice=${payload.minPrice}&maxPrice=${payload.maxPrice}&page=${page}&size=${pageSize}`
-          );
-          setRooms(res.data.rooms);
-          console.log(res.data.rooms)
-          
-          setTotalItems(res.data.info.total);
-          setPage(res.data.info.page);
-          setPageSize(res.data.info.size);
-          setIsSearch(true);
-        } catch (err) {
-          console.error(err);
-          messageApi.error("Có lỗi xảy ra: " + err?.response?.data?.message);
-        } finally {
-          window.scrollTo({
-            top: 284,
-            behavior: "smooth",
-          });
-        }
-      });
+    form.validateFields().then(async (values) => {
+      const payload = {
+        province: province === "Tất cả tỉnh" ? "" : province || "",
+        district: district === "Tất cả quận" ? "" : district || "",
+        ward: ward === "Tất cả phường" ? "" : ward || "",
+        category: values.category === "Tất cả loại phòng" ? "" : values.category || "",
+        minArea: minArea,
+        maxArea: maxArea,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+      };
+      console.log("Payload gửi đi:", payload); 
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/api/room/search?province=${payload.province}&district=${payload.district}&ward=${payload.ward}&category=${payload.category}&minArea=${payload.minArea}&maxArea=${payload.maxArea}&minPrice=${payload.minPrice}&maxPrice=${payload.maxPrice}&page=${page}&size=${pageSize}`
+        );
+        setRooms(res.data.rooms);
+        setTotalItems(res.data.info.total);
+        setPage(res.data.info.page);
+        setPageSize(res.data.info.size);
+        setIsSearch(true);
+      } catch (err) {
+        console.error(err);
+        messageApi.error("Có lỗi xảy ra: " + err?.response?.data?.message);
+      } finally {
+        window.scrollTo({ top: 284, behavior: "smooth" });
+      }
+    });
   };
 
   const showModal = () => {
@@ -84,32 +108,16 @@ function SearchRoom() {
   };
 
   useEffect(() => {
+    // Lấy danh sách tỉnh và loại phòng
     Promise.all([
-      axios.get("http://localhost:8000/api/room-category/all"),
       axios.get("https://vapi.vnappmob.com/api/province/"),
-    ]).then(([resRoomCates, resCities]) => {
-      resCities.data.results.unshift({
-        province_name: "Tất cả địa điểm",
-      });
+      axios.get("http://localhost:8000/api/room-category/all"),
+    ]).then(([resCities, resRoomCates]) => {
+      resCities.data.results.unshift({ province_name: "Tất cả tỉnh", province_id: "" });
+      setProvinces(resCities.data.results.map(city => ({ label: city.province_name, value: city.province_id })));
 
-      setAddresses(
-        resCities.data.results.map((city) => ({
-          label: city.province_name,
-          value: city.province_name,
-        }))
-      );
-
-      resRoomCates.data.categories.unshift({
-        _id: 0,
-        category: "Tất cả loại phòng",
-      });
-
-      setCategories(
-        resRoomCates.data.categories.map((category) => ({
-          label: category.category,
-          value: category._id,
-        }))
-      );
+      resRoomCates.data.categories.unshift({ _id: 0, category: "Tất cả loại phòng" });
+      setCategories(resRoomCates.data.categories.map(category => ({ label: category.category, value: category._id })));
     });
   }, []);
 
@@ -128,7 +136,7 @@ function SearchRoom() {
               <div className={styles.search_room}>
                 <Form.Item name="category" initialValue={category}>
                   <Select onChange={handleChangeCategory} className={styles.search_location}>
-                    {categories.map((cat) => (
+                    {categories.map(cat => (
                       <Select.Option key={cat.value} value={cat.value}>
                         {cat.label}
                       </Select.Option>
@@ -138,11 +146,35 @@ function SearchRoom() {
               </div>
 
               <div className={styles.search_room}>
-                <Form.Item name="address" initialValue={address}>
-                  <Select onChange={handleChangeLocation} className={styles.search_location}>
-                    {addresses.map((loc) => (
+                <Form.Item name="province" initialValue={province}>
+                  <Select onChange={handleChangeProvince} className={styles.search_location}>
+                    {provinces.map(loc => (
                       <Select.Option key={loc.value} value={loc.value}>
                         {loc.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+
+              <div className={styles.search_room}>
+                <Form.Item name="district" initialValue={district}>
+                  <Select onChange={handleChangeDistrict} className={styles.search_location}>
+                    {districts.map(d => (
+                      <Select.Option key={d.value} value={d.value}>
+                        {d.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+
+              <div className={styles.search_room}>
+                <Form.Item name="ward" initialValue={ward}>
+                  <Select className={styles.search_location}>
+                    {wards.map(w => (
+                      <Select.Option key={w.value} value={w.value}>
+                        {w.label}
                       </Select.Option>
                     ))}
                   </Select>
@@ -176,7 +208,8 @@ function SearchRoom() {
                 <span>{`Diện tích tối thiểu: ${minArea} m³`}</span>
                 <span>{`Diện tích tối đa: ${maxArea} m³`}</span>
               </div>
-              <p>Chọn giá từ (VNĐ)</p>
+
+              <p>Chọn giá từ</p>
               <Slider
                 range
                 min={0}
@@ -188,13 +221,14 @@ function SearchRoom() {
                 }}
               />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>{`Giá tối thiểu: ${minPrice} VNĐ`}</span>
-                <span>{`Giá tối đa: ${maxPrice} VNĐ`}</span>
+                <span>{`Giá tối thiểu: ${minPrice} VND`}</span>
+                <span>{`Giá tối đa: ${maxPrice} VND`}</span>
               </div>
             </div>
           </Modal>
         </div>
       </div>
+
       <div className={styles.list_room}>
         <div className={styles.list_room_content}>
           <ListRoom

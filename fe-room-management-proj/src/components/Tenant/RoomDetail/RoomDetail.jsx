@@ -49,8 +49,9 @@ function RoomDetail() {
   const [roomInfo, setRoomInfo] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
   const [featuredRooms, setFeaturedRooms] = useState([]);
-  const [latestRooms, setLatestRooms] = useState([]);
   const [coordinates, setCoordinates] = useState(null);
+
+  
 
   const handleZaloMessage = (phone) => {
     const zaloLink = `https://zalo.me/${phone}`;
@@ -63,7 +64,6 @@ function RoomDetail() {
         withCredentials: true,
       });
       messageApi.success("Đánh giá đã được gửi!");
-      // getReviews();
     } catch (err) {
       messageApi.error(`Thông báo. ${err.response?.data.message || ""}`);
     }
@@ -71,7 +71,7 @@ function RoomDetail() {
 
   const getCoordinates = async (address) => {
     try {
-      const { province, district, ward, detail } = address[0];
+      const { province, district, ward, detail } = address;
       const fullAddress = `${detail}, ${ward}, ${district}, ${province}`;
       const res = await axios.get(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`
@@ -115,27 +115,11 @@ function RoomDetail() {
     }
   };
 
-  const getLatestRooms = async () => {
-    try {
-      const res = await axios.get("http://localhost:8000/api/room/latest");
-      const data = res.data;
-      setLatestRooms(data.rooms);
-    } catch (err) {
-      console.error(err);
-      messageApi.error("Có lỗi xảy ra: " + err.toString());
-    }
-  };
 
   useEffect(() => {
     getDetailRoomInfo();
-    getLatestRooms();
     getTopRatedRooms();
   }, []);
-
-  const mapContainerStyle = {
-    height: "400px",
-    width: "100%",
-  };
 
   return (
     <div className={styles.container}>
@@ -169,8 +153,8 @@ function RoomDetail() {
                 <span role="img" aria-label="location">
                   📍
                 </span>{" "}
-                {roomInfo.address[0].detail}, {roomInfo.address[0].ward},{" "}
-                {roomInfo.address[0].district}, {roomInfo.address[0].province}
+                {roomInfo.address.detail}, {roomInfo.address.ward},{" "}
+                {roomInfo.address.district}, {roomInfo.address.province}
               </p>
 
               <div className={styles.roomDetails}>
@@ -214,8 +198,8 @@ function RoomDetail() {
 
             <div className={styles.mapContainer}>
               <h3>Bản đồ</h3>
-              <p>Địa chỉ: {roomInfo.address[0].detail}, {roomInfo.address[0].ward},{" "}
-              {roomInfo.address[0].district}, {roomInfo.address[0].province}</p>
+              <p>Địa chỉ: {roomInfo.address.detail}, {roomInfo.address.ward},{" "}
+              {roomInfo.address.district}, {roomInfo.address.province}</p>
               {coordinates ? (
                 <MapContainer center={coordinates} zoom={13} style={{ height: "400px", width: "100%" }}>
                   <TileLayer
@@ -296,27 +280,6 @@ function RoomDetail() {
               ))
             ) : (
               <p>Không có tin nổi bật</p>
-            )}
-          </div>
-        </div>
-        <div className={styles.latestSection}>
-          <h3>Tin mới nhất</h3>
-          <div className={styles.latestList}>
-            {latestRooms && latestRooms.length > 0 ? (
-              latestRooms.map((item, index) => (
-                <div className={styles.latestItem} key={index}>
-                  <img src={item.images[0] || "/logo192.png"} alt="Latest room" className={styles.featuredImage} />
-                  <div className={styles.latestDetails}>
-                    <Text className={styles.latestTitle}>{item.title}</Text>
-                    <div className={styles.latestInfo}>
-                      <Text className={styles.latestPrice}>Giá: {item.price}</Text>
-                      <Text className={styles.latestTime}>{timeAgo(item.createdAt)}</Text>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>Không có tin mới</p>
             )}
           </div>
         </div>
