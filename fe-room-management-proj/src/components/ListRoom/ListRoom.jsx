@@ -159,7 +159,7 @@ const ListRoom = ({
                     <Text className={styles.area}>
                       Diện tích: {item.acreage}m²
                     </Text>
-                    <p>Địa chỉ: {item.address[0].detail}, {item.address[0].ward}, {item.address[0].district}, {item.address[0].province}</p>
+                    <p>Địa chỉ: {item.address.detail}, {item.address.ward}, {item.address.district}, {item.address.province}</p>
                     Chủ phòng: {item.landlord.fullName}
                   </div>
                 </div>

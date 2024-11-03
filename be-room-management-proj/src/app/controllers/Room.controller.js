@@ -16,8 +16,8 @@ class RoomController {
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate({
           path: "landlord",
-          select: "email fullName phone avatar online onlineAt" // Chỉ lấy các trường mong muốn
-      })
+          select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+        })
         .populate("category");
 
       return res.json({
@@ -42,40 +42,53 @@ class RoomController {
   async searchRooms(req, res) {
     const {
       page = 1,
-      size = 0,
-      address = null,
-      category = null,
+      size = 10, // Giá trị mặc định cho kích thước trang
+      province = null, // Tỉnh
+      district = null, // Quận
+      ward = null, // Phường
+      category = null, // Danh mục
       minArea = 0, // Giá trị mặc định cho diện tích tối thiểu
       maxArea = 100, // Giá trị mặc định cho diện tích tối đa
       minPrice = 0, // Giá trị mặc định cho giá tối thiểu
       maxPrice = 10000000, // Giá trị mặc định cho giá tối đa
     } = req.query;
-  
+
     try {
       const conditions = {};
-  
-      // Thêm điều kiện cho địa chỉ
-      if (address) {
-        conditions.address = { $elemMatch: { province: address } };
+
+      // Thêm điều kiện cho tỉnh
+      if (province) {
+        conditions["address.province"] = province.trim(); // Loại bỏ khoảng trắng
       }
-  
+
+      // Thêm điều kiện cho quận
+      if (district) {
+        conditions["address.district"] = district.trim(); // Loại bỏ khoảng trắng
+      }
+
+      // Thêm điều kiện cho phường
+      if (ward) {
+        conditions["address.ward"] = ward.trim(); // Loại bỏ khoảng trắng
+      }
+
       // Thêm điều kiện cho danh mục
       if (category) {
         conditions.category = category;
       }
-  
+
       // Thêm điều kiện cho diện tích
       if (minArea || maxArea) {
-        conditions.acreage  = { $gte: minArea, $lte: maxArea }; // Thay thế "area" với trường hợp đúng trong model của bạn
+        conditions.acreage = { $gte: minArea, $lte: maxArea }; // Thay thế "acreage" với trường hợp đúng trong model của bạn
       }
-  
+
       // Thêm điều kiện cho giá
       if (minPrice || maxPrice) {
         conditions.price = { $gte: minPrice, $lte: maxPrice }; // Thay thế "price" với trường hợp đúng trong model của bạn
       }
-  
+      console.log("Conditions:", conditions);
       const total = await Room.countDocuments(conditions);
-  
+      
+
       const rooms = await Room.find(conditions)
         .sort({ createdAt: -1 })
         .skip((page - 1) * size)
@@ -86,7 +99,7 @@ class RoomController {
           path: "landlord",
           select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
         });
-  
+
       return res.json({
         rooms,
         info: {
@@ -102,7 +115,6 @@ class RoomController {
       });
     }
   }
-  
 
   // [GET] /api/room/info/:roomId
   async getRoomInfo(req, res) {
@@ -115,8 +127,8 @@ class RoomController {
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate({
           path: "landlord",
-          select: "email fullName phone avatar online onlineAt" // Chỉ lấy các trường mong muốn
-      })
+          select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+        })
         .populate("category");
 
       return res.json({
@@ -162,7 +174,7 @@ class RoomController {
   async addRoom(req, res) {
     const info = req.body;
     const userId = req.user.id;
-    
+
     try {
       const room = await Room.create({
         ...info,
@@ -170,7 +182,7 @@ class RoomController {
       });
 
       return res.json({
-        room: room 
+        room: room,
       });
     } catch (error) {
       console.log(error);
@@ -198,45 +210,43 @@ class RoomController {
   }
 
   // [GET] /api/room/latest
-async getLatestRooms(req, res) {
-  try {
-    const latestRooms = await Room.find()
-      .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-      .limit(6) // Limit to 6 results
-      .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
-      .populate("category"); // Populate the category field
+  async getLatestRooms(req, res) {
+    try {
+      const latestRooms = await Room.find()
+        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+        .limit(6) // Limit to 6 results
+        .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
+        .populate("category"); // Populate the category field
 
-    return res.json({
-      rooms: latestRooms,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: error.toString(),
-    });
+      return res.json({
+        rooms: latestRooms,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: error.toString(),
+      });
+    }
   }
-}
-// [GET] /api/room/top-rated
-async getTopRatedRooms(req, res) {
-  try {
-    const topRatedRooms = await Room.find()
-      .sort({ rating: -1 }) // Sort by rating in descending order
-      .limit(6) // Limit to 6 results
-      .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
-      .populate("category"); // Populate the category field
+  // [GET] /api/room/top-rated
+  async getTopRatedRooms(req, res) {
+    try {
+      const topRatedRooms = await Room.find()
+        .sort({ rating: -1 }) // Sort by rating in descending order
+        .limit(6) // Limit to 6 results
+        .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
+        .populate("category"); // Populate the category field
 
-    return res.json({
-      rooms: topRatedRooms,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: error.toString(),
-    });
+      return res.json({
+        rooms: topRatedRooms,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: error.toString(),
+      });
+    }
   }
-}
-
 }
 
 module.exports = new RoomController();
-

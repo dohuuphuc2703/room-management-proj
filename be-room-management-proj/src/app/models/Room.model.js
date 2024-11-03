@@ -13,21 +13,21 @@ const RoomSchema = new Schema({
         required: true,
     },
 
-    address: [{
+    address: {
         province: {
-          type: String,
-          required: true,
+            type: String,
+            required: true,
         },
         district: {
-          type: String,
-          required: true,
+            type: String,
+            required: true,
         },
         ward: {
-          type: String,
-          required: true,
+            type: String,
+            required: true,
         },
         detail: { type: String },
-    }],
+    },
 
     acreage: { 
         type: Number,
