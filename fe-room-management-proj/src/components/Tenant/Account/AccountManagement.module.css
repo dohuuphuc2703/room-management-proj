@@ -1,0 +1,13 @@
+.content {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+    margin: 20px 10px 20px 100px;
+    width: 50%;
+}
+
+.layout {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 50px;
+}
