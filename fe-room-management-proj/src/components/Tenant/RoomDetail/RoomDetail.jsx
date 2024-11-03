@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./RoomDetail.module.css";
+import ListReviewRoom from "../../ListReviewRoom/ListReviewRoom";
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -216,6 +217,10 @@ function RoomDetail() {
             </div>
           </>
         )}
+        <div>
+            <ListReviewRoom roomId={roomId}/>
+
+          </div>
       </div>
 
       {/* Sidebar for Featured and Latest Rooms */}
@@ -254,6 +259,7 @@ function RoomDetail() {
               </div>
             </div>
           )}
+
         </div>
         
         <div className={styles.featuredSection}>
