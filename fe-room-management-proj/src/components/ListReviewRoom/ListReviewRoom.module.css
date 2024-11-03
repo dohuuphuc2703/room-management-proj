@@ -1,0 +1,57 @@
+.reviewContainer {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reviewContainer h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.comment {
+  margin-top: 4px; /* Thay đổi margin để tách biệt với các phần khác */
+  font-size: 16px;
+  color: #555;
+}
+
+.ant-list-item {
+  border-bottom: 1px solid #eaeaea;
+  padding: 16px 0;
+}
+
+.ant-list-item-meta-title {
+  font-weight: 500;
+  color: #333;
+}
+
+.ant-list-item-meta-description {
+  font-size: 14px;
+  color: #666;
+  display: flex; /* Thiết lập flex để cho phép sắp xếp theo chiều dọc */
+  flex-direction: row; /* Đặt hướng flex thành cột */
+}
+
+
+.ant-space {
+  margin-right: 8px;
+}
+
+/* Hover effect for list items */
+.ant-list-item:hover {
+  background-color: #f0f0f0;
+}
+
+.iconText {
+  display: flex;
+  align-items: center;
+  color: #fa8c16; /* Color for star icon */
+}
+
+.iconText svg {
+  margin-right: 4px; /* Space between icon and text */
+}
