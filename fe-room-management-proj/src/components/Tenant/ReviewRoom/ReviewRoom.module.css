@@ -1,9 +1,13 @@
 /* ReviewRoom.module.css */
 .reviewContainer {
-    margin-top: 20px;
-  }
-  
-  .submitButton {
-    margin-top: 10px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.submitButton {
+  margin-top: 10px;
+  margin-left: auto;
+}

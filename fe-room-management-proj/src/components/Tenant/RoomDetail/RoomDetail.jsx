@@ -214,6 +214,8 @@ function RoomDetail() {
 
             <div className={styles.mapContainer}>
               <h3>Bản đồ</h3>
+              <p>Địa chỉ: {roomInfo.address[0].detail}, {roomInfo.address[0].ward},{" "}
+              {roomInfo.address[0].district}, {roomInfo.address[0].province}</p>
               {coordinates ? (
                 <MapContainer center={coordinates} zoom={13} style={{ height: "400px", width: "100%" }}>
                   <TileLayer

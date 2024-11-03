@@ -22,7 +22,7 @@ const ReviewRoom = ({ roomId, onReviewSubmit }) => {
       <h3>Đánh giá phòng</h3>
       <Rate value={rating} onChange={setRating} />
       <Input.TextArea
-        rows={4}
+        rows={3}
         placeholder="Nhập đánh giá của bạn..."
         value={comment}
         onChange={(e) => setComment(e.target.value)}
