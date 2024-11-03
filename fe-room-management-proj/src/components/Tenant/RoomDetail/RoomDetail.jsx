@@ -9,6 +9,7 @@ import ListReviewRoom from "../../ListReviewRoom/ListReviewRoom";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import ReviewRoom from "../ReviewRoom/ReviewRoom";
 
 // Thiết lập lại hình ảnh marker mặc định
 delete L.Icon.Default.prototype._getIconUrl;
@@ -54,6 +55,18 @@ function RoomDetail() {
   const handleZaloMessage = (phone) => {
     const zaloLink = `https://zalo.me/${phone}`;
     window.open(zaloLink, "_blank");
+  };
+
+  const handleReviewSubmit = async (review) => {
+    try {
+      await axios.post(`http://localhost:8000/api/review/create`, review, {
+        withCredentials: true,
+      });
+      messageApi.success("Đánh giá đã được gửi!");
+      // getReviews();
+    } catch (err) {
+      messageApi.error(`Thông báo. ${err.response?.data.message || ""}`);
+    }
   };
 
   const getCoordinates = async (address) => {
@@ -218,6 +231,7 @@ function RoomDetail() {
           </>
         )}
         <div>
+            <ReviewRoom roomId={roomId} onReviewSubmit={handleReviewSubmit} />
             <ListReviewRoom roomId={roomId}/>
 
           </div>
