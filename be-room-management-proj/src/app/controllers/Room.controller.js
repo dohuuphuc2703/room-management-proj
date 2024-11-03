@@ -16,8 +16,8 @@ class RoomController {
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate({
           path: "landlord",
-          select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
-        })
+          select: "email fullName phone avatar online onlineAt" // Chỉ lấy các trường mong muốn
+      })
         .populate("category");
 
       return res.json({
@@ -52,43 +52,42 @@ class RoomController {
       minPrice = 0, // Giá trị mặc định cho giá tối thiểu
       maxPrice = 10000000, // Giá trị mặc định cho giá tối đa
     } = req.query;
-
+  
     try {
       const conditions = {};
-
+  
       // Thêm điều kiện cho tỉnh
       if (province) {
-        conditions["address.province"] = province.trim(); // Loại bỏ khoảng trắng
+        conditions['address.province'] = province; // Sử dụng đường dẫn để truy cập trường tỉnh trong address
       }
-
+  
       // Thêm điều kiện cho quận
       if (district) {
-        conditions["address.district"] = district.trim(); // Loại bỏ khoảng trắng
+        conditions['address.district'] = district; // Sử dụng đường dẫn để truy cập trường quận trong address
       }
-
+  
       // Thêm điều kiện cho phường
       if (ward) {
-        conditions["address.ward"] = ward.trim(); // Loại bỏ khoảng trắng
+        conditions['address.ward'] = ward; // Sử dụng đường dẫn để truy cập trường phường trong address
       }
-
+  
       // Thêm điều kiện cho danh mục
       if (category) {
         conditions.category = category;
       }
-
+  
       // Thêm điều kiện cho diện tích
       if (minArea || maxArea) {
         conditions.acreage = { $gte: minArea, $lte: maxArea }; // Thay thế "acreage" với trường hợp đúng trong model của bạn
       }
-
+  
       // Thêm điều kiện cho giá
       if (minPrice || maxPrice) {
         conditions.price = { $gte: minPrice, $lte: maxPrice }; // Thay thế "price" với trường hợp đúng trong model của bạn
       }
-      console.log("Conditions:", conditions);
+  
       const total = await Room.countDocuments(conditions);
-      
-
+  
       const rooms = await Room.find(conditions)
         .sort({ createdAt: -1 })
         .skip((page - 1) * size)
@@ -99,9 +98,10 @@ class RoomController {
           path: "landlord",
           select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
         });
-
+  
       return res.json({
         rooms,
+        conditions:conditions,
         info: {
           total,
           page,
@@ -116,6 +116,47 @@ class RoomController {
     }
   }
 
+  // [GET] /api/room/byAddress
+async getRoomsByAddressAndCat(req, res) {
+  const { province, district, category } = req.query; // Lấy province và district từ query parameters
+  try {
+    const conditions = {};
+  
+      // Thêm điều kiện cho tỉnh
+      if (province) {
+        conditions['address.province'] = province; // Sử dụng đường dẫn để truy cập trường tỉnh trong address
+      }
+  
+      // Thêm điều kiện cho quận
+      if (district) {
+        conditions['address.district'] = district; // Sử dụng đường dẫn để truy cập trường quận trong address
+      }
+
+      if (category) {
+        conditions.category = category;
+      }
+      const rooms = await Room.find(conditions)
+      .sort({ createdAt: -1, rating: -1 })
+      .select("-__v -updatedAt -hiddenAt -hiddenBy")
+      .populate("category")
+      .populate({
+        path: "landlord",
+        select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+      });
+      
+    return res.json({
+      rooms: rooms, // Trả về danh sách các phòng
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: error.toString(), // Trả về thông báo lỗi
+    });
+  }
+}
+  
+  
+
   // [GET] /api/room/info/:roomId
   async getRoomInfo(req, res) {
     const { roomId } = req.params;
@@ -127,8 +168,8 @@ class RoomController {
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate({
           path: "landlord",
-          select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
-        })
+          select: "email fullName phone avatar online onlineAt" // Chỉ lấy các trường mong muốn
+      })
         .populate("category");
 
       return res.json({
@@ -174,7 +215,7 @@ class RoomController {
   async addRoom(req, res) {
     const info = req.body;
     const userId = req.user.id;
-
+    
     try {
       const room = await Room.create({
         ...info,
@@ -182,7 +223,7 @@ class RoomController {
       });
 
       return res.json({
-        room: room,
+        room: room 
       });
     } catch (error) {
       console.log(error);
@@ -210,43 +251,45 @@ class RoomController {
   }
 
   // [GET] /api/room/latest
-  async getLatestRooms(req, res) {
-    try {
-      const latestRooms = await Room.find()
-        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-        .limit(6) // Limit to 6 results
-        .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
-        .populate("category"); // Populate the category field
+async getLatestRooms(req, res) {
+  try {
+    const latestRooms = await Room.find()
+      .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+      .limit(6) // Limit to 6 results
+      .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
+      .populate("category"); // Populate the category field
 
-      return res.json({
-        rooms: latestRooms,
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-        message: error.toString(),
-      });
-    }
+    return res.json({
+      rooms: latestRooms,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: error.toString(),
+    });
   }
-  // [GET] /api/room/top-rated
-  async getTopRatedRooms(req, res) {
-    try {
-      const topRatedRooms = await Room.find()
-        .sort({ rating: -1 }) // Sort by rating in descending order
-        .limit(6) // Limit to 6 results
-        .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
-        .populate("category"); // Populate the category field
+}
+// [GET] /api/room/top-rated
+async getTopRatedRooms(req, res) {
+  try {
+    const topRatedRooms = await Room.find()
+      .sort({ rating: -1 }) // Sort by rating in descending order
+      .limit(6) // Limit to 6 results
+      .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
+      .populate("category"); // Populate the category field
 
-      return res.json({
-        rooms: topRatedRooms,
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-        message: error.toString(),
-      });
-    }
+    return res.json({
+      rooms: topRatedRooms,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: error.toString(),
+    });
   }
 }
 
+}
+
 module.exports = new RoomController();
+

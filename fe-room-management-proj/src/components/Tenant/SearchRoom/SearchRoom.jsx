@@ -16,7 +16,7 @@ function SearchRoom() {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  
+
   const [messageApi, contextHolder] = message.useMessage();
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -31,10 +31,11 @@ function SearchRoom() {
   const [form] = Form.useForm();
 
   const handleChangeProvince = async (value) => {
-    setProvince(value);
+    const selectedProvince = provinces.find(prov => prov.value === value);
+    setProvince(selectedProvince ? selectedProvince.label : "Tất cả tỉnh");
     setDistrict("Tất cả quận");
     setWard("Tất cả phường");
-    
+
     // Lấy danh sách quận dựa trên tỉnh đã chọn
     try {
       const res = await axios.get(`https://vapi.vnappmob.com/api/province/district/${value}`);
@@ -46,9 +47,10 @@ function SearchRoom() {
   };
 
   const handleChangeDistrict = async (value) => {
-    setDistrict(value);
+    const selectedDistrict = districts.find(d => d.value === value);
+    setDistrict(selectedDistrict ? selectedDistrict.label : "Tất cả quận");
     setWard("Tất cả phường");
-    
+
     // Lấy danh sách phường dựa trên quận đã chọn
     try {
       const res = await axios.get(`https://vapi.vnappmob.com/api/province/ward/${value}`);
@@ -60,22 +62,23 @@ function SearchRoom() {
   };
 
   const handleChangeCategory = (value) => {
-    setCategory(value);
+    const selectedCategory = categories.find(cat => cat.value === value);
+    setCategory(selectedCategory ? selectedCategory.label : "Tất cả loại phòng");
   };
 
   const handleSearchRoom = async (page = 1, pageSize = 3) => {
     form.validateFields().then(async (values) => {
       const payload = {
-        province: province === "Tất cả tỉnh" ? "" : province || "",
-        district: district === "Tất cả quận" ? "" : district || "",
-        ward: ward === "Tất cả phường" ? "" : ward || "",
-        category: values.category === "Tất cả loại phòng" ? "" : values.category || "",
+        province: province === "Tất cả tỉnh" ? "" : province,
+        district: district === "Tất cả quận" ? "" : district,
+        ward: ward === "Tất cả phường" ? "" : ward,
+        category: values.category === "Tất cả loại phòng" ? "" : values.category,
         minArea: minArea,
         maxArea: maxArea,
         minPrice: minPrice,
         maxPrice: maxPrice,
       };
-      console.log("Payload gửi đi:", payload); 
+      console.log("Payload gửi đi:", payload);
       try {
         const res = await axios.get(
           `http://localhost:8000/api/room/search?province=${payload.province}&district=${payload.district}&ward=${payload.ward}&category=${payload.category}&minArea=${payload.minArea}&maxArea=${payload.maxArea}&minPrice=${payload.minPrice}&maxPrice=${payload.maxPrice}&page=${page}&size=${pageSize}`
@@ -197,38 +200,28 @@ function SearchRoom() {
               <Slider
                 range
                 min={0}
-                max={100} // Đặt giá trị tối đa phù hợp
-                defaultValue={[minArea, maxArea]}
+                max={100}
+                value={[minArea, maxArea]}
                 onChange={(value) => {
                   setMinArea(value[0]);
                   setMaxArea(value[1]);
                 }}
               />
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>{`Diện tích tối thiểu: ${minArea} m³`}</span>
-                <span>{`Diện tích tối đa: ${maxArea} m³`}</span>
-              </div>
-
-              <p>Chọn giá từ</p>
+              <p>Chọn giá từ (VNĐ)</p>
               <Slider
                 range
                 min={0}
-                max={10000000} // Đặt giá trị tối đa phù hợp
-                defaultValue={[minPrice, maxPrice]}
+                max={10000000}
+                value={[minPrice, maxPrice]}
                 onChange={(value) => {
                   setMinPrice(value[0]);
                   setMaxPrice(value[1]);
                 }}
               />
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>{`Giá tối thiểu: ${minPrice} VND`}</span>
-                <span>{`Giá tối đa: ${maxPrice} VND`}</span>
-              </div>
             </div>
           </Modal>
         </div>
       </div>
-
       <div className={styles.list_room}>
         <div className={styles.list_room_content}>
           <ListRoom
