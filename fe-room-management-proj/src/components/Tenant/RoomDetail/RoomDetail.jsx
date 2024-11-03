@@ -14,9 +14,9 @@ import ReviewRoom from "../ReviewRoom/ReviewRoom";
 // Thiết lập lại hình ảnh marker mặc định
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
 const { Text } = Typography;
@@ -48,10 +48,10 @@ function RoomDetail() {
   const { roomId } = useParams();
   const [roomInfo, setRoomInfo] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
-  const [featuredRooms, setFeaturedRooms] = useState([]);
+  const [roomByAddress, setRoomByAddress] = useState([]);
   const [coordinates, setCoordinates] = useState(null);
 
-  
+
 
   const handleZaloMessage = (phone) => {
     const zaloLink = `https://zalo.me/${phone}`;
@@ -97,6 +97,7 @@ function RoomDetail() {
       setRoomInfo(data.info);
       if (data.info && data.info.address) {
         await getCoordinates(data.info.address);
+        await getRoomByAddress(data.info.address.province, data.info.address.district, data.info.category._id);
       }
     } catch (err) {
       console.error(err);
@@ -104,11 +105,11 @@ function RoomDetail() {
     }
   };
 
-  const getTopRatedRooms = async () => {
+  const getRoomByAddress = async (province, district, category) => {
     try {
-      const res = await axios.get("http://localhost:8000/api/room/top-rated");
+      const res = await axios.get(`http://localhost:8000/api/room/byAddress?province=${province}&district=${district}&category=${category}`);
       const data = res.data;
-      setFeaturedRooms(data.rooms);
+      setRoomByAddress(data.rooms);
     } catch (err) {
       console.error(err);
       messageApi.error("Có lỗi xảy ra: " + err.toString());
@@ -118,7 +119,7 @@ function RoomDetail() {
 
   useEffect(() => {
     getDetailRoomInfo();
-    getTopRatedRooms();
+    getRoomByAddress();
   }, []);
 
   return (
@@ -199,7 +200,7 @@ function RoomDetail() {
             <div className={styles.mapContainer}>
               <h3>Bản đồ</h3>
               <p>Địa chỉ: {roomInfo.address.detail}, {roomInfo.address.ward},{" "}
-              {roomInfo.address.district}, {roomInfo.address.province}</p>
+                {roomInfo.address.district}, {roomInfo.address.province}</p>
               {coordinates ? (
                 <MapContainer center={coordinates} zoom={13} style={{ height: "400px", width: "100%" }}>
                   <TileLayer
@@ -217,15 +218,15 @@ function RoomDetail() {
           </>
         )}
         <div>
-            <ReviewRoom roomId={roomId} onReviewSubmit={handleReviewSubmit} />
-            <ListReviewRoom roomId={roomId}/>
+          <ReviewRoom roomId={roomId} onReviewSubmit={handleReviewSubmit} />
+          <ListReviewRoom roomId={roomId} />
 
-          </div>
+        </div>
       </div>
 
       {/* Sidebar for Featured and Latest Rooms */}
       <div className={styles.sidebar}>
-      <div className={styles.infoLandlordRoom}>
+        <div className={styles.infoLandlordRoom}>
           {roomInfo && roomInfo.landlord && (
             <div className={styles.landlordInfo}>
               <Avatar
@@ -261,12 +262,14 @@ function RoomDetail() {
           )}
 
         </div>
-        
+
         <div className={styles.featuredSection}>
-          <h3>Tin nổi bật</h3>
+          <h3>
+            Cho thuê {roomInfo?.category?.category || 'phòng'} ở {roomInfo?.address?.district || 'quận'}, {roomInfo?.address?.province || 'tỉnh'}
+          </h3>
           <div className={styles.featuredList}>
-            {featuredRooms && featuredRooms.length > 0 ? (
-              featuredRooms.map((item, index) => (
+            {roomByAddress && roomByAddress.length > 0 ? (
+              roomByAddress.map((item, index) => (
                 <div className={styles.featuredItem} key={index}>
                   <img src={item.images[0] || "/logo192.png"} alt="Featured room" className={styles.featuredImage} />
                   <div className={styles.featuredDetails}>

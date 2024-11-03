@@ -6,6 +6,7 @@ const { verifyJwt } = require("../app/middlewares/jwtMiddleware");
 const RoomController = require("../app/controllers/Room.controller");
 
 router.get("/suggestion", RoomController.getAllRooms);
+router.get("/byAddress", RoomController.getRoomsByAddressAndCat);
 router.get("/search", RoomController.searchRooms);
 router.get("/latest", RoomController.getLatestRooms);
 router.get("/top-rated", RoomController.getTopRatedRooms);
