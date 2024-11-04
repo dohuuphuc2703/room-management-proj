@@ -1,5 +1,6 @@
 import { CalendarOutlined, HomeOutlined, LockOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Input, Layout, message, Row, Tabs } from "antd";
+import { Button, Col, Form, Input, Layout, message, Row, Tabs, Upload, Avatar } from "antd";
+import { UploadOutlined } from '@ant-design/icons';
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -12,6 +13,7 @@ const { TabPane } = Tabs;
 const AccountManagement = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(null); // State to store avatar URL
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,6 +24,7 @@ const AccountManagement = () => {
           { withCredentials: true }
         );
         const { info } = response.data;
+        setAvatarUrl(info.user.avatar); // Set avatar URL from fetched user info
         form.setFieldsValue({
           email: info.user.email,
           fullName: info.user.fullName,
@@ -37,13 +40,16 @@ const AccountManagement = () => {
     fetchUserInfo();
   }, [form]);
 
+  useEffect(() => {
+    console.log("Avatar URL:", avatarUrl); // Kiểm tra URL trong console
+  }, [avatarUrl]);
+
   const onFinish = async (values) => {
     setLoading(true);
     try {
-        const response = await axios.post("http://localhost:8000/api/tenant/info/", values, {
+      const response = await axios.post("http://localhost:8000/api/tenant/info/", values, {
         withCredentials: true,
       });
-      
       message.success("Thông tin đã được cập nhật thành công");
       dispatch(setTenantInfo({
         uid: response.data.info._id,
@@ -55,6 +61,30 @@ const AccountManagement = () => {
       setLoading(false);
     }
   };
+
+  const handleAvatarChange = async ({ file }) => {
+    console.log("File selected:", file);
+    // Kiểm tra nếu file đã được tải lên thành công
+    if (file.status === 'uploading') {
+      try {
+        const formData = new FormData();
+        formData.append("avatar", file.originFileObj);
+        const response = await axios.post(
+          "http://localhost:8000/api/tenant/update-avatar/",
+          formData,
+          { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+
+        console.log("Upload response:", response.data);
+        setAvatarUrl(`http://localhost:8000${response.data.avatar}`);
+        message.success("Avatar updated successfully!");
+      } catch (error) {
+        console.error("Error uploading avatar:", error);
+        message.error("Error uploading avatar");
+      }
+    }
+  };
+
 
   const handleChangePassword = async (values) => {
     setLoading(true);
@@ -78,6 +108,21 @@ const AccountManagement = () => {
           <Tabs defaultActiveKey="1" tabBarStyle={{ fontWeight: 'bold' }}>
             <TabPane tab="Chỉnh sửa thông tin cá nhân" key="1">
               <Form form={form} name="update_info" layout="vertical" onFinish={onFinish}>
+                <Row gutter={16}>
+                  <Col span={24} style={{ textAlign: 'center' }}>
+                    <Avatar size={100} src={avatarUrl} />
+                    <Form.Item>
+                      <Upload
+                        name="avatar"
+                        showUploadList={false}
+                        customRequest={handleAvatarChange}
+                        onChange={handleAvatarChange} // Thêm sự kiện này
+                      >
+                        <Button icon={<UploadOutlined />}>Chọn ảnh đại diện</Button>
+                      </Upload>
+                    </Form.Item>
+                  </Col>
+                </Row>
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item
