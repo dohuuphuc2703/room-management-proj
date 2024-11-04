@@ -95,11 +95,26 @@
 
 
 .roomTitle {
-    font-size: 24px;
-    font-weight: bold;
-    color: #fa541c;
-  }
-  
+  font-size: 24px;
+  font-weight: bold;
+  color: #2318be;
+  margin-right: 8px; /* Space between title and button */
+}
+
+.favoriteRoom {
+  max-width: max-content;
+  border: 2px solid #fa1ca5; /* Add a light gray border */
+  border-radius: 5px; /* Bo góc cho nút */
+  padding: 0;
+  font-size: 16px;
+  height: auto;
+  color: #fa1ca5;
+  background: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: #f8f7f8; /* Màu nền nút xanh */
+}
   .roomAddress {
     color: #666;
     margin-bottom: 8px;

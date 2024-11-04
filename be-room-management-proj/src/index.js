@@ -35,11 +35,11 @@ app.use(cors({
 
 // Connect to database
 db.connect();
-require("../src/app/models/Room.model");
+//require("../src/app/models/Room.model");
 
 // Route app
 route(app);
-require("../src/app/models/Review.model");
+//require("../src/app/models/Review.model");
 // // Connect message service
 // runMessageService(server);
 
