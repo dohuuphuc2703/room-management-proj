@@ -1,13 +1,17 @@
+.layout {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 20px;
+    display: flex; /* Thêm thuộc tính này để sử dụng Flexbox */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc nếu cần */
+    height: 100%; /* Đảm bảo chiều cao đủ để căn giữa nếu cần */
+}
+
 .content {
     padding: 10px;
     border-radius: 8px;
     background-color: #fff;
-    margin: 20px 10px 20px 100px;
+    margin: 20px; /* Bỏ margin bên trái để không ảnh hưởng đến căn giữa */
     width: 50%;
-}
-
-.layout {
-    border-radius: 8px;
-    overflow: hidden;
-    margin-top: 50px;
 }
