@@ -78,6 +78,7 @@ const AccountManagement = () => {
         console.log("Upload response:", response.data);
         setAvatarUrl(`http://localhost:8000${response.data.avatar}`);
         message.success("Avatar updated successfully!");
+        
       } catch (error) {
         console.error("Error uploading avatar:", error);
         message.error("Error uploading avatar");

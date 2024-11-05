@@ -85,7 +85,7 @@ const ListReviewRoom = ({ roomId }) => {
                 avatar={
                   <Avatar
                     size={38}
-                    src={review.tenant.user.avatar || "/logo192.png"}
+                    src={`http://localhost:8000${review.tenant.user.avatar}`}
                   />
                 }
                 title={
