@@ -36,8 +36,6 @@ class RoomController {
     }
   }
 
-  //[GET] /api/room/rating?page=<number>&size=<number>
-
   // [GET] api/room/search?q=<string>&address=<string>&category=<ObjectId>&page=<number>&size=<number>
   async searchRooms(req, res) {
     const {

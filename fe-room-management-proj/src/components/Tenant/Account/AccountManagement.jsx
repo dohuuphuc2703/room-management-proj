@@ -1,6 +1,5 @@
-import { CalendarOutlined, HomeOutlined, LockOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Input, Layout, message, Row, Tabs, Upload, Avatar } from "antd";
-import { UploadOutlined } from '@ant-design/icons';
+import { CalendarOutlined, HomeOutlined, LockOutlined, PhoneOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Button, Col, Form, Input, Layout, message, Row, Tabs, Upload } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -76,9 +75,7 @@ const AccountManagement = () => {
         );
 
         console.log("Upload response:", response.data);
-        setAvatarUrl(`http://localhost:8000${response.data.avatar}`);
-        message.success("Avatar updated successfully!");
-        
+        setAvatarUrl(`http://localhost:8000${response.data.avatar}`);        
       } catch (error) {
         console.error("Error uploading avatar:", error);
         message.error("Error uploading avatar");

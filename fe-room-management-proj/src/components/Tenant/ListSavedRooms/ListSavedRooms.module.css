@@ -1,0 +1,68 @@
+.savedRoomsContainer {
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .savedRoomsContainer h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+  }
+  
+  .ant-list-item {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .ant-list-item-meta {
+    flex: 1;
+  }
+  
+  .ant-list-item-meta-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .ant-list-item-meta-description {
+    color: #666;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  
+  .ant-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+  }
+  
+  .ant-list-item .ant-btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+    font-weight: 500;
+  }
+  
+  .ant-list-item .ant-btn-primary:hover {
+    background-color: #218838;
+    border-color: #218838;
+  }
+  
+  .ant-list-item .ant-btn-link {
+    color: red;
+    font-size: 18px;
+    padding: 0;
+    margin-left: 8px;
+  }
+  
+  .ant-pagination {
+    margin-top: 16px;
+    text-align: center;
+  }
+  

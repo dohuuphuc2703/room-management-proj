@@ -141,8 +141,8 @@ class TenantController {
       return res.status(500).json({ message: error.toString() });
     }
   }
-
-  // [GET] /api/tenant/all-saved-room
+  
+  // [GET] /api/tenant/all-saved-rooms
   async getAllSavedRooms(req, res) {
     const { uid } = req.user;
 
@@ -159,6 +159,28 @@ class TenantController {
       return res.json(500).json({
         message: error.toString(),
       });
+    }
+  }
+
+  // [POST] /api/tenant/remove-saved-room/:roomId
+  async removeSavedRoom(req, res) {
+    const { uid } = req.user; // Lấy user ID từ middleware đã xác thực
+    const { roomId } = req.body; // ID của phòng cần bỏ lưu
+  
+    try {
+      const updated = await Tenant.updateOne(
+        { _id: uid },
+        { $pull: { saveRooms: roomId } } // Loại bỏ roomId khỏi mảng saveRooms
+      );
+  
+      if (updated.modifiedCount > 0) {
+        return res.status(200).json({ message: "Room removed from saved list successfully" });
+      } else {
+        return res.status(400).json({ message: "Room was not in the saved list" });
+      }
+    } catch (error) {
+      console.error("Error removing saved room:", error);
+      return res.status(500).json({ message: error.toString() });
     }
   }
 
