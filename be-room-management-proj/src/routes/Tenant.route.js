@@ -7,6 +7,7 @@ const { roleVerify } = require("../app/middlewares/roleMiddleware");
 const { verifyJwt } = require("../app/middlewares/jwtMiddleware");
 
 router.post("/info/", TenantController.updateInfo);
+router.post("/update-avatar/", TenantController.uploadAvatar);
 router.get("/info/", TenantController.getInfo);
 router.get("/all-saved-rooms/", TenantController.getAllSavedRooms);
 router.post("/save-room/", TenantController.saveRoom);

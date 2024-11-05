@@ -1,26 +1,37 @@
-const multer = require("multer");
 const path = require("path");
+const multer = require("multer");
+const fs = require("fs");
 
-const storage = multer.memoryStorage();
-
-const uploadImage = multer({
-  storage: storage,
-  limits: {
-    fileSize: 10 * 1024 * 1024 // < 10MB
+// Cấu hình multer để lưu file ảnh
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(process.cwd(), "public/uploads/avatars");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
   },
-  fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png|gif|tiff|psd|pdf|ico|svg|ai|indd|raw/;
-    const allowedMimeTypes  =  ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/tiff", 
-      "image/psd", "image/pdf", "image/ico", "image/svg", "image/ai", "image/indd", "image/raw"];
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mime = allowedMimeTypes.includes(file.mimetype);
-
-    if (mime && extname)
-      return cb(null, true);
-    else
-      return cb(new Error("Hệ thống không hỗ trợ định dạng file này"))
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const fileName = `${req.user.id}-${Date.now()}${ext}`;
+    cb(null, fileName);
   }
-})
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Giới hạn kích thước file là 5MB
+  fileFilter: (req, file, cb) => {
+    const fileTypes = /jpeg|jpg|png/;
+    const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = fileTypes.test(file.mimetype);
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error("Chỉ cho phép các định dạng ảnh .jpeg, .jpg, .png"));
+    }
+  }
+}).single("avatar");
 
 const uploadResume = multer({
   storage: storage,
@@ -29,15 +40,15 @@ const uploadResume = multer({
   },
   fileFilter: (req, file, cb) => {
     const filetypes = /pdf|docx|doc/;
-    const allowedMimeTypes  =  ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    const allowedMimeTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     const mime = allowedMimeTypes.includes(file.mimetype);
     
     if (mime && extname)
       return cb(null, true);
     else
-      return cb(new Error("Hệ thống chỉ hỗ trợ định dạng pdf, doc, dox"));
+      return cb(new Error("Hệ thống chỉ hỗ trợ định dạng pdf, doc, docx"));
   }
-})
+});
 
-module.exports = { uploadImage, uploadResume };
+module.exports = { upload, uploadResume };
