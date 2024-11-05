@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const {upload} = require("../../config/multer/index");
+const fs = require("fs");
 
 class TenantController {
   // [POST] /api/tenant/change-password/
@@ -161,41 +162,51 @@ class TenantController {
     }
   }
 
-  // [POST] /api/tenant/upload-avatar/
-  async uploadAvatar(req, res) {
-    upload(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ message: "Lỗi khi upload ảnh", error: err.message });
+ // [POST] /api/tenant/upload-avatar/
+async uploadAvatar(req, res) {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ message: "Lỗi khi upload ảnh", error: err.message });
+    }
+
+    try {
+      const uid = req.user.id;
+
+      // Kiểm tra xem có file không
+      if (!req.file) {
+        return res.status(400).json({ message: "Không tìm thấy file ảnh" });
       }
 
-      try {
-        const uid = req.user.id;
-
-        // Kiểm tra xem có file không
-        if (!req.file) {
-          return res.status(400).json({ message: "Không tìm thấy file ảnh" });
-        }
-
-        const avatarUrl = `/uploads/avatars/${req.file.filename}`; // Đường dẫn URL ảnh
-
-        // Cập nhật avatar URL trong tài liệu User
-        const user = await User.findByIdAndUpdate(
-          uid,
-          { avatar: avatarUrl },
-          { new: true }
-        );
-
-        if (!user) {
-          return res.status(404).json({ message: "Người dùng không tồn tại" });
-        }
-
-        return res.status(200).json({ avatar: avatarUrl });
-      } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Lỗi server", error: error.toString() });
+      // Tìm người dùng và lấy đường dẫn ảnh cũ
+      const user = await User.findById(uid);
+      if (!user) {
+        return res.status(404).json({ message: "Người dùng không tồn tại" });
       }
-    });
-  }
+
+      const oldAvatarUrl = user.avatar; // Lưu đường dẫn ảnh cũ
+      const avatarUrl = `/uploads/avatars/${req.file.filename}`; // Đường dẫn URL ảnh mới
+
+      // Cập nhật avatar URL trong tài liệu User
+      user.avatar = avatarUrl;
+      await user.save();
+
+      // Xóa file cũ nếu có
+      if (oldAvatarUrl) {
+        const oldAvatarPath = path.join(process.cwd(), 'public', oldAvatarUrl); // Tạo đường dẫn file cũ
+        fs.unlink(oldAvatarPath, (unlinkErr) => {
+          if (unlinkErr) {
+            console.error("Không thể xóa ảnh cũ:", unlinkErr);
+          }
+        });
+      }
+
+      return res.status(200).json({ avatar: avatarUrl });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Lỗi server", error: error.toString() });
+    }
+  });
+}
 }
 
 module.exports = new TenantController();
