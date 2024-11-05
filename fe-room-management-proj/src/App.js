@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 
 import { ConfigProvider } from "antd";
 import AccountManagement from "./components/Tenant/Account/AccountManagement";
+import ListSavedRooms from "./components/Tenant/ListSavedRooms/ListSavedRooms";
 import RoomDetail from "./components/Tenant/RoomDetail/RoomDetail";
 import SearchRoom from "./components/Tenant/SearchRoom/SearchRoom";
 import { themes } from "./helper";
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<SearchRoom />} />
             <Route path="/detail-room/:roomId" element={<RoomDetail />} />
             <Route path="/account" element={<AccountManagement />} />
+            <Route path="/saved-rooms" element={<ListSavedRooms />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
