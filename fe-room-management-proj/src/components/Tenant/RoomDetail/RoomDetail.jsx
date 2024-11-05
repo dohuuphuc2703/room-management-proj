@@ -1,10 +1,10 @@
-import { HeartOutlined, LeftOutlined, PhoneOutlined, RightOutlined, WechatOutlined } from "@ant-design/icons";
+import { HeartOutlined, LeftOutlined, MessageOutlined, PhoneOutlined, RightOutlined, WechatOutlined } from "@ant-design/icons";
 import { Avatar, Button, Carousel, Space, Typography, message } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import styles from "./RoomDetail.module.css";
 import ListReviewRoom from "../../ListReviewRoom/ListReviewRoom";
+import styles from "./RoomDetail.module.css";
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -50,8 +50,6 @@ function RoomDetail() {
   const [messageApi, contextHolder] = message.useMessage();
   const [roomByAddress, setRoomByAddress] = useState([]);
   const [coordinates, setCoordinates] = useState(null);
-
-
 
   const handleZaloMessage = (phone) => {
     const zaloLink = `https://zalo.me/${phone}`;
@@ -115,6 +113,27 @@ function RoomDetail() {
       messageApi.error("Có lỗi xảy ra: " + err.toString());
     }
   };
+  const handleFavoriteRoom = async () => {
+    try {
+      const response = await axios.post('http://localhost:8000/api/tenant/save-room', { roomId },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        messageApi.success('Phòng đã được lưu thành công');
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        messageApi.warning('Phòng này đã được lưu trước đó');
+      } else {
+        messageApi.error('Đã xảy ra lỗi khi lưu phòng');
+      }
+    }
+  };
 
 
   useEffect(() => {
@@ -149,7 +168,13 @@ function RoomDetail() {
             </div>
 
             <div className={styles.textContent}>
-              <h1 className={styles.roomTitle}>{roomInfo.title}</h1>
+              <p className={styles.roomTitle}>{roomInfo.title}</p>
+              <Button className={styles.favoriteRoom}
+                      type="link"
+                      block
+                      onClick={handleFavoriteRoom}>
+                {<HeartOutlined />}Yêu thích
+              </Button>
               <p className={styles.roomAddress}>
                 <span role="img" aria-label="location">
                   📍
@@ -250,11 +275,9 @@ function RoomDetail() {
                     block
                     onClick={() => handleZaloMessage(roomInfo.landlord.phone)}
                   >
-                    {<HeartOutlined />} Nhắn Zalo
+                    {<MessageOutlined />} Nhắn Zalo
                   </Button>
                   <Button className={styles.favoriteButton} type="link" block>{<WechatOutlined />} Nhắn tin trực tiếp</Button>
-                  <Button className={styles.favoriteButton} type="link" block>{<HeartOutlined />} Yêu thích</Button>
-
                 </div>
 
               </div>

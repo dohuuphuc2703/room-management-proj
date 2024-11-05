@@ -7,6 +7,8 @@ const landlordRoute = require("./Landlord.route");
 const tenantRoute = require("./Tenant.route");
 const maintenanceRequestRoute = require("./MaintenanceRequest.route");
 const invoiceRoute = require("./Invoice.route");
+const path = require("path");
+const express = require("express");
 
 
 const { verifyJwt } = require("../app/middlewares/jwtMiddleware");
@@ -22,6 +24,7 @@ module.exports = (app) => {
   app.use("/api/tenant", verifyJwt, roleVerify("tenant"), tenantRoute);
   app.use("/api/maintenance-request", maintenanceRequestRoute);
   app.use("/api/invoice", invoiceRoute);
+  app.use("/uploads/avatars", express.static(path.join(process.cwd(), "public/uploads/avatars")));
 
   app.get("/", (req, res) => {
     res.json({

@@ -24,7 +24,7 @@ const AccountManagement = () => {
           { withCredentials: true }
         );
         const { info } = response.data;
-        setAvatarUrl(info.user.avatar); // Set avatar URL from fetched user info
+        setAvatarUrl(`http://localhost:8000${info.user.avatar}`); // Set avatar URL from fetched user info
         form.setFieldsValue({
           email: info.user.email,
           fullName: info.user.fullName,

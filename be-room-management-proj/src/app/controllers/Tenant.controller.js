@@ -125,23 +125,19 @@ class TenantController {
     const { roomId } = req.body;
 
     try {
-      await Tenant.updateOne(
-        {
-          _id: uid,
-        },
-        {
-          $push: {
-            saveRooms: roomId,
-          },
-        }
+      const updated = await Tenant.updateOne(
+        { _id: uid },
+        { $addToSet: { saveRooms: roomId } }
       );
 
-      return res.status(200);
+      if (updated.modifiedCount > 0) {
+        return res.status(200).json({ message: "Room saved successfully" });
+      } else {
+        return res.status(400).json({ message: "Room already saved" });
+      }
     } catch (error) {
-      console.log(error);
-      return res.json(500).json({
-        message: error.toString(),
-      });
+      console.error("Error saving room:", error);
+      return res.status(500).json({ message: error.toString() });
     }
   }
 
