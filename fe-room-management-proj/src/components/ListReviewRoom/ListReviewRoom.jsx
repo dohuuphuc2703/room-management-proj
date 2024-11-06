@@ -1,4 +1,4 @@
-import { StarFilled } from "@ant-design/icons";
+import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { List, Typography, Space, Avatar, Button } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -9,18 +9,45 @@ const { Text } = Typography;
 // Hàm tạo ngôi sao dựa trên rating
 const renderStars = (rating) => {
   const stars = [];
+
   for (let i = 1; i <= 5; i++) {
-    stars.push(
-      <StarFilled key={i} style={{ color: i <= rating ? 'rgb(250, 219, 20)' : '#eaeaea', fontSize: '16px' }} />
-    );
+    if (i <= Math.floor(rating)) {
+      // Sao đầy đủ cho mỗi giá trị nguyên của rating
+      stars.push(
+        <StarFilled
+          key={i}
+          style={{ color: 'rgb(250, 219, 20)', fontSize: '16px' }}
+        />
+      );
+    } else if (i - rating <= 0.5) {
+      // Nửa sao khi rating có giá trị thập phân >= .5
+      stars.push(
+        <StarFilled
+          key={i}
+          style={{
+            color: 'rgb(250, 219, 20)',
+            fontSize: '16px',
+            clipPath: 'inset(0 50% 0 0)', // Cắt nửa sao bằng CSS
+          }}
+        />
+      );
+    } else {
+      // Sao rỗng nếu rating thấp hơn vị trí này
+      stars.push(
+        <StarOutlined
+          key={i}
+          style={{ color: '#eaeaea', fontSize: '16px' }}
+        />
+      );
+    }
   }
+
   return stars;
 };
 
-const ListReviewRoom = ({ roomId }) => {
+const ListReviewRoom = ({ roomId, averageRating }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [averageRating, setAverageRating] = useState(0);
   const [ratingCounts, setRatingCounts] = useState({});
   const [activeFilter, setActiveFilter] = useState('all');
 
