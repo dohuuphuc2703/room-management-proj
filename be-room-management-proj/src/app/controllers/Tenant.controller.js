@@ -54,7 +54,7 @@ class TenantController {
         });
     }
   }
-  // [GET] /api/candidate/info/
+  // [GET] /api/tenant/info/
   async getInfo(req, res) {
     const uid = req.user.id;
 
@@ -142,25 +142,37 @@ class TenantController {
     }
   }
   
-  // [GET] /api/tenant/all-saved-rooms
+  // [GET] /api/tenant/all-saved-rooms 
   async getAllSavedRooms(req, res) {
     const { uid } = req.user;
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit); // Default limit to 10 items per page
 
     try {
-      const saveRooms = await Tenant.findById(uid).populate({
+      const tenant = await Tenant.findById(uid).populate({
         path: "saveRooms",
+        options: {
+          skip: (page - 1) * limit,
+          limit: limit,
+        },
       });
 
+      const totalSavedRooms = tenant.saveRooms.length; // Get the total number of saved rooms for this tenant
+      const totalPages = Math.ceil(totalSavedRooms / limit);
+
       return res.json({
-        saveRooms,
+        saveRooms: tenant.saveRooms,
+        totalPages,
+        currentPage: page,
       });
     } catch (error) {
       console.log(error);
-      return res.json(500).json({
+      return res.status(500).json({
         message: error.toString(),
       });
     }
   }
+
 
   // [POST] /api/tenant/remove-saved-room/:roomId
   async removeSavedRoom(req, res) {
