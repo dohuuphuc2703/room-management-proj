@@ -1,4 +1,4 @@
-import { LikeOutlined, StarOutlined } from "@ant-design/icons";
+import { StarOutlined, StarFilled } from "@ant-design/icons";
 import { Avatar, List, Space, Typography } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -15,6 +15,44 @@ const IconText = ({ icon, text }) => (
   </Space>
 );
 
+// Hàm tạo ngôi sao dựa trên rating
+const renderStars = (rating) => {
+  const stars = [];
+
+  for (let i = 1; i <= 5; i++) {
+    if (i <= Math.floor(rating)) {
+      // Sao đầy đủ cho mỗi giá trị nguyên của rating
+      stars.push(
+        <StarFilled
+          key={i}
+          style={{ color: 'rgb(250, 219, 20)', fontSize: '16px' }}
+        />
+      );
+    } else if (i - rating <= 0.5) {
+      // Nửa sao khi rating có giá trị thập phân >= .5
+      stars.push(
+        <StarFilled
+          key={i}
+          style={{
+            color: 'rgb(250, 219, 20)',
+            fontSize: '16px',
+            clipPath: 'inset(0 50% 0 0)', // Cắt nửa sao bằng CSS
+          }}
+        />
+      );
+    } else {
+      // Sao rỗng nếu rating thấp hơn vị trí này
+      stars.push(
+        <StarOutlined
+          key={i}
+          style={{ color: '#eaeaea', fontSize: '16px' }}
+        />
+      );
+    }
+  }
+
+  return stars;
+};
 
 
 // Function to calculate the time difference
@@ -124,10 +162,6 @@ const ListRoom = ({
               <List.Item
                 key={item.title}
                 className={styles.roomItem}
-                actions={[
-                  <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
-                  <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
-                ]}
               >
                 <div className={styles.roomContent}>
                   <img
@@ -148,13 +182,13 @@ const ListRoom = ({
                             nav(user.role ? `/detail-room/${item._id}` : `/view-detail-room/${item._id}`);
                           }}
                         >
-                          {item.title}
+                          {renderStars(item.rating)}{item.title}
                         </span>
                       }
                       description={<Text type="secondary">{landlord.introduction}</Text>}
                     />
                     <Text strong className={styles.price}>
-                      Giá: {item.price.toLocaleString()}VNĐ/Tháng
+                      Giá: {item.price.toLocaleString()}VNĐ/Tháng   
                     </Text>
                     <Text className={styles.area}>
                       Diện tích: {item.acreage}m²
@@ -179,9 +213,9 @@ const ListRoom = ({
               <div className={styles.featuredItem} key={index}>
                 <img src={item.images[0] || "/logo192.png"} alt="Featured room" className={styles.featuredImage} />
                 <div className={styles.featuredDetails}>
-                  <Text className={styles.featuredTitle}>{item.title}</Text>
+                  <Text className={styles.featuredTitle}>{renderStars(item.rating)}{item.title}</Text>
                   <div className={styles.featuredInfo}>
-                    <Text className={styles.featuredPrice}>Giá: {item.price}</Text>
+                    <Text className={styles.featuredPrice}>Giá: {item.price.toLocaleString()}</Text>
                     <Text className={styles.featuredTime}>{timeAgo(item.createdAt)}</Text> {/* Update to show time since creation */}
                   </div>
                 </div>
@@ -201,7 +235,7 @@ const ListRoom = ({
                 <div className={styles.latestDetails}>
                   <Text className={styles.latestTitle}>{item.title}</Text>
                   <div className={styles.latestInfo}>
-                    <Text className={styles.latestPrice}>Giá: {item.price}</Text>
+                    <Text className={styles.latestPrice}>Giá: {item.price.toLocaleString()}</Text>
                     <Text className={styles.latestTime}>{timeAgo(item.createdAt)}</Text> {/* Update to show time since creation */}
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 const Review = require("../models/Review.model");
 const Room = require("../models/Room.model");
 const Tenant = require("../models/Tenant.model");
+const { calculateRatingForRoom } = require("../services/ratingServices");
 
 class ReviewController {
   async getReviewsByRoom(req, res) {
@@ -99,6 +100,9 @@ class ReviewController {
       });
 
       await newReview.save();
+
+      await calculateRatingForRoom(roomId);
+
       return res.status(201).json({
         message: "Review đã được tạo thành công",
         review: newReview,

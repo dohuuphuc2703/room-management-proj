@@ -1,4 +1,4 @@
-import { HeartOutlined, LeftOutlined, MessageOutlined, PhoneOutlined, RightOutlined, WechatOutlined } from "@ant-design/icons";
+import { HeartOutlined, LeftOutlined, MessageOutlined, PhoneOutlined, RightOutlined,StarFilled, WechatOutlined,StarOutlined  } from "@ant-design/icons";
 import { Avatar, Button, Carousel, Space, Typography, message } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -28,6 +28,44 @@ const IconText = ({ icon, text }) => (
   </Space>
 );
 
+const renderStars = (rating) => {
+  const stars = [];
+
+  for (let i = 1; i <= 5; i++) {
+    if (i <= Math.floor(rating)) {
+      // Sao đầy đủ cho mỗi giá trị nguyên của rating
+      stars.push(
+        <StarFilled
+          key={i}
+          style={{ color: 'rgb(250, 219, 20)', fontSize: '16px' }}
+        />
+      );
+    } else if (i - rating <= 0.5) {
+      // Nửa sao khi rating có giá trị thập phân >= .5
+      stars.push(
+        <StarFilled
+          key={i}
+          style={{
+            color: 'rgb(250, 219, 20)',
+            fontSize: '16px',
+            clipPath: 'inset(0 50% 0 0)', // Cắt nửa sao bằng CSS
+          }}
+        />
+      );
+    } else {
+      // Sao rỗng nếu rating thấp hơn vị trí này
+      stars.push(
+        <StarOutlined
+          key={i}
+          style={{ color: '#eaeaea', fontSize: '16px' }}
+        />
+      );
+    }
+  }
+
+  return stars;
+};
+
 const timeAgo = (date) => {
   const now = new Date();
   const seconds = Math.floor((now - new Date(date)) / 1000);
@@ -50,6 +88,7 @@ function RoomDetail() {
   const [messageApi, contextHolder] = message.useMessage();
   const [roomByAddress, setRoomByAddress] = useState([]);
   const [coordinates, setCoordinates] = useState(null);
+  const [averageRating, setAverageRating] = useState(0);
 
   const handleZaloMessage = (phone) => {
     const zaloLink = `https://zalo.me/${phone}`;
@@ -93,6 +132,7 @@ function RoomDetail() {
       });
       const data = res.data;
       setRoomInfo(data.info);
+      setAverageRating(data.info.rating)
       if (data.info && data.info.address) {
         await getCoordinates(data.info.address);
         await getRoomByAddress(data.info.address.province, data.info.address.district, data.info.category._id);
@@ -138,7 +178,7 @@ function RoomDetail() {
 
   useEffect(() => {
     getDetailRoomInfo();
-    getRoomByAddress();
+    // getRoomByAddress();
   }, []);
 
   return (
@@ -188,7 +228,7 @@ function RoomDetail() {
                   Giá: {roomInfo.price.toLocaleString()} VNĐ
                 </Text>
                 <Text className={styles.roomArea}>Diện tích: {roomInfo.acreage} m²</Text>
-                <Text className={styles.roomRating}>Đánh giá: {roomInfo.rating} ⭐</Text>
+                <Text className={styles.roomRating}>Đánh giá: {renderStars(roomInfo.rating)}</Text>
                 <Text className={styles.roomStatus}>Trạng thái: {roomInfo.status}</Text>
                 <Text>{timeAgo(roomInfo.createdAt)}</Text>
               </div>
@@ -244,7 +284,7 @@ function RoomDetail() {
         )}
         <div>
           <ReviewRoom roomId={roomId} onReviewSubmit={handleReviewSubmit} />
-          <ListReviewRoom roomId={roomId} />
+          <ListReviewRoom roomId={roomId} averageRating={averageRating} />
 
         </div>
       </div>
@@ -296,9 +336,9 @@ function RoomDetail() {
                 <div className={styles.featuredItem} key={index}>
                   <img src={item.images[0] || "/logo192.png"} alt="Featured room" className={styles.featuredImage} />
                   <div className={styles.featuredDetails}>
-                    <Text className={styles.featuredTitle}>{item.title}</Text>
+                    <Text className={styles.featuredTitle}>{renderStars(item.rating)}{item.title}</Text>
                     <div className={styles.featuredInfo}>
-                      <Text className={styles.featuredPrice}>Giá: {item.price}</Text>
+                      <Text className={styles.featuredPrice}>Giá: {item.price.toLocaleString()}</Text>
                       <Text className={styles.featuredTime}>{timeAgo(item.createdAt)}</Text>
                     </div>
                   </div>
