@@ -1,7 +1,7 @@
-import { HeartFilled } from "@ant-design/icons";
 import { Avatar, Button, List, message, Spin } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { FaHeartBroken } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import styles from "./ListSavedRooms.module.css";
 
@@ -70,7 +70,7 @@ function ListSavedRooms() {
                   </Button>,
                   <Button
                     type="link"
-                    icon={<HeartFilled style={{ color: "red" }} />}
+                    icon={<FaHeartBroken size={20} color="red" />}
                     onClick={() => handleRemoveSavedRoom(room._id)}
                   />,
                 ]}

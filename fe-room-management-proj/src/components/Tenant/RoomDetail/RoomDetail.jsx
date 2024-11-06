@@ -1,4 +1,4 @@
-import { HeartOutlined, LeftOutlined, MessageOutlined, PhoneOutlined, RightOutlined,StarFilled, WechatOutlined,StarOutlined  } from "@ant-design/icons";
+import { HeartOutlined, LeftOutlined, MessageOutlined, PhoneOutlined, RightOutlined, StarFilled, StarOutlined, WechatOutlined } from "@ant-design/icons";
 import { Avatar, Button, Carousel, Space, Typography, message } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -89,6 +89,8 @@ function RoomDetail() {
   const [roomByAddress, setRoomByAddress] = useState([]);
   const [coordinates, setCoordinates] = useState(null);
   const [averageRating, setAverageRating] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
 
   const handleZaloMessage = (phone) => {
     const zaloLink = `https://zalo.me/${phone}`;
@@ -154,6 +156,11 @@ function RoomDetail() {
     }
   };
   const handleFavoriteRoom = async () => {
+    setIsFavorite(!isFavorite);
+    setIsClicked(true);
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 300);
     try {
       const response = await axios.post('http://localhost:8000/api/tenant/save-room', { roomId },
         {
@@ -307,7 +314,6 @@ function RoomDetail() {
                 </div>
 
                 <div >
-
                   <Button className={styles.phoneButton} type="primary" block>{<PhoneOutlined />} {roomInfo.landlord.phone}</Button>
                   <Button
                     className={styles.favoriteButton}

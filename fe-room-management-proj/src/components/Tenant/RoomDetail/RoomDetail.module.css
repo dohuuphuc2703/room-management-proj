@@ -99,21 +99,56 @@
   font-weight: bold;
   color: #2318be;
   margin-right: 8px; /* Space between title and button */
+  display: inline-block; /* Ensures the title stays in the same line as the button */
+  vertical-align: middle; /* Vertically align with the button */
 }
 
 .favoriteRoom {
   max-width: max-content;
-  border: 2px solid #fa1ca5; /* Add a light gray border */
-  border-radius: 5px; /* Bo góc cho nút */
+  border: 2px solid #fa1ca5;
+  border-radius: 5px;
   padding: 0;
-  font-size: 16px;
+  font-size: 13px;
   height: auto;
   color: #fa1ca5;
   background: none;
-  display: flex;
+  display: inline-flex; /* Ensure the button aligns horizontally */
   align-items: center;
   cursor: pointer;
-  background-color: #f8f7f8; /* Màu nền nút xanh */
+  background-color: #f8f7f8;
+  transition: transform 0.2s, background-color 0.3s ease, color 0.3s ease;
+  margin-top: 0; /* Remove any top margin to align properly */
+}
+
+.favoriteRoom:active {
+  transform: scale(1.1); /* Phóng to nút khi nhấn giữ */
+  background-color: #ffaad5; /* Thay đổi màu nền khi nhấn giữ */
+  color: #fff; /* Đổi màu chữ khi nhấn giữ */
+}
+
+.favoriteRoom.clicked {
+  background-color: #fa1ca5; /* Thay đổi màu nền khi click */
+  color: white; /* Màu chữ trắng khi click */
+  transform: scale(1.1); /* Phóng to nút khi click */
+}
+
+.favoriteRoom:hover {
+  background-color: #ffaad5; /* Thay đổi màu nền khi hover */
+  color: #fff; /* Đổi màu chữ khi hover */
+  transform: scale(1.05); /* Nhẹ nhàng phóng to nút khi hover */
+}
+
+.favoriteRoom svg {
+  transition: transform 0.3s ease;
+}
+
+.favoriteRoom:active svg {
+  transform: rotate(20deg); /* Xoay biểu tượng khi nhấn giữ */
+}
+
+.favoriteRoom .anticon {
+  font-size: 20px; /* Adjust the size of the heart icon */
+  margin-right: 8px; /* Add spacing between the icon and text */
 }
   .roomAddress {
     color: #666;
@@ -230,6 +265,7 @@
     font-weight: bold;
     cursor: pointer; /* Hiển thị con trỏ khi hover */
 }
+
 
 .favoriteButton {
     margin: 5px; /* Khoảng cách giữa các nút */
