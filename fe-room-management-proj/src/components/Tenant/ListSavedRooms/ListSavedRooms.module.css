@@ -65,4 +65,11 @@
     margin-top: 16px;
     text-align: center;
   }
-  
+  .title_room {
+    color: #fa541c;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 8px;
+  }
