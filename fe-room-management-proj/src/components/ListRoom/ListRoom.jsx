@@ -81,7 +81,7 @@ const ListRoom = ({
   rooms,
   setRooms,
   setPage,
-  
+
   pageSize,
   setPageSize,
   totalItems,
@@ -168,18 +168,18 @@ const ListRoom = ({
                     src={item.images[0] || "/logo512.png"}
                     alt="room"
                     onClick={() => {
-                      nav(user.role ? `/detail-room/${item._id}` : `/view-detail-room/${item._id}`);
+                      nav(`/detail-room/${item._id}`);
                     }}
                     className={styles.roomImage}
                   />
                   <div className={styles.roomDetails}>
                     <List.Item.Meta
-                      
+
                       title={
                         <span
                           className={styles.title_room}
                           onClick={() => {
-                            nav(user.role ? `/detail-room/${item._id}` : `/view-detail-room/${item._id}`);
+                            nav(`/detail-room/${item._id}`);
                           }}
                         >
                           {renderStars(item.rating)}{item.title}
@@ -188,7 +188,7 @@ const ListRoom = ({
                       description={<Text type="secondary">{landlord.introduction}</Text>}
                     />
                     <Text strong className={styles.price}>
-                      Giá: {item.price.toLocaleString()}VNĐ/Tháng   
+                      Giá: {item.price.toLocaleString()}VNĐ/Tháng
                     </Text>
                     <Text className={styles.area}>
                       Diện tích: {item.acreage}m²
@@ -210,7 +210,10 @@ const ListRoom = ({
           <div className={styles.featuredList}>
             {/* Featured Items */}
             {featuredRooms.map((item, index) => (
-              <div className={styles.featuredItem} key={index}>
+              <div className={styles.featuredItem} key={index}
+                onClick={() => {
+                  nav(`/detail-room/${item._id}`);
+                }}>
                 <img src={item.images[0] || "/logo192.png"} alt="Featured room" className={styles.featuredImage} />
                 <div className={styles.featuredDetails}>
                   <Text className={styles.featuredTitle}>{renderStars(item.rating)}{item.title}</Text>
@@ -230,7 +233,10 @@ const ListRoom = ({
           <div className={styles.latestList}>
             {/* Latest Items */}
             {latestRooms.map((item, index) => (
-              <div className={styles.latestItem} key={index}>
+              <div className={styles.latestItem} key={index}
+                onClick={() => {
+                  nav(`/detail-room/${item._id}`);
+                }}>
                 <img src={item.images[0] || "/logo192.png"} alt="Latest room" className={styles.featuredImage} />
                 <div className={styles.latestDetails}>
                   <Text className={styles.latestTitle}>{item.title}</Text>

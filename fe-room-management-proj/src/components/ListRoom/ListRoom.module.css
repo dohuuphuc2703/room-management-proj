@@ -46,6 +46,7 @@
   overflow: hidden;
   display: flex; /* Align image and text in one row */
   align-items: center; /* Center items vertically */
+  cursor: pointer;
 }
 
 .featuredDetails,
