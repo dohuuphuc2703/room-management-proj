@@ -76,7 +76,7 @@ function ListSavedRooms() {
                 ]}
               >
                 <List.Item.Meta
-                  avatar={<Avatar src={room.images[0] || "logo192.png"} />}
+                  avatar={<Avatar size={80} shape="square" src={room.images[0] || "logo192.png"} />}
                   title={
                     <>
                       <span
