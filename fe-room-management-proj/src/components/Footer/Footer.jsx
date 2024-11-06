@@ -6,7 +6,7 @@ function Footer() {
     <footer className={styles.footer}>
       <div className={styles.top_section}>
         <div className={styles.logo_section}>
-          <img src="/logo.png" alt="Phongtro123" className={styles.logo} />
+          <img src="/logo192.png" alt="Phongtro123" className={styles.logo} />
           <p>Kênh thông tin phòng trọ số 1 Việt Nam</p>
           <p>
             Phongtro123.com tự hào có lượng dữ liệu bài đăng lớn nhất trong lĩnh

@@ -1,7 +1,8 @@
 import { HeartOutlined, LeftOutlined, MessageOutlined, PhoneOutlined, RightOutlined, StarFilled, StarOutlined, WechatOutlined } from "@ant-design/icons";
-import { Avatar, Button, Carousel, Space, Typography, message } from "antd";
+import { Avatar, Button, Carousel, Space, Typography, message, notification } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import ListReviewRoom from "../../ListReviewRoom/ListReviewRoom";
 import styles from "./RoomDetail.module.css";
@@ -83,6 +84,7 @@ const timeAgo = (date) => {
 };
 
 function RoomDetail() {
+  const user = useSelector((state) => state.userReducer);
   const { roomId } = useParams();
   const [roomInfo, setRoomInfo] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
@@ -163,6 +165,21 @@ function RoomDetail() {
     setTimeout(() => {
       setIsClicked(false);
     }, 300);
+    if (!user || !user.role) {
+      // Hiển thị thông báo nếu người dùng chưa đăng nhập
+      notification.warning({
+        message: 'Bạn cần đăng nhập trước',
+        description: 'Hãy đăng nhập để thêm phòng vào danh sách yêu thích.',
+        placement: 'topRight', // Vị trí thông báo ở góc trên bên phải
+      });
+
+      // Điều hướng về trang đăng nhập sau khi thông báo
+      setTimeout(() => {
+        nav('/login');
+      }, 2000); // Sau 2 giây, chuyển hướng đến trang đăng nhập
+
+      return;  // Dừng việc thêm vào yêu thích nếu chưa đăng nhập
+    }
     try {
       const response = await axios.post('http://localhost:8000/api/tenant/save-room', { roomId },
         {
@@ -221,7 +238,8 @@ function RoomDetail() {
               <Button className={styles.favoriteRoom}
                 type="link"
                 block
-                onClick={handleFavoriteRoom}>
+                onClick= {handleFavoriteRoom}
+              >
                 {<HeartOutlined />}Yêu thích
               </Button>
               <p className={styles.roomAddress}>
