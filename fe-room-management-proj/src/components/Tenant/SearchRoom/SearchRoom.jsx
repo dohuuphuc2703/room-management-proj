@@ -61,6 +61,11 @@ function SearchRoom() {
     }
   };
 
+  const handleChangeWard = async (value) => {
+    const selectedWard = wards.find(w => w.value === value);
+    setWard(selectedWard ? selectedWard.label : "Tất cả phường");
+  };
+
   const handleChangeCategory = (value) => {
     const selectedCategory = categories.find(cat => cat.value === value);
     setCategory(selectedCategory ? selectedCategory.label : "Tất cả loại phòng");
@@ -72,7 +77,7 @@ function SearchRoom() {
         province: province === "Tất cả tỉnh" ? "" : province,
         district: district === "Tất cả quận" ? "" : district,
         ward: ward === "Tất cả phường" ? "" : ward,
-        category: values.category === "Tất cả loại phòng" ? "" : values.category,
+        category: values.category === "Tất cả loại phòng" || values.category === 0 ? "" : values.category,
         minArea: minArea,
         maxArea: maxArea,
         minPrice: minPrice,
@@ -174,7 +179,7 @@ function SearchRoom() {
 
               <div className={styles.search_room}>
                 <Form.Item name="ward" initialValue={ward}>
-                  <Select className={styles.search_location}>
+                  <Select onChange={handleChangeWard} className={styles.search_location}>
                     {wards.map(w => (
                       <Select.Option key={w.value} value={w.value}>
                         {w.label}

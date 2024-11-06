@@ -2,7 +2,7 @@ import { HeartOutlined, LeftOutlined, MessageOutlined, PhoneOutlined, RightOutli
 import { Avatar, Button, Carousel, Space, Typography, message } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ListReviewRoom from "../../ListReviewRoom/ListReviewRoom";
 import styles from "./RoomDetail.module.css";
 
@@ -91,6 +91,8 @@ function RoomDetail() {
   const [averageRating, setAverageRating] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+  const nav = useNavigate();
+
 
   const handleZaloMessage = (phone) => {
     const zaloLink = `https://zalo.me/${phone}`;
@@ -186,7 +188,7 @@ function RoomDetail() {
   useEffect(() => {
     getDetailRoomInfo();
     // getRoomByAddress();
-  }, []);
+  }, [roomId]);
 
   return (
     <div className={styles.container}>
@@ -217,9 +219,9 @@ function RoomDetail() {
             <div className={styles.textContent}>
               <p className={styles.roomTitle}>{roomInfo.title}</p>
               <Button className={styles.favoriteRoom}
-                      type="link"
-                      block
-                      onClick={handleFavoriteRoom}>
+                type="link"
+                block
+                onClick={handleFavoriteRoom}>
                 {<HeartOutlined />}Yêu thích
               </Button>
               <p className={styles.roomAddress}>
@@ -339,7 +341,10 @@ function RoomDetail() {
           <div className={styles.featuredList}>
             {roomByAddress && roomByAddress.length > 0 ? (
               roomByAddress.map((item, index) => (
-                <div className={styles.featuredItem} key={index}>
+                <div className={styles.featuredItem} key={index}
+                  onClick={() => {
+                    nav(`/detail-room/${item._id}`);
+                  }}>
                   <img src={item.images[0] || "/logo192.png"} alt="Featured room" className={styles.featuredImage} />
                   <div className={styles.featuredDetails}>
                     <Text className={styles.featuredTitle}>{renderStars(item.rating)}{item.title}</Text>
