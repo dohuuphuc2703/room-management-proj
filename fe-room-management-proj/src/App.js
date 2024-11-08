@@ -9,7 +9,8 @@ import { themes } from "./helper";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
-import SideBar from "./components/Landlord/SideBar/SideBar";
+// import SideBar from "./components/Landlord/SideBar/SideBar";
+import LandlordView from "./pages/LandlordView/LandlordView";
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/search" element={<SearchRoom />} />
           
-          <Route path="/landlord" element={<SideBar />} />
+          <Route path="/landlord" element={<LandlordView />} />
         </Routes>
       </ConfigProvider>
 
