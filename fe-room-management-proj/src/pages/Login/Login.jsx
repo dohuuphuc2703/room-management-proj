@@ -1,6 +1,6 @@
+import { ConfigProvider, message } from "antd";
 import Header from "../../components/Header/Header";
 import styles from "./Login.module.css";
-import { ConfigProvider, message } from "antd";
 
 import axios from "axios";
 import { useState } from "react";
@@ -34,7 +34,7 @@ function Login() {
               nav("/admin/dashboard");
               break;
             case "landlord":
-              nav("/sign-up");
+              nav("/landlord");
               break;
             default:
               nav("/");

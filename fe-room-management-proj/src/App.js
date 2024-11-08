@@ -10,8 +10,9 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
 // import SideBar from "./components/Landlord/SideBar/SideBar";
-import LandlordView from "./pages/LandlordView/LandlordView";
 import CreateRoom from "./components/Landlord/CreateRoom/CreateRoom";
+import LandlordListRoom from "./components/Landlord/ManageRoom/LandlordListRoom";
+import LandlordView from "./pages/LandlordView/LandlordView";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           
           <Route path="/landlord" element={<LandlordView />}>
             <Route path="createRoom" element={<CreateRoom />} />
+            <Route path="rooms" element={<LandlordListRoom />} />
           </Route>
         </Routes>
       </ConfigProvider>
