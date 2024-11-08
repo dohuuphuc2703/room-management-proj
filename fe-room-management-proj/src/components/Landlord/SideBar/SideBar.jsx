@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Menu } from 'antd';
 import {
   AppstoreOutlined,
-  PieChartOutlined,
-  FileTextOutlined,
   DollarOutlined,
+  FileTextOutlined,
   HomeOutlined,
-  MessageOutlined
+  MessageOutlined,
+  PieChartOutlined
 } from '@ant-design/icons';
+import { Menu } from 'antd';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './SideBar.module.css';
 
 const { SubMenu } = Menu;
@@ -36,7 +37,7 @@ function SideBar() {
             Thống kê
           </Menu.Item>
           <Menu.Item key="2" icon={<HomeOutlined />}>
-            Phòng
+            <Link to="/landlord/rooms">Phòng</Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<DollarOutlined />}>
             Hóa đơn

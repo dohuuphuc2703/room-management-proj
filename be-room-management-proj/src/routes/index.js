@@ -20,7 +20,7 @@ module.exports = (app) => {
   app.use("/api/room-category", roomCategoryRoute);
   app.use("/api/review", reviewRoute);
   app.use("/api/contract", contractRoute);
-  app.use("/api/landlord", landlordRoute);
+  app.use("/api/landlord", verifyJwt, roleVerify("landlord"), landlordRoute);
   app.use("/api/tenant", verifyJwt, roleVerify("tenant"), tenantRoute);
   app.use("/api/maintenance-request", maintenanceRequestRoute);
   app.use("/api/invoice", invoiceRoute);

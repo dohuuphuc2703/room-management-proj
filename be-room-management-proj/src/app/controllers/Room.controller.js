@@ -287,27 +287,27 @@ async getTopRatedRooms(req, res) {
   }
 }
   // [GET] /api/room/by-landlord/:landlordId
-async getRoomsByLandlord(req, res) {
-  const { landlordId } = req.params; // Lấy landlordId từ params
-
-  try {
-    const rooms = await Room.find({ landlord: landlordId }) // Tìm các phòng có landlord là landlordId
-      .sort({ createdAt: -1 }) // Sắp xếp theo thứ tự mới nhất
-      .select("-__v -updatedAt -hiddenAt -hiddenBy") // Loại bỏ các trường không cần thiết
-      .populate("category") // Populate thông tin danh mục
-      .populate({
-        path: "landlord",
-        select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn của landlord
+  async getRoomsByLandlord(req, res) {
+    const {landlordId } = req.params;
+  
+    try {
+      const rooms = await Room.find({ landlord: landlordId})
+        .sort({ createdAt: -1 })
+        .select("-__v -updatedAt -hiddenAt -hiddenBy")
+        .populate("category")
+        .populate({
+          path: "landlord",
+          select: "email fullName phone avatar online onlineAt",
+        });
+  
+      return res.json({ rooms });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: error.toString(),
       });
-
-    return res.json({ rooms }); // Trả về danh sách các phòng
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: error.toString(), // Trả về thông báo lỗi
-    });
+    }
   }
-}
 
 
 }
