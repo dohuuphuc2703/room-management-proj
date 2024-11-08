@@ -1,8 +1,4 @@
-.container {
-    display: flex;
-    height: 100vh; /* Đảm bảo chiều cao toàn bộ màn hình */
-  }
-  
+
 .sidebar {
     width: 250px;
     background-color: #001529; /* Ant Design's default dark theme */
@@ -38,14 +34,5 @@
     cursor: pointer;
     margin: 10px;
     border-radius: 4px;
-  }
-  
-  .content {
-    padding: 20px;
-    background-color: #f0f2f5; /* Màu nền nhẹ để phân biệt */
-    color: #333; /* Màu chữ tối để dễ đọc */
-    flex-grow: 1; /* Đảm bảo phần content chiếm hết chiều ngang còn lại */
-    height: 100vh; /* Để phần content cao bằng sidebar */
-    overflow: auto; /* Thêm cuộn nếu cần */
   }
   
