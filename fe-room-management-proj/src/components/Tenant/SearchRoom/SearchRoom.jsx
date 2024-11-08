@@ -114,6 +114,7 @@ function SearchRoom() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+  
 
   useEffect(() => {
     // Lấy danh sách tỉnh và loại phòng
