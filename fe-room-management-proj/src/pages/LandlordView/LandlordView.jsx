@@ -1,36 +1,38 @@
 import { ConfigProvider } from "antd";
-import React from "react";
-import { useSelector } from "react-redux";
 import styles from "./LandlordView.module.css";
 
+import axios from "axios";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
+import { setLandlordInfo } from '../../actions';
 import SideBar from "../../components/Landlord/SideBar/SideBar";
 
 function LandlordView() {
   const user = useSelector(state => state.userReducer);
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-//   useEffect(() => {
-//     const fetchUser = async () => {
-//       try {
-//         const res = await axios.get("http://localhost:8000/api/tenant/info", {
-//           withCredentials: true,
-//         });
-//         if (res.data) {
-//           dispatch(setTenantInfo({
-//             uid: res.data.info._id,
-//             ...res.data.info.user,
-//           }));
-//         }
-//       } catch (error) {
-//         console.error("Error fetching user:", error);
-//       }
-//     };
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/landlord/info", {
+          withCredentials: true,
+        });
+        if (res.data) {
+          dispatch(setLandlordInfo({
+            uid: res.data.info._id,
+            ...res.data.info.user,
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
   
-//     if (user === null) {
-//       fetchUser();
-//     }
-//   }, [dispatch, user]);
+    if (user === null) {
+      fetchUser();
+    }
+  }, [dispatch, user]);
 
   return (
     <ConfigProvider
@@ -46,10 +48,7 @@ function LandlordView() {
       }}
     >
       <div className={styles.container}>
-        {/* <Header 
-            user={user}
-        /> */}
-        <SideBar user={user}/>
+        <SideBar />
         <div className={styles.content}>
           <Outlet />
         </div>

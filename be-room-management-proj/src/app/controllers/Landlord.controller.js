@@ -3,10 +3,10 @@ const Landlord = require("../models/Landlord.model");
 class LandlordController {
     // [GET] /api/landlord/info/
     async getInfo(req, res) {
-        const mid = req.user.id;
+        const uid = req.user.id;
 
         try {
-        const landlord = await Landlord.findOne({ user: mid }).select("-__v").populate({
+        const landlord = await Landlord.findOne({ user: uid }).select("-__v").populate({
             path: "user",
             select: "-updatedAt -password -role -hidden -__v"
         })
