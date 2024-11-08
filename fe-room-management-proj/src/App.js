@@ -11,6 +11,7 @@ import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
 // import SideBar from "./components/Landlord/SideBar/SideBar";
 import LandlordView from "./pages/LandlordView/LandlordView";
+import CreateRoom from "./components/Landlord/CreateRoom/CreateRoom";
 
 function App() {
   return (
@@ -27,7 +28,9 @@ function App() {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/search" element={<SearchRoom />} />
           
-          <Route path="/landlord" element={<LandlordView />} />
+          <Route path="/landlord" element={<LandlordView />}>
+            <Route path="createRoom" element={<CreateRoom />} />
+          </Route>
         </Routes>
       </ConfigProvider>
 
