@@ -1,10 +1,6 @@
 import { ConfigProvider } from "antd";
-import axios from "axios";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setTenantInfo } from '../../actions';
-import Footer from "../../components/Footer/Footer";
-import Header from "../../components/Header/Header";
+import React from "react";
+import { useSelector } from "react-redux";
 import styles from "./LandlordView.module.css";
 
 import { Outlet } from "react-router-dom";
@@ -49,11 +45,11 @@ function LandlordView() {
         },
       }}
     >
-         <div className={styles.container}>
+      <div className={styles.container}>
         {/* <Header 
             user={user}
         /> */}
-        <SideBar />
+        <SideBar user={user}/>
         <div className={styles.content}>
           <Outlet />
         </div>

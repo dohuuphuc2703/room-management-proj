@@ -14,5 +14,6 @@ router.get("/info/:roomId", RoomController.getRoomInfo);
 router.post("/update/:roomId", RoomController.updateRoomInfo);
 router.post("/addRoom",verifyJwt, RoomController.addRoom);
 router.delete("/delete", RoomController.deleteRoom);
+router.get("/by-landlord/:landlordId", RoomController.getRoomsByLandlord);
 
 module.exports = router;
