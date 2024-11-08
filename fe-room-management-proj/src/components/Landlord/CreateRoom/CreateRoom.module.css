@@ -1,0 +1,128 @@
+/* Toàn bộ container */
+.container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Tiêu đề */
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+  
+  /* Form */
+  .ant-form-item {
+    margin-bottom: 20px;
+  }
+  
+  /* Nhập liệu dạng số */
+  .ant-input-number {
+    width: 100%;
+  }
+  
+  /* Các nút */
+  .ant-btn {
+    border-radius: 4px;
+  }
+  
+  .ant-btn-dashed {
+    background-color: #f0f0f0;
+    border-color: #d9d9d9;
+    color: #333;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  .ant-btn-danger {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+    color: white;
+  }
+  
+  /* Cải thiện Upload */
+  .ant-upload {
+    border: 1px dashed #d9d9d9;
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .ant-upload:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .ant-upload-list-picture-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .avatarPreview {
+    max-width: 100%;
+    max-height: 150px;
+    margin-top: 10px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e8e8e8;
+  }
+  
+  /* Form Item Layout */
+  .ant-col-12 {
+    padding: 0 8px;
+  }
+  
+  .ant-col-24 {
+    padding: 0 8px;
+  }
+  
+  .ant-row {
+    margin-bottom: 16px;
+  }
+  
+  /* Các Select box */
+  .ant-select {
+    width: 100%;
+  }
+  
+  .ant-select-single .ant-select-selector {
+    border-radius: 8px;
+    padding: 5px;
+  }
+  
+  /* Checkbox Group */
+  .ant-checkbox-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .ant-checkbox-wrapper {
+    font-size: 14px;
+  }
+  
+  /* Các Service Room */
+  .servicerooms {
+    margin-bottom: 20px;
+  }
+  
+  .servicerooms .ant-row {
+    margin-bottom: 10px;
+  }
+  
+  .servicerooms .ant-form-item {
+    margin-bottom: 10px;
+  }
+  
+  .servicerooms button {
+    margin-top: 10px;
+  }
+  

@@ -56,8 +56,6 @@ function LandlordView() {
         <SideBar />
         <div className={styles.content}>
           <Outlet />
-
-          <h1>abc</h1>
         </div>
 
       </div>
