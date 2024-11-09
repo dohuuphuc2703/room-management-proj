@@ -13,7 +13,7 @@ import styles from './SideBar.module.css';
 
 const { SubMenu } = Menu;
 
-function SideBar() {
+function SideBar({user}) {
   const [collapsed, setCollapsed] = useState(false);
 
   const toggleCollapse = () => {
@@ -25,7 +25,7 @@ function SideBar() {
       <div className={`${styles.sidebar} ${collapsed ? styles.close : ''}`}>
         <div className={styles.logoDetails}>
           <AppstoreOutlined />
-          <span className={styles.logoName}>Menu</span>
+          <span className={styles.logoName}>{user?.fullName}</span>
         </div>
         <Menu
           mode="inline"

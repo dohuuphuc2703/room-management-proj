@@ -185,7 +185,7 @@ const ListRoom = ({
                           {renderStars(item.rating)}{item.title}
                         </span>
                       }
-                      description={<Text type="secondary">{landlord.introduction}</Text>}
+                      // description={<Text type="secondary">{landlord.introduction}</Text>}
                     />
                     <Text strong className={styles.price}>
                       Giá: {item.price.toLocaleString()}VNĐ/Tháng
@@ -194,7 +194,7 @@ const ListRoom = ({
                       Diện tích: {item.acreage}m²
                     </Text>
                     <p>Địa chỉ: {item.address.detail}, {item.address.ward}, {item.address.district}, {item.address.province}</p>
-                    Chủ phòng: {item.landlord.fullName}
+                    Chủ phòng: {item.landlord.user.fullName}
                   </div>
                 </div>
               </List.Item>

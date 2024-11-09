@@ -324,22 +324,22 @@ function RoomDetail() {
               <Avatar
                 className={styles.landlordAvatar}
                 size={64}
-                src={roomInfo.landlord.avatar || "/logo192.png"}
+                src={roomInfo.landlord.user.avatar || "/logo192.png"}
               />
               <div className={styles.landlordDetails}>
-                <Text className={styles.landlordName}>{roomInfo.landlord.fullName}</Text>
+                <Text className={styles.landlordName}>{roomInfo.landlord.user.fullName}</Text>
                 <div className={styles.landlordStatus}>
                   <span className={styles.statusIndicator} style={{ backgroundColor: roomInfo.landlord.active ? '#4caf50' : '#999' }}></span>
                   {roomInfo.landlord.active ? 'Hoạt động' : 'Không hoạt động'}
                 </div>
 
                 <div >
-                  <Button className={styles.phoneButton} type="primary" block>{<PhoneOutlined />} {roomInfo.landlord.phone}</Button>
+                  <Button className={styles.phoneButton} type="primary" block>{<PhoneOutlined />} {roomInfo.landlord.user.phone}</Button>
                   <Button
                     className={styles.favoriteButton}
                     type="link"
                     block
-                    onClick={() => handleZaloMessage(roomInfo.landlord.phone)}
+                    onClick={() => handleZaloMessage(roomInfo.landlord.user.phone)}
                   >
                     {<MessageOutlined />} Nhắn Zalo
                   </Button>
