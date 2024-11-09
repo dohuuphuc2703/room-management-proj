@@ -102,6 +102,7 @@ class ReviewController {
       await newReview.save();
 
       await calculateRatingForRoom(roomId);
+  
 
       return res.status(201).json({
         message: "Review đã được tạo thành công",

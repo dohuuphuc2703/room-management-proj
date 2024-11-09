@@ -64,7 +64,7 @@ function ListSavedRooms() {
                 actions={[
                   <Button
                     type="primary"
-                    onClick={() => handleChat(room.contactPhone)}
+                    onClick={() => handleChat(room.phone)}
                   >
                     Chat
                   </Button>,

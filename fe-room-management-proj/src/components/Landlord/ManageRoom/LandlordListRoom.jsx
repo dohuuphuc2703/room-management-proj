@@ -11,12 +11,13 @@ const LandlordListRoom = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const nav = useNavigate();
-  const landlordId = useSelector(state => state.userReducer)
 
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/room/by-landlord/${landlordId._id}`);
+        const res = await axios.get(`http://localhost:8000/api/room/by-landlord`,{
+          withCredentials: true,
+        });
         setRooms(res.data.rooms);
       } catch (error) {
         console.error(error);
@@ -26,7 +27,7 @@ const LandlordListRoom = () => {
     };
 
     fetchRooms();
-  }, [landlordId]);
+  }, []);
 
   return (
     <div className={styles.container}>

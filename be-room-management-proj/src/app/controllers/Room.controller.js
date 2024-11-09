@@ -16,8 +16,12 @@ class RoomController {
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate({
           path: "landlord",
-          select: "email fullName phone avatar online onlineAt" // Chỉ lấy các trường mong muốn
-      })
+          populate: { 
+            path: "user",
+            select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+  
+          },
+        })
         .populate("category");
 
       return res.json({
@@ -94,7 +98,11 @@ class RoomController {
         .populate("category")
         .populate({
           path: "landlord",
-          select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+          populate: { 
+            path: "user",
+            select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+  
+          },
         });
   
       return res.json({
@@ -139,7 +147,11 @@ async getRoomsByAddressAndCat(req, res) {
       .populate("category")
       .populate({
         path: "landlord",
-        select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+        populate: { 
+          path: "user",
+          select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+
+        },
       });
       
     return res.json({
@@ -166,8 +178,12 @@ async getRoomsByAddressAndCat(req, res) {
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate({
           path: "landlord",
-          select: "email fullName phone avatar online onlineAt" // Chỉ lấy các trường mong muốn
-      })
+          populate: { 
+            path: "user",
+            select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+  
+          },
+        })
         .populate("category");
 
       return res.json({
@@ -212,7 +228,7 @@ async getRoomsByAddressAndCat(req, res) {
   // [POST] /api/room/add-room
   async addRoom(req, res) {
     const info = req.body;
-    const userId = req.user.id;
+    const userId = req.user.uid;
     
     try {
       const room = await Room.create({
@@ -288,7 +304,7 @@ async getTopRatedRooms(req, res) {
 }
   // [GET] /api/room/by-landlord/:landlordId
   async getRoomsByLandlord(req, res) {
-    const landlordId = req.user.id;
+    const landlordId = req.user.uid;
   
     try {
       const rooms = await Room.find({ landlord: landlordId})

@@ -48,7 +48,7 @@ function LandlordView() {
       }}
     >
       <div className={styles.container}>
-        <SideBar />
+        <SideBar user={user} />
         <div className={styles.content}>
           <Outlet />
         </div>
