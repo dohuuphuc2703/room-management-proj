@@ -224,7 +224,7 @@ function RoomDetail() {
                   roomInfo.images.map((img, index) => (
                     <div key={index}>
                       <img
-                        src={img}
+                        src={`http://localhost:8000${img}`} 
                         alt={`Room image ${index + 1}`}
                         className={styles.roomImage}
                       />

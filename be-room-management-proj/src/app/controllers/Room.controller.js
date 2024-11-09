@@ -1,4 +1,7 @@
 const Room = require("../models/Room.model");
+const path = require("path");
+const {uploadRoomImage} = require("../../config/multer/index");
+const fs = require("fs");
 
 class RoomController {
   //[GET] /api/room/suggestion?page=<number>&size=<number>
@@ -327,6 +330,30 @@ async getTopRatedRooms(req, res) {
     }
   }
 
+  async uploadRoomImageHandler(req, res) {
+    // Chạy middleware upload (lưu file ảnh vào thư mục)
+    uploadRoomImage(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ message: "Lỗi khi upload ảnh", error: err.message });
+      }
+  
+      try {
+        // Kiểm tra xem có file không
+        if (!req.file) {
+          return res.status(400).json({ message: "Không tìm thấy file ảnh" });
+        }
+  
+        // Tạo đường dẫn URL để frontend có thể hiển thị ảnh
+        const roomImageUrl = `/uploads/roomImages/${req.file.filename}`;
+  
+        // Trả về đường dẫn ảnh đã được upload
+        return res.status(200).json({roomImageUrl });
+      } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Lỗi server", error: error.toString() });
+      }
+    });
+  }
 
 }
 

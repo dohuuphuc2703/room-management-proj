@@ -9,7 +9,7 @@ const { Option } = Select;
 const CreateRoom = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState(null); // State to store the uploaded image URL
+    const [imageUrls, setImageUrls] = useState(null); // State to store the uploaded image URL
     const [servicerooms, setServicerooms] = useState([{}]); // State to store service rooms
     const [categories, setCategories] = useState([]);
     const [provinces, setProvinces] = useState([]);
@@ -62,11 +62,27 @@ const CreateRoom = () => {
 
     const onFinish = async (values) => {
         setLoading(true);
+
+        // Tạo đối tượng address từ các trường đã chọn
+        const address = {
+            province: province,    // Lấy giá trị tỉnh
+            district: district,    // Lấy giá trị quận
+            ward: ward,            // Lấy giá trị phường
+            detail: values.detail, // Lấy chi tiết địa chỉ từ form
+        };
+
+        const images = imageUrls;
+        console.log(images);
+        // Gửi dữ liệu phòng cùng với address
         try {
-            const response = await axios.post("http://localhost:8000/api/room/add-room", values, {
+            const response = await axios.post("http://localhost:8000/api/room/addRoomq", {
+                ...values,
+                address: address,
+                images: images // Gửi địa chỉ dưới dạng đối tượng
+            }, {
                 withCredentials: true,
             });
-            console.log(values)
+
             message.success("Phòng đã được tạo thành công!");
         } catch (error) {
             message.error("Có lỗi xảy ra khi tạo phòng.");
@@ -75,19 +91,50 @@ const CreateRoom = () => {
         }
     };
 
-    const handleImageChange = async ({ file }) => {
-        if (file.status === "uploading") {
-            try {
-                const formData = new FormData();
-                formData.append("image", file.originFileObj);
-                const response = await axios.post("http://localhost:8000/api/room/upload-image", formData, {
-                    headers: { "Content-Type": "multipart/form-data" },
+    const handleImageChange = async (options) => {
+        const { file, onSuccess, onError } = options;
+        console.log("File:", file);  // Log chi tiết file
+    
+        try {
+            const formData = new FormData();
+            formData.append("roomImages", file);  // Thêm ảnh vào formData
+    
+            console.log("Gửi ảnh lên server...");
+    
+            // Gửi ảnh lên server
+            const response = await axios.post(
+                "http://localhost:8000/api/room/uploadImage",
+                formData,
+                { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } }
+            );
+    
+            // Kiểm tra phản hồi từ server
+            if (response.data && response.data.roomImageUrl) {
+                console.log("Ảnh đã được tải lên thành công: ", response.data.roomImageUrl);
+    
+                setImageUrls((prevUrls) => {
+                    // Nếu prevUrls chưa được khởi tạo (null), khởi tạo nó là mảng rỗng
+                    const updatedUrls = prevUrls ? [...prevUrls, response.data.roomImageUrl] : [response.data.roomImageUrl];
+                    console.log("Cập nhật imageUrls:", updatedUrls);
+                    return updatedUrls;
                 });
-                setImageUrl(response.data.imageUrl); // Update image URL
-            } catch (error) {
-                message.error("Lỗi khi tải ảnh lên.");
+                
+                if (onSuccess) {
+                    onSuccess("Upload thành công");  // Thông báo upload thành công
+                }
+            } else {
+                throw new Error("Không nhận được URL ảnh từ server");
+            }
+        } catch (error) {
+            console.error("Lỗi khi tải ảnh lên: ", error.response ? error.response.data : error.message);
+            if (onError) {
+                onError(error);  // Gọi onError để xử lý lỗi
             }
         }
+    };
+
+    const handleRemove = (file) => {
+        setImageUrls(imageUrls.filter((url) => url !== file.url)); // Loại bỏ ảnh khỏi mảng khi xóa
     };
 
     const handleAddServiceRoom = () => {
@@ -278,15 +325,32 @@ const CreateRoom = () => {
                         <Form.Item label="Tiện nghi phòng" name="amenities">
                             <Checkbox.Group>
                                 <Row>
-                                    <Col span={8}>
+                                    <Col span={6}>
                                         <Checkbox value="WiFi">Wi-Fi</Checkbox>
                                     </Col>
-                                    <Col span={8}>
-                                        <Checkbox value="AirConditioner">Điều hòa</Checkbox>
+                                    <Col span={6}>
+                                        <Checkbox value="Điều hòa">Điều hòa</Checkbox>
                                     </Col>
-                                    <Col span={8}>
-                                        <Checkbox value="Parking">Bãi đỗ xe</Checkbox>
+                                    <Col span={6}>
+                                        <Checkbox value="Bãi đỗ xe thoáng rộng">Bãi đỗ xe</Checkbox>
                                     </Col>
+                                    <Col span={6}>
+                                        <Checkbox value="Giờ giấc tự do">Giờ giấc tự do</Checkbox>
+                                    </Col>
+                                    <Col span={6}>
+                                        <Checkbox value="Bảo vệ 24/7">Bảo vệ 24/7</Checkbox>
+                                    </Col>
+                                    <Col span={6}>
+                                        <Checkbox value="Full nội thất hiện đại, sang trọng">Nội thất</Checkbox>
+                                    </Col>
+                                    <Col span={6}>
+                                        <Checkbox value="Gần chợ, địa điểm ăn uống...">Gần chợ</Checkbox>
+                                    </Col>
+
+                                    <Col span={6}>
+                                        <Checkbox value="Có tháng máy">Thang máy</Checkbox>
+                                    </Col>
+
                                 </Row>
                             </Checkbox.Group>
                         </Form.Item>
@@ -294,16 +358,27 @@ const CreateRoom = () => {
                 </Row>
 
                 <Row gutter={16}>
-                    <Col span={24}>
-                        <Form.Item label="Ảnh đại diện" name="image">
+                    <Col span={12}>
+                        <Form.Item label="Hình ảnh phòng" name="images">
                             <Upload
-                                name="avatar"
+                                name="roomImages"
                                 listType="picture-card"
-                                showUploadList={false}
-                                customRequest={handleImageChange}>
-                                <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
+                                multiple={true}  // Cho phép chọn nhiều ảnh
+                                showUploadList={{ showRemoveIcon: true }}  // Hiển thị nút xóa
+                                customRequest={handleImageChange}  // Đảm bảo customRequest được truyền đúng
+                                // onChange={handleImageChange}
+                                onRemove={handleRemove}  // Xử lý khi xóa ảnh
+                            >
+                                {imageUrls && imageUrls.length > 0 ? (
+                                    imageUrls.map((url, index) => (
+                                        <img key={index} src={`http://localhost:8000/${url}`} alt={`room-${index}`} style={{ width: '100%' }} />
+                                    ))
+                                ) : null}
+                                <div>
+                                        <UploadOutlined />
+                                        <div style={{ marginTop: 8 }}>Chọn hình ảnh</div>
+                                    </div>
                             </Upload>
-                            {imageUrl && <img src={imageUrl} alt="avatar" className={styles.avatarPreview} />}
                         </Form.Item>
                     </Col>
                 </Row>
