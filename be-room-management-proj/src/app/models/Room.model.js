@@ -56,7 +56,7 @@ const RoomSchema = new Schema({
 
     landlord: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Landlord",
         required: true,
     },
     

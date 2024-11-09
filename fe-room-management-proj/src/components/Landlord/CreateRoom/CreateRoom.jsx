@@ -63,9 +63,10 @@ const CreateRoom = () => {
     const onFinish = async (values) => {
         setLoading(true);
         try {
-            const response = await axios.post("http://localhost:8000/api/room/create", values, {
+            const response = await axios.post("http://localhost:8000/api/room/add-room", values, {
                 withCredentials: true,
             });
+            console.log(values)
             message.success("Phòng đã được tạo thành công!");
         } catch (error) {
             message.error("Có lỗi xảy ra khi tạo phòng.");
