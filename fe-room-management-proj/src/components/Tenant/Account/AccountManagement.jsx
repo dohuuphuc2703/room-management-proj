@@ -63,6 +63,7 @@ const AccountManagement = () => {
 
   const handleAvatarChange = async ({ file }) => {
     console.log("File selected:", file);
+    console.log("File:", file.status);
     // Kiểm tra nếu file đã được tải lên thành công
     if (file.status === 'uploading') {
       try {
