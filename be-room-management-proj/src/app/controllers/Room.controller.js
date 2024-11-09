@@ -288,19 +288,21 @@ async getTopRatedRooms(req, res) {
 }
   // [GET] /api/room/by-landlord/:landlordId
   async getRoomsByLandlord(req, res) {
-    const {landlordId } = req.params;
+    const landlordId = req.user.id;
   
     try {
       const rooms = await Room.find({ landlord: landlordId})
         .sort({ createdAt: -1 })
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate("category")
-        .populate({
-          path: "landlord",
-          select: "email fullName phone avatar online onlineAt",
-        });
+        // .populate({
+        //   path: "landlord",
+        //   select: "email fullName phone avatar online onlineAt",
+        // });
   
-      return res.json({ rooms });
+      return res.json({ 
+        rooms }
+      );
     } catch (error) {
       console.log(error);
       return res.status(500).json({
