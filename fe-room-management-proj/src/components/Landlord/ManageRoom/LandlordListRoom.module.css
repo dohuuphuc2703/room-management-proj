@@ -1,52 +1,46 @@
 .container {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  gap: 20px;
 }
 
 .header {
   font-size: 24px;
   font-weight: bold;
+}
+
+.filter {
+  width: 200px;
+  margin-left: 0; /* Căn lề trái */
   margin-bottom: 20px;
+  font-size: 14px; /* Làm nhỏ lại */
+}
+
+.createRoomButton {
+  align-self: flex-end; /* Căn lề phải */
+  font-size: 14px; /* Làm nhỏ lại */
+  margin-top: 20px;
 }
 
 .roomItem {
-  display: flex;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .roomContent {
   display: flex;
-}
-
-.roomImage {
-  width: 150px;
-  height: 100px;
-  object-fit: cover;
-  cursor: pointer;
+  justify-content: space-between;
 }
 
 .roomDetails {
-  margin-left: 20px;
-  flex-grow: 1;
+  flex: 1;
 }
 
-.title_room {
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .price {
+  font-weight: bold;
   font-size: 16px;
-  color: #ff4d4f;
-  margin-top: 10px;
-}
-
-.area {
-  font-size: 14px;
-  color: #888;
-  margin-top: 5px;
 }

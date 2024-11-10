@@ -1,7 +1,9 @@
 const Room = require("../models/Room.model");
+
 const path = require("path");
 const {uploadRoomImage} = require("../../config/multer/index");
 const fs = require("fs");
+const mongoose = require("mongoose");
 
 class RoomController {
   //[GET] /api/room/suggestion?page=<number>&size=<number>
@@ -250,17 +252,29 @@ async getRoomsByAddressAndCat(req, res) {
     }
   }
 
-  // [DELETE] /api/room/delete
+  // [DELETE] /api/room/delete/:roomId
   async deleteRoom(req, res) {
-    const { rooms } = req.body;
-    try {
-      await Room.deleteMany({
-        _id: { $in: rooms },
-      });
+    const { roomId } = req.params;  // Lấy ID phòng từ tham số URL
 
-      return res.sendStatus(200);
+    // Kiểm tra nếu ID phòng hợp lệ
+    if (!mongoose.Types.ObjectId.isValid(roomId)) {
+      return res.status(400).json({ message: "ID phòng không hợp lệ." });
+    }
+
+    try {
+      // Xóa phòng theo ID
+      const room = await Room.findByIdAndDelete(roomId);
+
+      // Kiểm tra nếu không tìm thấy phòng
+      if (!room) {
+        return res.status(404).json({ message: "Không tìm thấy phòng để xóa." });
+      }
+
+      // Trả về phản hồi thành công
+      return res.status(200).json({ message: "Xóa phòng thành công." });
     } catch (error) {
-      console.log(error);
+      // Log lỗi và trả về lỗi
+      console.error("Error deleting room:", error);
       return res.status(500).json({
         message: `Có lỗi xảy ra: Error code <${error.code}>`,
       });
@@ -305,11 +319,17 @@ async getTopRatedRooms(req, res) {
     });
   }
 }
-  // [GET] /api/room/by-landlord/:landlordId
+  // [GET] /api/room/by-landlord
   async getRoomsByLandlord(req, res) {
     const landlordId = req.user.uid;
-  
+    const status = req.query; // Lấy status từ query params
+    
     try {
+      // Xây dựng điều kiện lọc
+      const filter = { landlord: landlordId };
+      if (status) {
+        filter.status = status; // Thêm điều kiện lọc theo status nếu có
+      }
       const rooms = await Room.find({ landlord: landlordId})
         .sort({ createdAt: -1 })
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
