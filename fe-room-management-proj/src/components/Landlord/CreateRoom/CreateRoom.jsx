@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Button, Col, Form, Input, Row, Upload, message, Select, InputNumber, Checkbox } from "antd";
-import { UploadOutlined, HomeOutlined, AreaChartOutlined, FileTextOutlined } from '@ant-design/icons';
+import { AreaChartOutlined, FileTextOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Col, Form, Input, InputNumber, message, Row, Select, Upload } from "antd";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styles from "./CreateRoom.module.css";
 
 const { Option } = Select;
