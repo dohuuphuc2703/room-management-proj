@@ -1,12 +1,14 @@
 import {
   AppstoreOutlined,
+  ArrowLeftOutlined,
+  ArrowRightOutlined,
   DollarOutlined,
   FileTextOutlined,
   HomeOutlined,
   MessageOutlined,
   PieChartOutlined
 } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Button, Menu } from 'antd';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './SideBar.module.css';
@@ -21,7 +23,6 @@ function SideBar({user}) {
   };
 
   return (
- 
       <div className={`${styles.sidebar} ${collapsed ? styles.close : ''}`}>
         <div className={styles.logoDetails}>
           <AppstoreOutlined />
@@ -55,6 +56,7 @@ function SideBar({user}) {
         <button onClick={toggleCollapse} className={styles.collapseButton}>
           {collapsed ? 'Expand' : 'Collapse'}
         </button>
+
       </div>
   );
 }
