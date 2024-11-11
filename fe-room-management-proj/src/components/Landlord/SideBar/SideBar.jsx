@@ -40,12 +40,15 @@ function SideBar({user}) {
             <Link to="/landlord/rooms">Phòng</Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<DollarOutlined />}>
+          <Link to="/landlord/contract">Hợp đồng</Link>
+          </Menu.Item>
+          <Menu.Item key="4" icon={<DollarOutlined />}>
             Hóa đơn
           </Menu.Item>
-          <Menu.Item key="4" icon={<FileTextOutlined />}>
+          <Menu.Item key="5" icon={<FileTextOutlined />}>
             Phiếu bảo trì
           </Menu.Item>
-          <Menu.Item key="5" icon={<MessageOutlined />}>
+          <Menu.Item key="6" icon={<MessageOutlined />}>
             Chat
           </Menu.Item>
         </Menu>

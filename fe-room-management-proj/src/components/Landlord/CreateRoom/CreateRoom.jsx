@@ -1,4 +1,4 @@
-import { AreaChartOutlined, FileTextOutlined, UploadOutlined } from '@ant-design/icons';
+import { AreaChartOutlined, FileTextOutlined, UploadOutlined, TeamOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Form, Input, InputNumber, message, Row, Select, Upload } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -242,7 +242,7 @@ const CreateRoom = () => {
                 </Row>
 
                 <Row gutter={16}>
-                    <Col span={12}>
+                    <Col span={8}>
                         <Form.Item
                             label="Diện tích (m²)"
                             name="acreage"
@@ -250,12 +250,20 @@ const CreateRoom = () => {
                             <InputNumber min={1} placeholder="Nhập diện tích" prefix={<AreaChartOutlined />} style={{ width: "100%" }} />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={8}>
                         <Form.Item
                             label="Giá phòng (VND)"
                             name="price"
                             rules={[{ required: true, message: "Vui lòng nhập giá phòng!" }]}>
-                            <InputNumber min={1} placeholder="Nhập giá phòng" prefix="₫" style={{ width: "100%" }} />
+                            <InputNumber min={1} placeholder="Nhập giá phòng" prefix="VNĐ" style={{ width: "100%" }} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item
+                            label="Số người tối đa"
+                            name="maxSize"
+                            rules={[{ required: true, message: "Vui lòng nhập số người tối đa!" }]}>
+                            <InputNumber min={1} placeholder="Nhập số người tối đa" prefix={<TeamOutlined />} style={{ width: "100%" }} />
                         </Form.Item>
                     </Col>
                 </Row>

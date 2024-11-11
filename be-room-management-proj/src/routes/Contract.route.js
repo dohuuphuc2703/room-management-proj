@@ -8,4 +8,5 @@ router.get("/:id", ContractController.getContract);
 router.delete("/delete", ContractController.deleteContract);
 router.post("/mine", ContractController.getMyContracts);
 
+
 module.exports = router;
