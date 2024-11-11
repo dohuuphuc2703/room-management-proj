@@ -13,6 +13,8 @@ import SignUp from "./pages/SignUp/SignUp";
 import CreateRoom from "./components/Landlord/CreateRoom/CreateRoom";
 import LandlordListRoom from "./components/Landlord/ManageRoom/LandlordListRoom";
 import LandlordView from "./pages/LandlordView/LandlordView";
+import ContractIndex from "./components/Landlord/Contract/ContractIndex/ContractIndex";
+import CreateContract from "./components/Landlord/Contract/CreateContract/CreateContract";
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
           <Route path="/landlord" element={<LandlordView />}>
             <Route path="createRoom" element={<CreateRoom />} />
             <Route path="rooms" element={<LandlordListRoom />} />
+            <Route path="contract" element={<ContractIndex />} />
+            <Route path="createContract" element={<CreateContract />} />
           </Route>
         </Routes>
       </ConfigProvider>
