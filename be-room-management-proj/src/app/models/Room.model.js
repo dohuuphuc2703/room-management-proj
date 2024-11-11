@@ -46,7 +46,10 @@ const RoomSchema = new Schema({
 
     status: { 
         type: String,
-        default: null 
+        enum: {
+            values: ["available", "rented", "maintenance"],
+            message: "status <{VALUE} is not supported>",
+        },
     },
 
     amenities: [{ 
