@@ -34,7 +34,7 @@ function SideBar({user}) {
           className={styles.menu}
         >
           <Menu.Item key="1" icon={<PieChartOutlined />}>
-            Thống kê
+            <Link to="/landlord/statistical">Thống kê</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<HomeOutlined />}>
             <Link to="/landlord/rooms">Phòng</Link>

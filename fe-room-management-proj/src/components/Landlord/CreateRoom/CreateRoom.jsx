@@ -75,7 +75,7 @@ const CreateRoom = () => {
         console.log(images);
         // Gửi dữ liệu phòng cùng với address
         try {
-            const response = await axios.post("http://localhost:8000/api/room/addRoomq", {
+            const response = await axios.post("http://localhost:8000/api/room/addRoom", {
                 ...values,
                 address: address,
                 images: images // Gửi địa chỉ dưới dạng đối tượng
@@ -94,31 +94,31 @@ const CreateRoom = () => {
     const handleImageChange = async (options) => {
         const { file, onSuccess, onError } = options;
         console.log("File:", file);  // Log chi tiết file
-    
+
         try {
             const formData = new FormData();
             formData.append("roomImages", file);  // Thêm ảnh vào formData
-    
+
             console.log("Gửi ảnh lên server...");
-    
+
             // Gửi ảnh lên server
             const response = await axios.post(
                 "http://localhost:8000/api/room/uploadImage",
                 formData,
                 { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } }
             );
-    
+
             // Kiểm tra phản hồi từ server
             if (response.data && response.data.roomImageUrl) {
                 console.log("Ảnh đã được tải lên thành công: ", response.data.roomImageUrl);
-    
+
                 setImageUrls((prevUrls) => {
                     // Nếu prevUrls chưa được khởi tạo (null), khởi tạo nó là mảng rỗng
                     const updatedUrls = prevUrls ? [...prevUrls, response.data.roomImageUrl] : [response.data.roomImageUrl];
                     console.log("Cập nhật imageUrls:", updatedUrls);
                     return updatedUrls;
                 });
-                
+
                 if (onSuccess) {
                     onSuccess("Upload thành công");  // Thông báo upload thành công
                 }
@@ -375,9 +375,9 @@ const CreateRoom = () => {
                                     ))
                                 ) : null}
                                 <div>
-                                        <UploadOutlined />
-                                        <div style={{ marginTop: 8 }}>Chọn hình ảnh</div>
-                                    </div>
+                                    <UploadOutlined />
+                                    <div style={{ marginTop: 8 }}>Chọn hình ảnh</div>
+                                </div>
                             </Upload>
                         </Form.Item>
                     </Col>

@@ -238,6 +238,7 @@ async getRoomsByAddressAndCat(req, res) {
     try {
       const room = await Room.create({
         ...info,
+        status: 'available',
         landlord: userId,
       });
 
