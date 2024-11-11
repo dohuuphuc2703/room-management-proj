@@ -39,6 +39,12 @@ const RoomSchema = new Schema({
         default: null 
     },
 
+    maxSize : {
+        type : Number,
+        required: true,
+        default: null,
+    },
+
     rating: { 
         type: Number,
         default: null 
