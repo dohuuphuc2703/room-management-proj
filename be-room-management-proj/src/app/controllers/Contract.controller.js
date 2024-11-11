@@ -1,9 +1,13 @@
 const Contract = require('../models/Contract.model');
+const Tenant = require("../models/Tenant.model");
+const Room = require("../models/Room.model");
+const Landlord = require("../models/Landlord.model");
 
 class ContractController {
     // [POST] /api/contract/create
     async createContract(req, res) {
-        const { tenant, landlord, room, size, start_date, end_date } = req.body;
+        const landlord = req.user.uid; 
+        const { tenant, room,size, start_date } = req.body;
     
         try {
             // Kiểm tra xem tenant có tồn tại không
@@ -31,7 +35,6 @@ class ContractController {
                 room,
                 size,
                 start_date,
-                end_date
             });
     
             await newContract.save();

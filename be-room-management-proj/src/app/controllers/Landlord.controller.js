@@ -1,7 +1,7 @@
 const Landlord = require("../models/Landlord.model");
 const User = require("../models/User.model");
 const Room = require("../models/Room.model");
-
+const Tenant = require("../models/Tenant.model");
 class LandlordController {
   // [GET] /api/landlord/info/
   async getInfo(req, res) {
@@ -74,11 +74,15 @@ class LandlordController {
     const email = req.params.email; // Sửa lại để lấy email từ req.params
 
     try {
-      const user = await User.findOne({ email }).select(
-        "email fullName phone dob gender address role"
-      );
+      const tenant = await Tenant.findOne()
+            .populate({
+                path: 'user',
+                match: { email: email }, // Filter based on the email field in the User document
+                select: 'email fullName phone dob gender address role', // Select specific fields to return
+            })
+            .select("user");
 
-      if (!user) {
+      if (!tenant) {
         // Nếu không tìm thấy user, trả về lỗi 404
         return res.status(404).json({
           message: "User không tìm thấy với email này.",
@@ -87,7 +91,7 @@ class LandlordController {
 
       // Nếu tìm thấy user, trả về thông tin
       return res.json({
-        info: user,
+        info: tenant,
       });
     } catch (error) {
       // Nếu có lỗi xảy ra, chỉ gọi res.json một lần trong catch
