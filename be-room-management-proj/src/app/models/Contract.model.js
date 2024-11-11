@@ -37,13 +37,6 @@ const ContractSchema = new Schema({
         default: null,
     },
 
-    end_date : {
-        type : Date,
-        required: true,
-        default: null,
-    }
-
-
 },{
     timestamps : true,
 });

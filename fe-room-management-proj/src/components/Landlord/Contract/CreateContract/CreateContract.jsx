@@ -3,6 +3,7 @@ import { Avatar, Button, Col, Form, Input, Layout, message, Row, Select, Tabs } 
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import styles from "./CreateContract.module.css";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -12,6 +13,9 @@ const CreateContract = () => {
     const [loading, setLoading] = useState(false);
     const [rooms, setRooms] = useState([]);  // Danh sách phòng
     const [selectedRoom, setSelectedRoom] = useState(null);
+    const [user, setUser] = useState(null);
+
+    const nav = useNavigate();
 
     // Hàm để load thông tin phòng từ API
     useEffect(() => {
@@ -43,10 +47,11 @@ const CreateContract = () => {
             // Cập nhật thông tin phòng vào form
             form.setFieldsValue({
                 roomTitle: room.title,
-                roomAddress: room.address,
+                roomAddress: `${room.address.detail}, ${room.address.ward}, ${room.address.district}, ${room.address.province}`,
                 roomPrice: room.price,
-                roomAcreage: room.acreage,  // Thêm diện tích phòng vào form
-                // Thêm các thông tin khác của phòng nếu cần
+                roomAcreage: room.acreage,
+                roomServices: room.servicerooms.map(service => `${service.name} - ${service.price}/${service.description}`).join(", "),
+                deposit: room.price,
             });
         }
     };
@@ -63,13 +68,14 @@ const CreateContract = () => {
             );
             if (response.data && response.data.info) {
                 const userData = response.data.info;
+                setUser(response.data.info)
                 // Cập nhật thông tin vào form
                 form.setFieldsValue({
-                    fullName: userData.fullName,
-                    phone: userData.phone,
-                    address: userData.address,
-                    dob: userData.dob.slice(0, 10),
-                    gender: userData.gender
+                    fullName: userData.user.fullName,
+                    phone: userData.user.phone,
+                    address: userData.user.address,
+                    dob: userData.user.dob.slice(0, 10),
+                    gender: userData.user.gender
                 });
             } else {
                 message.warning("Không tìm thấy thông tin người dùng.");
@@ -85,14 +91,42 @@ const CreateContract = () => {
     // Hàm xử lý submit form
     const handleSubmit = async (values) => {
         setLoading(true);
+        // console.log(values)
         try {
-            // Giả sử bạn có một API để cập nhật thông tin người dùng
-            const response = await axios.post("/api/user/update", values);
-            if (response.status === 200) {
-                message.success("Cập nhật thông tin thành công!");
+            const payload = {
+                tenant: user._id, // Assuming you have this field in your form
+                room: values.room,
+                start_date: values.start_date,
+                size: 3 // Assuming you select the room and have its ID
+            };
+            console.log(payload)
+            // Assuming you have an API to create a contract
+            const response = await axios.post("http://localhost:8000/api/contract/create", payload, {
+                withCredentials: true,
+            });
+            if (response) {
+                message.success("Tạo thành công!");
+                nav("/landlord/contract")
+
             }
         } catch (error) {
-            message.error("Cập nhật không thành công. Vui lòng thử lại.");
+            console.error("Error details:", error);
+            if (error.response) {
+                // The request was made, and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.error("Response data:", error.response.data);
+                console.error("Response status:", error.response.status);
+                console.error("Response headers:", error.response.headers);
+                message.error(`Lỗi từ server: ${error.response.data.message || "Tạo không thành công. Vui lòng thử lại."}`);
+            } else if (error.request) {
+                // The request was made, but no response was received
+                console.error("Request data:", error.request);
+                message.error("Không nhận được phản hồi từ server. Vui lòng thử lại.");
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.error("Error message:", error.message);
+                message.error("Đã xảy ra lỗi. Vui lòng thử lại.");
+            }
         } finally {
             setLoading(false);
         }
@@ -207,6 +241,15 @@ const CreateContract = () => {
                                         </Form.Item>
                                     </Col>
 
+                                    <Col span={12}>
+                                        <Form.Item
+                                            label="Địa chỉ"
+                                            name="roomAddress"
+                                        >
+                                            <Input placeholder="Nhập địa chỉ chi tiết của bạn" prefix={<HomeOutlined />} />
+                                        </Form.Item>
+                                    </Col>
+
                                 </Row>
 
                                 <Row gutter={16}>
@@ -219,9 +262,14 @@ const CreateContract = () => {
                                         </Form.Item>
                                     </Col>
 
+                                    <Col span={12}>
+                                        <Form.Item label="Dịch vụ" name="roomServices">
+                                            <Input.TextArea readOnly rows={2} />
+                                        </Form.Item>
+                                    </Col>
                                 </Row>
 
-                                <Row>
+                                <Row gutter={16}>
                                     <Col span={12}>
                                         <Form.Item
                                             label="Địa chỉ"
@@ -230,12 +278,33 @@ const CreateContract = () => {
                                             <Input placeholder="Nhập địa chỉ chi tiết của bạn" prefix={<HomeOutlined />} />
                                         </Form.Item>
                                     </Col>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            label="Tiền cọc"
+                                            name="deposit"
+                                        >
+                                            <Input placeholder="Nhập tiền cọc" prefix={<HomeOutlined />} />
+                                        </Form.Item>
+                                    </Col>
+                                    
+                                </Row>
+
+                                <Row gutter={16}>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            label="Ngày bắt đầu"
+                                            name="start_date"
+                                            rules={[{ required: true, message: "Vui lòng nhập ngày bắt đầu!" }]}
+                                        >
+                                            <Input placeholder="Nhập địa chỉ chi tiết của bạn" prefix={<CalendarOutlined />} />
+                                        </Form.Item>
+                                    </Col>
                                 </Row>
 
 
                                 <Form.Item>
                                     <Button type="primary" htmlType="submit" loading={loading}>
-                                        Cập nhật
+                                        Tạo
                                     </Button>
                                 </Form.Item>
                             </Form>
