@@ -323,26 +323,48 @@ async getTopRatedRooms(req, res) {
   // [GET] /api/room/by-landlord
   async getRoomsByLandlord(req, res) {
     const landlordId = req.user.uid;
-    const status = req.query; // Lấy status từ query params
+    const {
+      status = null,
+      page = 1,
+      size = 10, // Giá trị mặc định cho kích thước trang
+      province = null, // Tỉnh
+      category = null, // Danh mục
+    } = req.query;
     
     try {
-      // Xây dựng điều kiện lọc
-      const filter = { landlord: landlordId };
-      if (status) {
-        filter.status = status; // Thêm điều kiện lọc theo status nếu có
+      const conditions = {landlord: landlordId};
+  
+      // Thêm điều kiện cho tỉnh
+      if (province) {
+        conditions['address.province'] = province; // Sử dụng đường dẫn để truy cập trường tỉnh trong address
       }
-      const rooms = await Room.find({ landlord: landlordId})
+
+      if (category) {
+        conditions.category = category;
+      }
+
+      if (status) {
+        conditions.status = status;
+      }
+
+      const total = await Room.countDocuments(conditions);
+
+      const rooms = await Room.find(conditions)
         .sort({ createdAt: -1 })
+        .skip((page - 1) * size)
+        .limit(size)
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate("category")
-        // .populate({
-        //   path: "landlord",
-        //   select: "email fullName phone avatar online onlineAt",
-        // });
   
-      return res.json({ 
-        rooms }
-      );
+        return res.json({
+          rooms,
+          conditions:conditions,
+          info: {
+            total,
+            page,
+            size,
+          },
+        });
     } catch (error) {
       console.log(error);
       return res.status(500).json({
