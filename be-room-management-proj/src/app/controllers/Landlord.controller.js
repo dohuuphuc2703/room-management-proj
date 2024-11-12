@@ -74,7 +74,7 @@ class LandlordController {
     const email = req.params.email; // Sửa lại để lấy email từ req.params
 
     try {
-      const tenant = await Tenant.findOne()
+      const tenants = await Tenant.find()
             .populate({
                 path: 'user',
                 match: { email: email }, // Filter based on the email field in the User document
@@ -82,16 +82,15 @@ class LandlordController {
             })
             .select("user");
 
-      if (!tenant) {
-        // Nếu không tìm thấy user, trả về lỗi 404
-        return res.status(404).json({
-          message: "User không tìm thấy với email này.",
-        });
-      }
+            const filteredTenants = tenants.filter(tenant => tenant.user !== null);
+
+            if (filteredTenants.length === 0) {
+              return res.status(404).json({ message: "Không tìm thấy tenant với user.email này." });
+            }
 
       // Nếu tìm thấy user, trả về thông tin
       return res.json({
-        info: tenant,
+        info: filteredTenants[0],
       });
     } catch (error) {
       // Nếu có lỗi xảy ra, chỉ gọi res.json một lần trong catch
