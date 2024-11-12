@@ -19,17 +19,18 @@ const AccountManagement = () => {
     const fetchUserInfo = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/tenant/info/",
+          "http://localhost:8000/api/tenant/info",
           { withCredentials: true }
         );
         const { info } = response.data;
+        console.log("info", info)
         setAvatarUrl(`http://localhost:8000${info.user.avatar}`); // Set avatar URL from fetched user info
         form.setFieldsValue({
           email: info.user.email,
-          fullName: info.user.fullName,
-          phone: info.user.phone,
-          dob: info.user.dob.slice(0, 10),
-          address: info.user.address,
+          fullName: info.user.fullName?info.user.fullName :"",
+          phone: info.user.phone?info.user.phone:"",
+          dob: info.user.dob?info.user.dob.slice(0, 10):"",
+          address: info.user.address?info.user.address:"",
         });
       } catch (error) {
         message.error("Error fetching user info");
