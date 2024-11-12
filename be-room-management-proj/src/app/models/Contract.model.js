@@ -36,6 +36,27 @@ const ContractSchema = new Schema({
         required: true,
         default: null,
     },
+    members: [
+        {
+            memberName: {
+                type: String,
+                required: true,
+            },
+            memberPhone: {
+                type: String,
+                required: true,
+            },
+            memberGender: {
+                type: String,
+                enum: ['male', 'female'],
+                required: true,
+            },
+            memberAddress: {
+                type: String,
+                required: true,
+            }
+        }
+    ]
 
 },{
     timestamps : true,

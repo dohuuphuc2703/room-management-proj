@@ -1,5 +1,5 @@
-import { CalendarOutlined, HomeOutlined, PhoneOutlined, UserOutlined, IdcardOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Form, Input, Layout, message, Row, Select, Tabs } from "antd";
+import { CalendarOutlined, HomeOutlined, PhoneOutlined, UserOutlined, IdcardOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Avatar, Button, Col, Form, Input, Layout, message, Row, Select, Tabs, Table } from "antd";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import styles from "./CreateContract.module.css";
@@ -14,6 +14,7 @@ const CreateContract = () => {
     const [rooms, setRooms] = useState([]);  // Danh sách phòng
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [user, setUser] = useState(null);
+    const [members, setMembers] = useState([]);
 
     const nav = useNavigate();
 
@@ -97,8 +98,10 @@ const CreateContract = () => {
                 tenant: user._id, // Assuming you have this field in your form
                 room: values.room,
                 start_date: values.start_date,
-                size: 3 // Assuming you select the room and have its ID
+                size: members.length+1,
+                members: members,
             };
+            console.log(members)
             console.log(payload)
             // Assuming you have an API to create a contract
             const response = await axios.post("http://localhost:8000/api/contract/create", payload, {
@@ -132,14 +135,20 @@ const CreateContract = () => {
         }
     };
 
+    const handleMembersChange = (newMembers) => {
+        setMembers(newMembers);
+    };
+
+
     return (
         <Layout className={styles.layout}>
             <Content className={styles.content}>
                 <div>
                     <h2>Tạo hợp đồng</h2>
-                    <Tabs defaultActiveKey="1" tabBarStyle={{ fontWeight: 'bold' }}>
-                        <TabPane tab="Thông tin hợp đồng" key="1">
-                            <Form form={form} name="create_contract" layout="vertical" onFinish={handleSubmit}>
+                    <Form form={form} name="create_contract" layout="vertical" onFinish={handleSubmit}>
+                        <Tabs defaultActiveKey="1" tabBarStyle={{ fontWeight: 'bold' }}>
+                            <TabPane tab="Thông tin hợp đồng" key="1">
+
                                 <Row gutter={16}>
                                     <Col span={12}>
                                         <Form.Item
@@ -286,7 +295,7 @@ const CreateContract = () => {
                                             <Input placeholder="Nhập tiền cọc" prefix={<HomeOutlined />} />
                                         </Form.Item>
                                     </Col>
-                                    
+
                                 </Row>
 
                                 <Row gutter={16}>
@@ -302,30 +311,157 @@ const CreateContract = () => {
                                 </Row>
 
 
-                                <Form.Item>
-                                    <Button type="primary" htmlType="submit" loading={loading}>
-                                        Tạo
-                                    </Button>
-                                </Form.Item>
-                            </Form>
-                        </TabPane>
-                        <TabPane tab="Thông tin thành viên" key="2">
-                            <AddMember loading={loading} />
-                        </TabPane>
-                    </Tabs>
+
+                            </TabPane>
+                            <TabPane tab="Thông tin thành viên" key="2">
+                                <AddMember selectedRoom={selectedRoom} onMembersChange={handleMembersChange}/>
+                            </TabPane>
+                        </Tabs>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" loading={loading}>
+                                Tạo
+                            </Button>
+                        </Form.Item>
+                    </Form>
                 </div>
             </Content>
         </Layout>
     );
 };
 
-const AddMember = ({ onFinish, loading }) => {
-    const [form] = Form.useForm();
+
+const AddMember = ({ selectedRoom, onMembersChange }) => {
+    const [data, setData] = useState([]); 
+    const [count, setCount] = useState(1); 
+
+    // Xử lý khi thêm thành viên mới
+    const handleAdd = () => {
+        if (data.length < selectedRoom.maxSize - 1) {  // Kiểm tra nếu số lượng thành viên chưa vượt quá maxSize
+            const newMember = { key: count, memberName: "", memberPhone: "", memberGender: "", memberAddress: "" };
+            const updatedData = [...data, newMember];
+            setData(updatedData);
+            setCount(count + 1);
+
+            // Gửi dữ liệu khi thành viên được thêm vào
+            onMembersChange(updatedData.map((item) => ({
+                memberName: item.memberName,
+                memberPhone: item.memberPhone,
+                memberGender: item.memberGender,
+                memberAddress: item.memberAddress,
+            })));
+        } else {
+            alert(`Số lượng thành viên không thể vượt quá ${selectedRoom.maxSize}`);
+        }
+    };
+
+    // Xử lý khi xóa thành viên
+    const handleRemove = (index) => {
+        const updatedData = data.filter((_, i) => i !== index);
+        setData(updatedData);
+        setCount(count - 1);
+
+        // Gửi lại dữ liệu khi thành viên bị xóa
+        onMembersChange(updatedData.map((item) => ({
+            memberName: item.memberName,
+            memberPhone: item.memberPhone,
+            memberGender: item.memberGender,
+            memberAddress: item.memberAddress,
+        })));
+    };
+
+    // Cập nhật giá trị khi người dùng thay đổi
+    const handleChange = (index, field, value) => {
+        const updatedData = [...data];
+        updatedData[index][field] = value;
+        setData(updatedData);
+
+        // Gửi dữ liệu khi có thay đổi
+        onMembersChange(updatedData.map((item) => ({
+            memberName: item.memberName,
+            memberPhone: item.memberPhone,
+            memberGender: item.memberGender,
+            memberAddress: item.memberAddress,
+        })));
+    };
+
+    const columns = [
+        {
+            title: 'Tên thành viên',
+            dataIndex: 'memberName',
+            render: (_, record, index) => (
+                <Form.Item name={`memberName_${index}`} rules={[{ required: true, message: 'Vui lòng nhập tên thành viên' }]}>
+                    <Input
+                        placeholder="Tên thành viên"
+                        value={record.memberName}
+                        onChange={(e) => handleChange(index, 'memberName', e.target.value)}
+                    />
+                </Form.Item>
+            ),
+        },
+        {
+            title: 'Số điện thoại',
+            dataIndex: 'memberPhone',
+            render: (_, record, index) => (
+                <Form.Item name={`memberPhone_${index}`} rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}>
+                    <Input
+                        placeholder="Số điện thoại"
+                        value={record.memberPhone}
+                        onChange={(e) => handleChange(index, 'memberPhone', e.target.value)}
+                    />
+                </Form.Item>
+            ),
+        },
+        {
+            title: 'Giới tính',
+            dataIndex: 'memberGender',
+            render: (_, record, index) => (
+                <Form.Item name={`memberGender_${index}`} rules={[{ required: true, message: 'Vui lòng chọn giới tính' }]}>
+                    <Select
+                        placeholder="Giới tính"
+                        value={record.memberGender}
+                        onChange={(value) => handleChange(index, 'memberGender', value)}
+                    >
+                        <Select.Option value="male">Nam</Select.Option>
+                        <Select.Option value="female">Nữ</Select.Option>
+                    </Select>
+                </Form.Item>
+            ),
+        },
+        {
+            title: 'Địa chỉ',
+            dataIndex: 'memberAddress',
+            render: (_, record, index) => (
+                <Form.Item name={`memberAddress_${index}`} rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}>
+                    <Input
+                        placeholder="Địa chỉ"
+                        value={record.memberAddress}
+                        onChange={(e) => handleChange(index, 'memberAddress', e.target.value)}
+                    />
+                </Form.Item>
+            ),
+        },
+        {
+            title: 'Hành động',
+            render: (_, record, index) => (
+                <Button type="danger" onClick={() => handleRemove(index)} disabled={data.length <= 1}>Xóa</Button>
+            ),
+        }
+    ];
 
     return (
-        <Form form={form} name="change_password" layout="vertical" onFinish={onFinish}>
-            {/* Thêm các trường cần thiết cho thông tin thành viên */}
-        </Form>
+        <div>
+            <Table
+                columns={columns}
+                dataSource={data}
+                pagination={false}
+                rowKey="key"
+                footer={() => (
+                    <Button type="dashed" onClick={handleAdd}>
+                        Thêm thành viên
+                    </Button>
+                )}
+            />
+        </div>
     );
 };
 

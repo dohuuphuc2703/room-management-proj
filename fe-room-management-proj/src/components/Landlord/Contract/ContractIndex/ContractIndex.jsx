@@ -8,26 +8,24 @@ import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
 const ContractIndex = () => {
-  const [rooms, setRooms] = useState([]);
+  const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState(""); // Trạng thái bộ lọc
   const [titleFilter, setTitleFilter] = useState(""); // Tiêu đề bộ lọc
   const [isModalVisible, setIsModalVisible] = useState(false); // Modal cho chỉnh sửa phòng
-  const [currentRoom, setCurrentRoom] = useState(null); // Phòng hiện tại đang được chỉnh sửa
+  const [currentContract, setCurrentContract] = useState(null); // Phòng hiện tại đang được chỉnh sửa
   const [form] = Form.useForm(); // Sử dụng form Ant Design để chỉnh sửa
   const nav = useNavigate();
 
   useEffect(() => {
-    const fetchRooms = async () => {
+    const fetchContracts = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/room/by-landlord`, {
-          params: {
-            status: statusFilter,
-            title: titleFilter, // Thêm các bộ lọc vào params API
-          },
+        const res = await axios.get(`http://localhost:8000/api/contract/byLandlord`, {
+         
           withCredentials: true,
         });
-        setRooms(res.data.rooms);
+        console.log(res.data.contracts)
+        setContracts(res.data.contracts);
       } catch (error) {
         console.error(error);
       } finally {
@@ -35,48 +33,48 @@ const ContractIndex = () => {
       }
     };
 
-    fetchRooms();
-  }, [statusFilter, titleFilter]); // Gọi lại API khi bất kỳ bộ lọc nào thay đổi
+    fetchContracts();
+  }, []); // Gọi lại API khi bất kỳ bộ lọc nào thay đổi
 
-  const handleStatusChange = (value) => {
-    setStatusFilter(value); // Cập nhật trạng thái bộ lọc
-  };
+  // const handleStatusChange = (value) => {
+  //   setStatusFilter(value); // Cập nhật trạng thái bộ lọc
+  // };
 
-  const handleTitleChange = (e) => {
-    setTitleFilter(e.target.value); // Cập nhật tiêu đề bộ lọc
-  };
+  // const handleTitleChange = (e) => {
+  //   setTitleFilter(e.target.value); // Cập nhật tiêu đề bộ lọc
+  // };
 
-  const handleEdit = (roomId) => {
+  const handleEdit = (contractId) => {
     // Lấy thông tin phòng để chỉnh sửa
-    const room = rooms.find((r) => r._id === roomId);
-    setCurrentRoom(room);
-    form.setFieldsValue(room); // Đặt giá trị của form cho các trường đã có sẵn
+    const contracst = contracts.find((r) => r._id === contractId);
+    setCurrentContract(contracst);
+    form.setFieldsValue(contracst); // Đặt giá trị của form cho các trường đã có sẵn
     setIsModalVisible(true); // Mở modal
   };
 
-  const handleDelete = async (roomId) => {
-    try {
-      await axios.delete(`http://localhost:8000/api/room/delete/${roomId}`, {
-        withCredentials: true,
-      });
-      message.success("Đã xóa phòng thành công.");
-      setRooms(rooms.filter((room) => room._id !== roomId));
-    } catch (error) {
-      console.error(error);
-      message.error("Xóa phòng thất bại.");
-    }
-  };
+  // const handleDelete = async (roomId) => {
+  //   try {
+  //     await axios.delete(`http://localhost:8000/api/room/delete/${roomId}`, {
+  //       withCredentials: true,
+  //     });
+  //     message.success("Đã xóa phòng thành công.");
+  //     setRooms(rooms.filter((room) => room._id !== roomId));
+  //   } catch (error) {
+  //     console.error(error);
+  //     message.error("Xóa phòng thất bại.");
+  //   }
+  // };
 
   const handleUpdateRoom = async () => {
     try {
       const values = await form.validateFields();
-      await axios.post(`http://localhost:8000/api/room/${currentRoom._id}`, values, {
+      await axios.post(`http://localhost:8000/api/room/${currentContract._id}`, values, {
         withCredentials: true,
       });
       message.success("Cập nhật phòng thành công.");
       setIsModalVisible(false);
-      setRooms(
-        rooms.map((room) => (room._id === currentRoom._id ? { ...room, ...values } : room))
+      setContracts(
+        contracts.map((contract) => (contract._id === currentContract._id ? { ...contract, ...values } : contract))
       );
     } catch (error) {
       console.error(error);
@@ -95,8 +93,9 @@ const ContractIndex = () => {
     },
     {
       title: "Phòng",
-      dataIndex: "title",
-      key: "title",
+      dataIndex: "room",
+      key: "room",
+      render: (room) => room.title,
       filterDropdown: ({ setSelectedKeys, confirm }) => (
         <div style={{ padding: 8 }}>
           <Input
@@ -121,16 +120,23 @@ const ContractIndex = () => {
     },
     {
         title: "Địa chỉ",
-        dataIndex: "title",
-        key: "title",
+        dataIndex: "room",
+        key: "room",
+        render: (room) => room.address.province,
       },
 
       {
         title: "Người thuê",
-        dataIndex: "title",
-        key: "title",
+        dataIndex: "tenant",
+        key: "tenant",
+        render: (tenant) => tenant.user.fullName+ "-"+tenant.user.email,
       },
-
+      {
+        title: "Số lượng TV",
+        dataIndex: "size",
+        key: "size",
+        
+      },
     {
       title: "Trạng thái",
       render: (text, record) => (
@@ -142,7 +148,7 @@ const ContractIndex = () => {
             showSearch
             placeholder="Lọc theo trạng thái"
             value={statusFilter}
-            onChange={handleStatusChange}
+            // onChange={handleStatusChange}
             style={{ width: 188, marginBottom: 8, display: 'block' }}
           >
             <Option value="">Tất cả</Option>
@@ -178,7 +184,7 @@ const ContractIndex = () => {
       render: (text, record) => (
         <Popconfirm
           title="Bạn có chắc chắn muốn xóa phòng này không?"
-          onConfirm={() => handleDelete(record._id)}
+          // onConfirm={() => handleDelete(record._id)}
           okText="Có"
           cancelText="Không"
         >
@@ -199,7 +205,7 @@ const ContractIndex = () => {
       </Button>
       <Table
         columns={columns}
-        dataSource={rooms}
+        dataSource={contracts}
         rowKey="_id"
         loading={loading}
         pagination={{ pageSize: 5 }}
