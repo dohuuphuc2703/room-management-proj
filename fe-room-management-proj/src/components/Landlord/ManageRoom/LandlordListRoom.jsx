@@ -1,9 +1,9 @@
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'; // Import icons từ Ant Design
-import { Button, Form, Input, message, Modal, Popconfirm, Select, Table } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons"; // Import icons từ Ant Design
+import { Button, Form, message, Popconfirm, Select, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import ModalUpdateRoom from "../UpdateRoom/ModalUpdateRoom";
 
 const { Option } = Select;
 
@@ -16,7 +16,6 @@ const LandlordListRoom = () => {
   const [category, setCategory] = useState();
   const [page, setPage] = useState(1);
   const [categories, setCategories] = useState([]);
-  const [titleFilter, setTitleFilter] = useState(""); // Tiêu đề bộ lọc
   const [isModalVisible, setIsModalVisible] = useState(false); // Modal cho chỉnh sửa phòng
   const [currentRoom, setCurrentRoom] = useState(null); // Phòng hiện tại đang được chỉnh sửa
   const [form] = Form.useForm(); // Sử dụng form Ant Design để chỉnh sửa
@@ -25,13 +24,16 @@ const LandlordListRoom = () => {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/room/by-landlord`, {
-          params: {
-            status: statusFilter,
-            province: province === "Tất cả tỉnh" ? "" : province,
-          },
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `http://localhost:8000/api/room/by-landlord`,
+          {
+            params: {
+              status: statusFilter,
+              province: province === "Tất cả tỉnh" ? "" : province,
+            },
+            withCredentials: true,
+          }
+        );
         setRooms(res.data.rooms);
       } catch (error) {
         console.error(error);
@@ -65,30 +67,31 @@ const LandlordListRoom = () => {
         }))
       );
     });
-
     fetchRooms();
-  }, [statusFilter, province, titleFilter]); // Gọi lại API khi bất kỳ bộ lọc nào thay đổi
+  }, [statusFilter, province]); // Gọi lại API khi bất kỳ bộ lọc nào thay đổi
 
   const handleStatusChange = (value) => {
     setStatusFilter(value); // Cập nhật trạng thái bộ lọc
   };
 
   const handleChangeProvince = async (value) => {
-    const selectedProvince = provinces.find(prov => prov.value === value);
+    const selectedProvince = provinces.find((prov) => prov.value === value);
     setProvince(selectedProvince ? selectedProvince.label : "Tất cả tỉnh");
-};
+  };
 
   const handleChangeCategory = (value) => {
-    const selectedCategory = categories.find(cat => cat.value === value);
-    setCategory(selectedCategory ? selectedCategory.label : "Tất cả loại phòng");
-};
+    const selectedCategory = categories.find((cat) => cat.value === value);
+    setCategory(
+      selectedCategory ? selectedCategory.label : "Tất cả loại phòng"
+    );
+  };
 
   const handleEdit = (roomId) => {
     // Lấy thông tin phòng để chỉnh sửa
     const room = rooms.find((r) => r._id === roomId);
-    setCurrentRoom(room);
-    form.setFieldsValue(room); // Đặt giá trị của form cho các trường đã có sẵn
+    setCurrentRoom(room); 
     setIsModalVisible(true); // Mở modal
+    // Đặt giá trị của form cho các trường đã có sẵn
   };
 
   const handleDelete = async (roomId) => {
@@ -101,23 +104,6 @@ const LandlordListRoom = () => {
     } catch (error) {
       console.error(error);
       message.error("Xóa phòng thất bại.");
-    }
-  };
-
-  const handleUpdateRoom = async () => {
-    try {
-      const values = await form.validateFields();
-      await axios.post(`http://localhost:8000/api/room/${currentRoom._id}`, values, {
-        withCredentials: true,
-      });
-      message.success("Cập nhật phòng thành công.");
-      setIsModalVisible(false);
-      setRooms(
-        rooms.map((room) => (room._id === currentRoom._id ? { ...room, ...values } : room))
-      );
-    } catch (error) {
-      console.error(error);
-      message.error("Cập nhật phòng thất bại.");
     }
   };
 
@@ -213,7 +199,11 @@ const LandlordListRoom = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={handleCreateRoom} style={{ marginBottom: 16 }}>
+      <Button
+        type="primary"
+        onClick={handleCreateRoom}
+        style={{ marginBottom: 16 }}
+      >
         Thêm phòng mới
       </Button>
       <Table
@@ -230,33 +220,15 @@ const LandlordListRoom = () => {
         }}
       />
 
-      <Modal
-        title="Chỉnh sửa phòng"
+      <ModalUpdateRoom
         visible={isModalVisible}
-        onOk={handleUpdateRoom}
         onCancel={() => setIsModalVisible(false)}
-        okText="Cập nhật"
-        cancelText="Hủy"
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item label="Tiêu đề phòng" name="title" rules={[{ required: true, message: 'Vui lòng nhập tiêu đề phòng!' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Địa chỉ quận" name="address.district" rules={[{ required: true, message: 'Vui lòng nhập quận!' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Địa chỉ thành phố" name="address.province" rules={[{ required: true, message: 'Vui lòng nhập thành phố!' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Trạng thái" name="status">
-            <Select>
-              <Option value="available">Còn trống</Option>
-              <Option value="rented">Đã thuê</Option>
-              <Option value="maintenance">Đang bảo trì</Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
+        initialValues={currentRoom}
+        currentRoom={currentRoom}
+        setIsModalVisible={setIsModalVisible}
+        setRooms={setRooms}
+        rooms={rooms}
+      />
     </div>
   );
 };
