@@ -5,9 +5,9 @@ const ContractController = require("../app/controllers/Contract.controller")
 const { verifyJwt } = require("../app/middlewares/jwtMiddleware");
 
 router.post("/create", verifyJwt, ContractController.createContract);
-router.get("/:id", ContractController.getContract);
+router.get("/detail/:id", ContractController.getContract);
 router.delete("/delete", ContractController.deleteContract);
-router.post("/mine", ContractController.getMyContracts);
+router.get("/byLandlord",verifyJwt, ContractController.getContractsByLandlord);
 
 
 module.exports = router;
