@@ -165,7 +165,7 @@ const ListRoom = ({
               >
                 <div className={styles.roomContent}>
                   <img
-                    src={item.images[0] || "/logo512.png"}
+                    src={(item.images && item.images.length > 0 ? item.images[0] : "/logo192.png")}
                     alt="room"
                     onClick={() => {
                       nav(`/detail-room/${item._id}`);
@@ -209,12 +209,12 @@ const ListRoom = ({
           <h3>Tin nổi bật</h3>
           <div className={styles.featuredList}>
             {/* Featured Items */}
-            {featuredRooms.map((item, index) => (
+            {featuredRooms && featuredRooms.map((item, index) => (
               <div className={styles.featuredItem} key={index}
                 onClick={() => {
                   nav(`/detail-room/${item._id}`);
                 }}>
-                <img src={item.images[0] || "/logo192.png"} alt="Featured room" className={styles.featuredImage} />
+                <img src={(item.images && item.images.length > 0 ? item.images[0] : "/logo192.png")} alt="Featured room" className={styles.featuredImage} />
                 <div className={styles.featuredDetails}>
                   <Text className={styles.featuredTitle}>{renderStars(item.rating)}{item.title}</Text>
                   <div className={styles.featuredInfo}>
@@ -232,12 +232,12 @@ const ListRoom = ({
           <h3>Tin mới nhất</h3>
           <div className={styles.latestList}>
             {/* Latest Items */}
-            {latestRooms.map((item, index) => (
+            {latestRooms && latestRooms.map((item, index) => (
               <div className={styles.latestItem} key={index}
                 onClick={() => {
                   nav(`/detail-room/${item._id}`);
                 }}>
-                <img src={item.images[0] || "/logo192.png"} alt="Latest room" className={styles.featuredImage} />
+                <img src={(item.images && item.images.length > 0 ? item.images[0] : "/logo192.png")} alt="Latest room" className={styles.featuredImage} />
                 <div className={styles.latestDetails}>
                   <Text className={styles.latestTitle}>{item.title}</Text>
                   <div className={styles.latestInfo}>
