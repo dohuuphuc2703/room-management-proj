@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons"; // Import icons từ Ant Design
-import { Button, Form, message, Popconfirm, Select, Table } from "antd";
+import { Button, message, Popconfirm, Select, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,12 +13,9 @@ const LandlordListRoom = () => {
   const [statusFilter, setStatusFilter] = useState(""); // Trạng thái bộ lọc
   const [provinces, setProvinces] = useState([]);
   const [province, setProvince] = useState("");
-  const [category, setCategory] = useState();
   const [page, setPage] = useState(1);
-  const [categories, setCategories] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false); // Modal cho chỉnh sửa phòng
   const [currentRoom, setCurrentRoom] = useState(null); // Phòng hiện tại đang được chỉnh sửa
-  const [form] = Form.useForm(); // Sử dụng form Ant Design để chỉnh sửa
   const nav = useNavigate();
 
   useEffect(() => {
@@ -44,7 +41,7 @@ const LandlordListRoom = () => {
     Promise.all([
       axios.get("https://vapi.vnappmob.com/api/province/"),
       axios.get("http://localhost:8000/api/room-category/all"),
-    ]).then(([resCities, resRoomCates]) => {
+    ]).then(([resCities]) => {
       resCities.data.results.unshift({
         province_name: "Tất cả tỉnh",
         province_id: "",
@@ -53,17 +50,6 @@ const LandlordListRoom = () => {
         resCities.data.results.map((city) => ({
           label: city.province_name,
           value: city.province_id,
-        }))
-      );
-
-      resRoomCates.data.categories.unshift({
-        _id: 0,
-        category: "Tất cả loại phòng",
-      });
-      setCategories(
-        resRoomCates.data.categories.map((category) => ({
-          label: category.category,
-          value: category._id,
         }))
       );
     });
@@ -79,19 +65,17 @@ const LandlordListRoom = () => {
     setProvince(selectedProvince ? selectedProvince.label : "Tất cả tỉnh");
   };
 
-  const handleChangeCategory = (value) => {
-    const selectedCategory = categories.find((cat) => cat.value === value);
-    setCategory(
-      selectedCategory ? selectedCategory.label : "Tất cả loại phòng"
-    );
-  };
-
   const handleEdit = (roomId) => {
     // Lấy thông tin phòng để chỉnh sửa
     const room = rooms.find((r) => r._id === roomId);
-    setCurrentRoom(room); 
+    setCurrentRoom(room);
+    console.log(currentRoom);
     setIsModalVisible(true); // Mở modal
     // Đặt giá trị của form cho các trường đã có sẵn
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false); // Đóng modal
   };
 
   const handleDelete = async (roomId) => {
@@ -222,8 +206,7 @@ const LandlordListRoom = () => {
 
       <ModalUpdateRoom
         visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        initialValues={currentRoom}
+        onCancel={handleCloseModal}
         currentRoom={currentRoom}
         setIsModalVisible={setIsModalVisible}
         setRooms={setRooms}
