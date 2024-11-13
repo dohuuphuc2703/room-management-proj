@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'; // Import icons từ Ant Design
+import { DeleteOutlined, EditOutlined, FilePdfOutlined } from '@ant-design/icons'; // Import icons từ Ant Design
 import { Button, Form, Input, message, Modal, Popconfirm, Select, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -84,6 +84,12 @@ const ContractIndex = () => {
 
   const handleCreateContract = () => {
     nav("/landlord/createContract");
+  };
+
+  const handleViewPDF = (contractId) => {
+    // Mở PDF trong tab mới
+    const url = `http://localhost:8000/api/contract/pdf/${contractId}`;
+    window.open(url, "_blank");
   };
 
   const columns = [
@@ -194,6 +200,17 @@ const ContractIndex = () => {
             shape="circle" 
           />
         </Popconfirm>
+      ),
+    },
+    {
+      title: "Xem PDF",
+      render: (text, record) => (
+        <Button
+          icon={<FilePdfOutlined />} // Sử dụng icon PDF
+          onClick={() => handleViewPDF(record._id)}
+          type="primary"
+          shape="circle"
+        />
       ),
     },
   ];

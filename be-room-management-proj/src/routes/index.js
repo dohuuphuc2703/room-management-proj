@@ -26,6 +26,7 @@ module.exports = (app) => {
   app.use("/api/invoice", invoiceRoute);
   app.use("/uploads/avatars", express.static(path.join(process.cwd(), "public/uploads/avatars")));
   app.use("/uploads/roomImages", express.static(path.join(process.cwd(), "public/uploads/roomImages")));
+  app.use("/uploads/pdfContract", express.static(path.join(process.cwd(), "public/uploads/pdfContract")));
   app.get("/", (req, res) => {
     res.json({
       message: "Initial backend for room protal website",
