@@ -65,10 +65,24 @@ const upload = multer({
   }
 }).single("avatar");
 
+const storagePDFContract = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(process.cwd(), "public/uploads/pdfContract");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const fileName = `contract${Date.now()}${ext}`;
+    cb(null, fileName);
+  }
+});
 
 
 const uploadResume = multer({
-  storage: storage,
+  storage: storagePDFContract,
   limits: {
     fileSize: 10 * 1024 * 1024 // < 10MB
   },
@@ -83,6 +97,6 @@ const uploadResume = multer({
     else
       return cb(new Error("Hệ thống chỉ hỗ trợ định dạng pdf, doc, docx"));
   }
-});
+}).single("pdfContract");
 
 module.exports = { upload, uploadRoomImage, uploadResume };

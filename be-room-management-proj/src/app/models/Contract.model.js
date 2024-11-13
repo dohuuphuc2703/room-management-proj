@@ -56,7 +56,11 @@ const ContractSchema = new Schema({
                 required: true,
             }
         }
-    ]
+    ], 
+
+    pdfPath :{
+        type: String,
+    }
 
 },{
     timestamps : true,
