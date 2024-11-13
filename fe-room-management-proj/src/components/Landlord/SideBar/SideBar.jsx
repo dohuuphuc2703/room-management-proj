@@ -8,7 +8,7 @@ import {
   MessageOutlined,
   PieChartOutlined
 } from '@ant-design/icons';
-import { Button, Menu } from 'antd';
+import { Menu } from 'antd';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './SideBar.module.css';
@@ -26,7 +26,7 @@ function SideBar({user}) {
       <div className={`${styles.sidebar} ${collapsed ? styles.close : ''}`}>
         <div className={styles.logoDetails}>
           <AppstoreOutlined />
-          <span className={styles.logoName}>{user?.fullName}</span>
+          {!collapsed && <span className={styles.logoName}>{user?.fullName}</span>}
         </div>
         <Menu
           mode="inline"
@@ -54,7 +54,7 @@ function SideBar({user}) {
           </Menu.Item>
         </Menu>
         <button onClick={toggleCollapse} className={styles.collapseButton}>
-          {collapsed ? 'Expand' : 'Collapse'}
+          {collapsed ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
         </button>
 
       </div>

@@ -14,8 +14,7 @@ import {
   message,
   Modal,
   Row,
-  Select,
-  Upload,
+  Upload
 } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -24,7 +23,6 @@ import styles from "./ModalUpdateRoom.module.css";
 function ModalUpdateRoom({
   visible,
   onCancel,
-  initialValues,
   currentRoom,
   setIsModalVisible,
   setRooms,
@@ -32,88 +30,34 @@ function ModalUpdateRoom({
 }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [imageUrls, setImageUrls] = useState(null); // State to store the uploaded image URL
+  const [imageUrls, setImageUrls] = useState(); // State to store the uploaded image URL
   const [servicerooms, setServicerooms] = useState([{}]); // State to store service rooms
-  const [categories, setCategories] = useState([]);
-  const [provinces, setProvinces] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
-  const [province, setProvince] = useState("");
-  const [district, setDistrict] = useState("");
-  const [ward, setWard] = useState("");
-  const [category, setCategory] = useState();
 
-
-  const handleChangeProvince = async (value) => {
-    const selectedProvince = provinces.find((prov) => prov.value === value);
-    setProvince(selectedProvince ? selectedProvince.label : "");
-    setDistrict("");
-    setWard("");
-
-    // Lấy danh sách quận dựa trên tỉnh đã chọn
-    try {
-      const res = await axios.get(
-        `https://vapi.vnappmob.com/api/province/district/${value}`
-      );
-      setDistricts(
-        res.data.results.map((d) => ({
-          label: d.district_name,
-          value: d.district_id,
-        }))
-      );
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    if (currentRoom?.servicerooms) {
+      setServicerooms(currentRoom.servicerooms); // Load existing services when Modal is opened
     }
-  };
-
-  const handleChangeDistrict = async (value) => {
-    const selectedDistrict = districts.find((d) => d.value === value);
-    setDistrict(selectedDistrict ? selectedDistrict.label : "");
-    setWard("");
-
-    // Lấy danh sách phường dựa trên quận đã chọn
-    try {
-      const res = await axios.get(
-        `https://vapi.vnappmob.com/api/province/ward/${value}`
-      );
-      setWards(
-        res.data.results.map((w) => ({ label: w.ward_name, value: w.ward_id }))
-      );
-    } catch (error) {
-      console.error(error);
+    if (currentRoom) {
+      form.setFieldsValue({
+        title: currentRoom.title,
+        price: currentRoom.price,
+        // Cập nhật các trường cần thiết khác
+      });
     }
-  };
+  }, [currentRoom, form]);
 
-  const handleChangeWard = async (value) => {
-    const selectedWard = wards.find((w) => w.value === value);
-    setWard(selectedWard ? selectedWard.label : "");
-  };
-
-  const handleChangeCategory = (value) => {
-    const selectedCategory = categories.find((cat) => cat.value === value);
-    setCategory(selectedCategory ? selectedCategory.label : "");
-  };
   const onFinish = async (values) => {
     setLoading(true);
 
-    // Tạo đối tượng address từ các trường đã chọn
-    const address = {
-      province: province, // Lấy giá trị tỉnh
-      district: district, // Lấy giá trị quận
-      ward: ward, // Lấy giá trị phường
-      detail: values.detail, // Lấy chi tiết địa chỉ từ form
-    };
-
     const images = imageUrls;
     console.log(images);
-    // Gửi dữ liệu phòng cùng với address
+    // Gửi dữ liệu phòng
     try {
       const response = await axios.post(
         `http://localhost:8000/api/room/update/${currentRoom._id}`,
         {
           ...values,
-          address: address,
-          images: images, // Gửi địa chỉ dưới dạng đối tượng
+          images: images,
         },
         {
           withCredentials: true,
@@ -195,31 +139,14 @@ function ModalUpdateRoom({
   };
 
   const handleRemoveServiceRoom = (index) => {
-    const newServicerooms = [...servicerooms];
-    newServicerooms.splice(index, 1);
-    setServicerooms(newServicerooms);
-  };
-
-  useEffect(() => {
-    // Lấy danh sách tỉnh và loại phòng
-    Promise.all([
-      axios.get("https://vapi.vnappmob.com/api/province/"),
-      axios.get("http://localhost:8000/api/room-category/all"),
-    ]).then(([resCities, resRoomCates]) => {
-      setProvinces(
-        resCities.data.results.map((city) => ({
-          label: city.province_name,
-          value: city.province_id,
-        }))
-      );
-      setCategories(
-        resRoomCates.data.categories.map((category) => ({
-          label: category.category,
-          value: category._id,
-        }))
-      );
+    const updatedServiceRooms = [...servicerooms];
+    updatedServiceRooms.splice(index, 1);
+    setServicerooms(updatedServiceRooms);
+    form.setFieldsValue({
+      servicerooms: updatedServiceRooms, // Đảm bảo cập nhật lại giá trị của servicerooms trong form
     });
-  }, []);
+  };
+  
   return (
     <Modal
       title="Cập nhật thông tin phòng"
@@ -227,12 +154,12 @@ function ModalUpdateRoom({
       onCancel={onCancel}
       footer={null} // Để tùy chỉnh nút bấm trong form
       width={"80%"}
-      style={{ top: 0, height: '100vh' }} // Đặt modal bắt đầu từ đầu trang và cao 100% viewport
-      bodyStyle={{ height: 'calc(100% - 55px)', overflowY: 'auto' }} // Đảm bảo nội dung cuộn khi cần
+      style={{ top: 0, height: "100vh" }} // Đặt modal bắt đầu từ đầu trang và cao 100% viewport
+      bodyStyle={{ height: "calc(100% - 55px)", overflowY: "auto" }} // Đảm bảo nội dung cuộn khi cần
     >
       <Form
         form={form}
-        initialValues={initialValues}
+        initialValues={currentRoom}
         layout="vertical"
         onFinish={onFinish}
       >
@@ -255,18 +182,17 @@ function ModalUpdateRoom({
             <Form.Item
               label="Loại phòng"
               name="category"
-              rules={[{ required: true, message: "Vui lòng chọn loại phòng!" }]}
+              rules={[{ required: true }]}
             >
-              <Select
-                placeholder="Chọn loại phòng"
-                onChange={handleChangeCategory}
+              <span
+                style={{
+                  border: "1px solid #d9d9d9",
+                  padding: "6px",
+                  borderRadius: "5px",
+                }}
               >
-                {categories.map((cat) => (
-                  <Select.Option key={cat.value} value={cat.value}>
-                    {cat.label}
-                  </Select.Option>
-                ))}
-              </Select>
+                {currentRoom?.category?.category}
+              </span>
             </Form.Item>
           </Col>
         </Row>
@@ -276,61 +202,37 @@ function ModalUpdateRoom({
           <Col span={6}>
             <Form.Item
               label="Tỉnh"
-              name="province"
-              rules={[{ required: true, message: "Vui lòng chọn tỉnh!" }]}
+              name={["address", "province"]}
+              rules={[{ required: true }]}
             >
-              <Select
-                placeholder="Chọn tỉnh/thành phố"
-                onChange={handleChangeProvince}
-              >
-                {provinces.map((loc) => (
-                  <Select.Option key={loc.value} value={loc.value}>
-                    {loc.label}
-                  </Select.Option>
-                ))}
-              </Select>
+              <Input disabled></Input>
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item
               label="Quận"
-              name="district"
-              rules={[{ required: true, message: "Vui lòng chọn quận!" }]}
+              name={["address", "district"]}
+              rules={[{ required: true }]}
             >
-              <Select
-                placeholder="Chọn quận/huyện"
-                onChange={handleChangeDistrict}
-              >
-                {districts.map((d) => (
-                  <Select.Option key={d.value} value={d.value}>
-                    {d.label}
-                  </Select.Option>
-                ))}
-              </Select>
+              <Input disabled></Input>
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item
               label="Phường"
-              name="ward"
-              rules={[{ required: true, message: "Vui lòng chọn phường!" }]}
+              name={["address", "ward"]}
+              rules={[{ required: true }]}
             >
-              <Select placeholder="Chọn xã/phường" onChange={handleChangeWard}>
-                {wards.map((w) => (
-                  <Select.Option key={w.value} value={w.value}>
-                    {w.label}
-                  </Select.Option>
-                ))}
-              </Select>
+              <Input disabled></Input>
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item
-              name="detail"
+              name={["address", "detail"]}
               label="Địa chỉ"
-              rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
+              rules={[{ required: true }]}
             >
-              <Input placeholder="Địa chỉ" />
+              <Input disabled />
             </Form.Item>
           </Col>
         </Row>
@@ -495,7 +397,7 @@ function ModalUpdateRoom({
                   </Col>
 
                   <Col span={6}>
-                    <Checkbox value="Có tháng máy">Thang máy</Checkbox>
+                    <Checkbox value="Có thang máy">Thang máy</Checkbox>
                   </Col>
                 </Row>
               </Checkbox.Group>
