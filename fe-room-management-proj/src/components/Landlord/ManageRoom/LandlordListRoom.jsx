@@ -16,6 +16,7 @@ const LandlordListRoom = () => {
   const [page, setPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false); // Modal cho chỉnh sửa phòng
   const [currentRoom, setCurrentRoom] = useState(null); // Phòng hiện tại đang được chỉnh sửa
+  const [imageUrls, setImageUrls] = useState([]);
   const nav = useNavigate();
 
   useEffect(() => {
@@ -69,12 +70,13 @@ const LandlordListRoom = () => {
     // Lấy thông tin phòng để chỉnh sửa
     const room = rooms.find((r) => r._id === roomId);
     setCurrentRoom(room);
-    console.log(currentRoom);
+    
     setIsModalVisible(true); // Mở modal
     // Đặt giá trị của form cho các trường đã có sẵn
   };
 
   const handleCloseModal = () => {
+    setCurrentRoom(null);
     setIsModalVisible(false); // Đóng modal
   };
 
@@ -208,6 +210,8 @@ const LandlordListRoom = () => {
         visible={isModalVisible}
         onCancel={handleCloseModal}
         currentRoom={currentRoom}
+        setImageUrls={setImageUrls}  // Truyền setImageUrls vào ModalUpdateRoom
+        imageUrls={imageUrls}  // Truyền imageUrls vào ModalUpdateRoom
         setIsModalVisible={setIsModalVisible}
         setRooms={setRooms}
         rooms={rooms}

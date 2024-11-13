@@ -14,7 +14,7 @@ import {
   message,
   Modal,
   Row,
-  Upload
+  Upload,
 } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -27,10 +27,11 @@ function ModalUpdateRoom({
   setIsModalVisible,
   setRooms,
   rooms,
+  imageUrls, 
+  setImageUrls,
 }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [imageUrls, setImageUrls] = useState(); // State to store the uploaded image URL
   const [servicerooms, setServicerooms] = useState([{}]); // State to store service rooms
 
   useEffect(() => {
@@ -38,13 +39,10 @@ function ModalUpdateRoom({
       setServicerooms(currentRoom.servicerooms); // Load existing services when Modal is opened
     }
     if (currentRoom) {
-      form.setFieldsValue({
-        title: currentRoom.title,
-        price: currentRoom.price,
-        // Cập nhật các trường cần thiết khác
-      });
+      form.setFieldsValue(currentRoom);
+      setImageUrls(Array.isArray(currentRoom.images) ? currentRoom.images : []);
     }
-  }, [currentRoom, form]);
+  }, [currentRoom, form, setImageUrls]);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -146,12 +144,16 @@ function ModalUpdateRoom({
       servicerooms: updatedServiceRooms, // Đảm bảo cập nhật lại giá trị của servicerooms trong form
     });
   };
-  
+  const handleCancel = () => {
+    // Gọi onCancel từ props để đóng modal
+    onCancel();
+  };
+
   return (
     <Modal
       title="Cập nhật thông tin phòng"
       visible={visible}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       footer={null} // Để tùy chỉnh nút bấm trong form
       width={"80%"}
       style={{ top: 0, height: "100vh" }} // Đặt modal bắt đầu từ đầu trang và cao 100% viewport
@@ -408,25 +410,47 @@ function ModalUpdateRoom({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Hình ảnh phòng" name="images">
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "12px",
+                  marginBottom: "16px",
+                }}
+              >
+                {imageUrls && imageUrls.length > 0 ? (
+                  imageUrls.map((url, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                      }}
+                    >
+                      <img
+                        src={`http://localhost:8000${url}`}
+                        alt={`room-${index}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "4px",
+                        }}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <p>Chưa có ảnh nào được tải lên.</p>
+                )}
+              </div>
               <Upload
                 name="roomImages"
                 listType="picture-card"
                 multiple={true} // Cho phép chọn nhiều ảnh
                 showUploadList={{ showRemoveIcon: true }} // Hiển thị nút xóa
                 customRequest={handleImageChange} // Đảm bảo customRequest được truyền đúng
-                // onChange={handleImageChange}
                 onRemove={handleRemove} // Xử lý khi xóa ảnh
               >
-                {imageUrls && imageUrls.length > 0
-                  ? imageUrls.map((url, index) => (
-                      <img
-                        key={index}
-                        src={`http://localhost:8000${url}`}
-                        alt={`room-${index}`}
-                        style={{ width: "100%" }}
-                      />
-                    ))
-                  : null}
                 <div>
                   <UploadOutlined />
                   <div style={{ marginTop: 8 }}>Chọn hình ảnh</div>
