@@ -60,7 +60,15 @@ const ContractSchema = new Schema({
 
     pdfPath :{
         type: String,
-    }
+    },
+
+    status: { 
+        type: String,
+        enum: {
+            values: ["waiting", "canceled", "confirmed"],
+            message: "status <{VALUE} is not supported>",
+        },
+    },
 
 },{
     timestamps : true,

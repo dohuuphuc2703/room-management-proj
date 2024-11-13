@@ -9,7 +9,7 @@ router.get("/detail/:id", ContractController.getContract);
 router.delete("/delete", ContractController.deleteContract);
 router.get("/byLandlord",verifyJwt, ContractController.getContractsByLandlord);
 router.get("/pdf/:contractId", ContractController.getContractPDF);
-
+router.get('/verify', ContractController.verifyContract);
 
 
 module.exports = router;
