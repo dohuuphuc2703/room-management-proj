@@ -1,4 +1,4 @@
-import { AreaChartOutlined, FileTextOutlined, UploadOutlined, TeamOutlined } from '@ant-design/icons';
+import { AreaChartOutlined, FileTextOutlined, TeamOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Form, Input, InputNumber, message, Row, Select, Upload } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -377,11 +377,6 @@ const CreateRoom = () => {
                                 // onChange={handleImageChange}
                                 onRemove={handleRemove}  // Xử lý khi xóa ảnh
                             >
-                                {imageUrls && imageUrls.length > 0 ? (
-                                    imageUrls.map((url, index) => (
-                                        <img key={index} src={`http://localhost:8000/${url}`} alt={`room-${index}`} style={{ width: '100%' }} />
-                                    ))
-                                ) : null}
                                 <div>
                                     <UploadOutlined />
                                     <div style={{ marginTop: 8 }}>Chọn hình ảnh</div>

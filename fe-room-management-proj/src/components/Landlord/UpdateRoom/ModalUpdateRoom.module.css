@@ -1,0 +1,19 @@
+.uploaded-images-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px; /* Khoảng cách giữa các ảnh */
+    margin-bottom: 16px; /* Khoảng cách giữa ảnh đã tải lên và thẻ Upload */
+  }
+  
+  .upload-image-container {
+    width: 50px; /* Kích thước ảnh */
+    height: 50px; /* Chiều cao cố định */
+  }
+  
+  .uploaded-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover; /* Đảm bảo ảnh không bị méo */
+    border-radius: 4px; /* Bo góc ảnh nếu cần */
+  }
+  
