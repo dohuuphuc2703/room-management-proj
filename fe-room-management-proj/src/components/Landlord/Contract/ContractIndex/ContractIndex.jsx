@@ -36,21 +36,14 @@ const ContractIndex = () => {
     fetchContracts();
   }, []); // Gọi lại API khi bất kỳ bộ lọc nào thay đổi
 
-  // const handleStatusChange = (value) => {
-  //   setStatusFilter(value); // Cập nhật trạng thái bộ lọc
-  // };
+  const handleStatusChange = (value) => {
+    setStatusFilter(value); // Cập nhật trạng thái bộ lọc
+  };
 
   // const handleTitleChange = (e) => {
   //   setTitleFilter(e.target.value); // Cập nhật tiêu đề bộ lọc
   // };
 
-  const handleEdit = (contractId) => {
-    // Lấy thông tin phòng để chỉnh sửa
-    const contracst = contracts.find((r) => r._id === contractId);
-    setCurrentContract(contracst);
-    form.setFieldsValue(contracst); // Đặt giá trị của form cho các trường đã có sẵn
-    setIsModalVisible(true); // Mở modal
-  };
 
   // const handleDelete = async (roomId) => {
   //   try {
@@ -146,7 +139,7 @@ const ContractIndex = () => {
     {
       title: "Trạng thái",
       render: (text, record) => (
-        <span>{record.status === "available" ? "Còn trống" : record.status === "rented" ? "Đã thuê" : "Đang bảo trì"}</span>
+        <span>{record.status === "waiting" ? "Chờ xác nhận" : record.status === "canceled" ? "Đã hủy" : "Đang hiệu lực"}</span>
       ),
       filterDropdown: ({ setSelectedKeys, confirm }) => (
         <div style={{ padding: 8 }}>
@@ -154,13 +147,13 @@ const ContractIndex = () => {
             showSearch
             placeholder="Lọc theo trạng thái"
             value={statusFilter}
-            // onChange={handleStatusChange}
+            onChange={handleStatusChange}
             style={{ width: 188, marginBottom: 8, display: 'block' }}
           >
             <Option value="">Tất cả</Option>
-            <Option value="available">Còn trống</Option>
-            <Option value="rented">Đã thuê</Option>
-            <Option value="maintenance">Đang bảo trì</Option>
+            <Option value="waiting">Chờ xác nhận</Option>
+            <Option value="canceled">Đã hủy</Option>
+            <Option value="confirmed">Đang hiệu lực</Option>
           </Select>
           <Button
             type="primary"
@@ -175,13 +168,13 @@ const ContractIndex = () => {
       ),
     },
     {
-      title: "Sửa",
+      title: "Xem PDF",
       render: (text, record) => (
-        <Button 
-          icon={<EditOutlined />} 
-          onClick={() => handleEdit(record._id)} 
-          type="primary" 
-          shape="circle" 
+        <Button
+          icon={<FilePdfOutlined />} // Sử dụng icon PDF
+          onClick={() => handleViewPDF(record._id)}
+          type="primary"
+          shape="circle"
         />
       ),
     },
@@ -202,17 +195,7 @@ const ContractIndex = () => {
         </Popconfirm>
       ),
     },
-    {
-      title: "Xem PDF",
-      render: (text, record) => (
-        <Button
-          icon={<FilePdfOutlined />} // Sử dụng icon PDF
-          onClick={() => handleViewPDF(record._id)}
-          type="primary"
-          shape="circle"
-        />
-      ),
-    },
+    
   ];
 
   return (
