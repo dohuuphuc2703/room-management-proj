@@ -131,7 +131,7 @@ class ContractController {
     const { contractId, token } = req.query;
   
     try {
-      const contract = await Contract.findById(contractId);
+      const contract = await Contract.findById(contractId).populate("room");
       if (!contract) {
         return res.status(404).json({ message: "Contract not found" });
       }
@@ -141,10 +141,15 @@ class ContractController {
       if (!isTokenValid) {
         return res.status(400).json({ message: "Invalid token" });
       }
-  
+      
+      const room = await Room.findById(contract.room._id);
+      room.status="rented";
       // Cập nhật trạng thái hợp đồng
       contract.status = "confirmed";
       await contract.save();
+
+      room.status="rented";
+      await room.save();
   
       return res.status(200).json({ message: "Contract confirmed successfully" });
     } catch (error) {

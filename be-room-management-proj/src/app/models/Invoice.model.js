@@ -15,6 +15,21 @@ const InvoiceSchema = new Schema({
         default: null,
     },
 
+    totalOfSv :[{
+        name: {
+            type: String,
+            default: null,
+        },
+        quantity: {
+            type: Number,
+            default: null,
+        },
+        totalAmount: {
+            type: Number,
+            default: null,
+        },
+    }],
+
     status: {
         type: Boolean,
         default: false,
