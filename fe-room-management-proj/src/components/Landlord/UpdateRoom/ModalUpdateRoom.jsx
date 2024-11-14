@@ -27,7 +27,7 @@ function ModalUpdateRoom({
   setIsModalVisible,
   setRooms,
   rooms,
-  imageUrls, 
+  imageUrls,
   setImageUrls,
 }) {
   const [form] = Form.useForm();
@@ -301,7 +301,55 @@ function ModalUpdateRoom({
             </Form.Item>
           </Col>
         </Row>
+        <Row gutter={16}>
+          <Col span={2}>
+            <h3>Điện:</h3>
+          </Col>
 
+          <Col span={4}>
+            <Form.Item
+              label="Đơn giá"
+              name={["electric", "price"]}
+              rules={[{ required: true, message: "Vui lòng nhập giá điện" }]}
+            >
+              <Input placeholder="Giá điện" />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item
+              label="Đơn vị tính"
+              name={["electric", "description"]}
+              rules={[{ required: true, message: "Vui lòng nhập đơn vị tính" }]}
+            >
+              <Input placeholder="Đơn vị tính" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={2}>
+            <h3>Nước:</h3>
+          </Col>
+
+          <Col span={4}>
+            <Form.Item
+              label="Đơn giá"
+              name={["water", "price"]}
+              rules={[{ required: true, message: "Vui lòng nhập giá nước" }]}
+            >
+              <Input placeholder="Giá nước" />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item
+              label="Đơn vị tính"
+              name={["water", "description"]}
+              rules={[{ required: true, message: "Vui lòng nhập đơn vị tính" }]}
+            >
+              <Input placeholder="Đơn vị tính" />
+            </Form.Item>
+          </Col>
+        </Row>
         {/* Dịch vụ phòng */}
         <Row gutter={16}>
           <Col span={24}>

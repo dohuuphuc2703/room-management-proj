@@ -281,56 +281,31 @@ const CreateRoom = () => {
                 </Row>
 
                 <Row gutter={16}>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Điện"
-                            name="electric">
-                            <Input disabled />
-                        </Form.Item>
+                    <Col span={2}>
+                        <h3>Điện:</h3>
                     </Col>
-                        
+
                     <Col span={6}>
                         <Form.Item
-                            label="Giá"
+                            label="Đơn giá"
                             name={["electric", "price"]}
                             rules={[{ required: true,  message: "Vui lòng nhập giá điện"}]}>
                             <Input placeholder="Giá điện" />
                         </Form.Item>
                     </Col>  
-                    <Col span={6}>
-                        <Form.Item
-                            label="Mô tả"
-                            name={["electric", "description"]}
-                            rules={[{ required: true,  message: "Vui lòng nhập mô tả"}]}>
-                            <Input placeholder="Mô tả" />
-                        </Form.Item>
-                    </Col>
                 </Row>
 
                 <Row gutter={16}>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Nước"
-                            name="water">
-                            <Input disabled />
-                        </Form.Item>
+                    <Col span={2}>
+                        <h3>Nước:</h3>
                     </Col>
                         
                     <Col span={6}>
                         <Form.Item
-                            label="Giá"
+                            label="Đơn giá"
                             name={["water", "price"]}
                             rules={[{ required: true, message: "Vui lòng nhập giá nước"}]}>
                             <Input placeholder="Giá nước" />
-                        </Form.Item>
-                    </Col>
-                        
-                    <Col span={6}>
-                        <Form.Item
-                            label="Mô tả"
-                            name={["water", "description"]}
-                            rules={[{ required: true,  message: "Vui lòng nhập mô tả"}]}>
-                            <Input placeholder="Mô tả" />
                         </Form.Item>
                     </Col>
                 </Row>

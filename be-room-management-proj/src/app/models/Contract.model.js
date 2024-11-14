@@ -6,21 +6,18 @@ const ContractSchema = new Schema({
     tenant: { 
         type: Schema.Types.ObjectId, 
         ref: "Tenant",
-        unique: true,
         required: true,
     },
 
     landlord: { 
         type: Schema.Types.ObjectId, 
         ref: "Landlord",
-        unique: true,
         required: true,
     },
 
     room: { 
         type: Schema.Types.ObjectId, 
         ref: "Room",
-        unique: true,
         required: true,
     },
 

@@ -1,5 +1,5 @@
-import { StarOutlined, StarFilled } from "@ant-design/icons";
-import { Avatar, List, Space, Typography } from "antd";
+import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { List, Space, Typography } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -165,7 +165,7 @@ const ListRoom = ({
               >
                 <div className={styles.roomContent}>
                   <img
-                    src={(item.images && item.images.length > 0 ? item.images[0] : "/logo192.png")}
+                    src={(item.images && item.images.length > 0 ? `http://localhost:8000${item.images[0]}` : "/logo192.png")}
                     alt="room"
                     onClick={() => {
                       nav(`/detail-room/${item._id}`);
