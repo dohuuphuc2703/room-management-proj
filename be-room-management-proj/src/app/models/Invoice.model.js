@@ -6,7 +6,6 @@ const InvoiceSchema = new Schema({
     contract: { 
         type: Schema.Types.ObjectId, 
         ref: "Contract",
-        unique: true,
         required: true,
     }, 
 
