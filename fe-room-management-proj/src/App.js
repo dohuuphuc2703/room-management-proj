@@ -10,11 +10,12 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
 // import SideBar from "./components/Landlord/SideBar/SideBar";
-import CreateRoom from "./components/Landlord/CreateRoom/CreateRoom";
-import LandlordListRoom from "./components/Landlord/ManageRoom/LandlordListRoom";
-import LandlordView from "./pages/LandlordView/LandlordView";
 import ContractIndex from "./components/Landlord/Contract/ContractIndex/ContractIndex";
 import CreateContract from "./components/Landlord/Contract/CreateContract/CreateContract";
+import CreateRoom from "./components/Landlord/CreateRoom/CreateRoom";
+import NewInvoice from "./components/Landlord/Invoice/NewInvoice/NewInvoice";
+import LandlordListRoom from "./components/Landlord/ManageRoom/LandlordListRoom";
+import LandlordView from "./pages/LandlordView/LandlordView";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="rooms" element={<LandlordListRoom />} />
             <Route path="contract" element={<ContractIndex />} />
             <Route path="createContract" element={<CreateContract />} />
+            <Route path="newInvoice" element={<NewInvoice />} />
           </Route>
         </Routes>
       </ConfigProvider>
