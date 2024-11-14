@@ -75,6 +75,44 @@ const RoomSchema = new Schema({
         required: true,
     },
 
+    water :{
+        price: {
+            type: Number,
+            default: null,
+        },
+        description: {
+            type: String,
+            default: "m3",
+        },
+        old: {
+            type: Number,
+            default: null,
+        },
+        new: {
+            type: Number,
+            default: null,
+        },
+    },
+
+    electric :{
+        price: {
+            type: Number,
+            default: null,
+        },
+        description: {
+            type: String,
+            default: "số",
+        },
+        old: {
+            type: Number,
+            default: null,
+        },
+        new: {
+            type: Number,
+            default: null,
+        },
+    },
+
     servicerooms: [{
         name: {
             type: String,
@@ -89,6 +127,7 @@ const RoomSchema = new Schema({
             default: null,
         }
     }],
+    
     images: [{
         type: String,
         default: null,
