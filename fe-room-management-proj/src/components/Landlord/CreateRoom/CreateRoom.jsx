@@ -2,6 +2,7 @@ import { AreaChartOutlined, FileTextOutlined, TeamOutlined, UploadOutlined } fro
 import { Button, Checkbox, Col, Form, Input, InputNumber, message, Row, Select, Upload } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import styles from "./CreateRoom.module.css";
 
 const { Option } = Select;
@@ -19,6 +20,7 @@ const CreateRoom = () => {
     const [district, setDistrict] = useState("");
     const [ward, setWard] = useState("");
     const [category, setCategory] = useState();
+    const nav = useNavigate();
 
     const handleChangeProvince = async (value) => {
         const selectedProvince = provinces.find(prov => prov.value === value);
@@ -84,6 +86,7 @@ const CreateRoom = () => {
             });
 
             message.success("Phòng đã được tạo thành công!");
+            nav('http://localhost:8000/landlord/rooms');
         } catch (error) {
             message.error("Có lỗi xảy ra khi tạo phòng.");
         } finally {

@@ -2,9 +2,14 @@ const Invoice = require("../models/Invoice.model");
 const Contract = require("../models/Contract.model");
 
 class InvoiceController {
-  // [POST] /api/invoices/ - Tạo hóa đơn mới (Create)
+  // [POST] /api/invoices/create
   async createInvoice(req, res) {
     const { contractID, totalOfSv, title } = req.body;
+    if (!contractID || !totalOfSv || !Array.isArray(totalOfSv) || totalOfSv.length === 0) {
+      return res.status(400).json({
+        message: "Thiếu dữ liệu cần thiết hoặc dữ liệu không hợp lệ",
+      });
+    }
     try {
       const contract = await Contract.findById(contractID).populate(
         "tenant landlord room"
@@ -17,23 +22,31 @@ class InvoiceController {
       }
 
       if (contract.status ==="waiting" || contract.status ==="canceled") {
-        return res.status(404).json({
+        return res.status(400).json({
           message: "Contract chưa/không có hiệu lực",
         });
       }
-      const total = totalOfSv.reduce((sum, service) => sum + (Number(service.totalAmount) || 0), 0);
+      const total = totalOfSv.reduce((sum, service) => {
+        if (!service.name || service.quantity == null || service.totalAmount == null) {
+          throw new Error("Dữ liệu dịch vụ không hợp lệ");
+        }
+        return sum + (Number(service.totalAmount) || 0);
+      }, 0);
       
       // Create a new invoice based on the contract details
       const newInvoice = new Invoice({
         contract: contract._id,
-        title: title,
-        totalOfSv: totalOfSv, // Ensure this is provided in the request body or calculated
+        title: title || `Hóa đơn cho phòng ${contract.room.title}`,
+        totalOfSv,
         status: false,
-        total: total, // Calculated total amount
+        total, // Tổng tiền đã tính
       });
 
       const savedInvoice = await newInvoice.save();
-      return res.status(201).json(savedInvoice);
+      return res.status(201).json({
+        message: "Hóa đơn được tạo thành công",
+        invoice: savedInvoice,
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({
