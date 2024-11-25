@@ -16,6 +16,7 @@ import CreateRoom from "./components/Landlord/CreateRoom/CreateRoom";
 import NewInvoice from "./components/Landlord/Invoice/NewInvoice/NewInvoice";
 import LandlordListRoom from "./components/Landlord/ManageRoom/LandlordListRoom";
 import LandlordView from "./pages/LandlordView/LandlordView";
+import MyRoom from "./components/Tenant/MyRoom/MyRoom";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
             <Route path="/detail-room/:roomId" element={<RoomDetail />} />
             <Route path="/account" element={<AccountManagement />} />
             <Route path="/saved-rooms" element={<ListSavedRooms />} />
+            <Route path="/my-room" element={<MyRoom />} />
+
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
