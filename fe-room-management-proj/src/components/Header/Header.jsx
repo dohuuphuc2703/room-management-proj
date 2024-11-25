@@ -49,7 +49,7 @@ function Header({user}) {
       <Menu.Item key="1" icon={<SettingOutlined />} onClick={() => navigate("/account")}>
         Quản lý tài khoản
       </Menu.Item>
-      <Menu.Item key="2" icon={<HomeOutlined />} onClick={() => navigate("/my-rooms")}>
+      <Menu.Item key="2" icon={<HomeOutlined />} onClick={() => navigate("/my-room")}>
         Phòng trọ của tôi
       </Menu.Item>
       <Menu.Item key="3" icon={<HeartOutlined />} onClick={() => navigate("/saved-rooms")}>

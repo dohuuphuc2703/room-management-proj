@@ -221,6 +221,27 @@ class ContractController {
     }
   }
 
+  async getContractsByTenant(req, res) {
+    const tenantId = req.user.uid; // Lấy landlordId từ thông tin user đã đăng nhập
+
+    try {
+      const contract = await Contract.findOne({ tenant: tenantId, status: "confirmed" }) // Tìm hợp đồng của landlord đó
+        .populate({
+          path: "landlord",
+          populate: {
+            path: "user",
+            select: "email fullName, phone",
+          },
+        })
+        .populate("room", "-__v");
+
+      return res.status(200).json({ contract });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: error.toString() });
+    }
+  }
+
   async getContractPDF(req, res) {
     const { contractId } = req.params; // Lấy ID hợp đồng từ URL
     try {
