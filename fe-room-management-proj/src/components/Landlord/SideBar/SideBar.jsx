@@ -6,27 +6,53 @@ import {
   FileTextOutlined,
   HomeOutlined,
   MessageOutlined,
-  PieChartOutlined
+  PieChartOutlined,
+  PoweroffOutlined
 } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Menu, message } from 'antd';
+import axios from "axios";
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from 'react-router-dom';
+import { logout } from "../../../actions";
 import styles from './SideBar.module.css';
 
 const { SubMenu } = Menu;
 
 function SideBar({user}) {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleCollapse = () => {
     setCollapsed(!collapsed);
+  };
+  const handleLogout = async () => {
+    try {
+      await axios.get("http://localhost:8000/auth/logout", {
+        withCredentials: true,
+      });
+      message.success("Đăng xuất thành công");
+      dispatch(logout());
+      navigate("/login"); // Redirect to login page after logout
+    } catch (error) {
+      console.error("Error logging out:", error);
+      message.error("Có lỗi xảy ra khi đăng xuất");
+    }
   };
 
   return (
       <div className={`${styles.sidebar} ${collapsed ? styles.close : ''}`}>
         <div className={styles.logoDetails}>
           <AppstoreOutlined />
-          {!collapsed && <span className={styles.logoName}>{user?.fullName}</span>}
+          {!collapsed && 
+          <div>
+            <span className={styles.logoName}>
+              {user?.fullName}
+            </span>
+            <PoweroffOutlined onClick={handleLogout} />
+          </div>
+          }
         </div>
         <Menu
           mode="inline"
