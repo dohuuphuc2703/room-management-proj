@@ -1,5 +1,5 @@
-import { CalendarOutlined, HomeOutlined, LockOutlined, PhoneOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Form, Input, Layout, message, Row, Tabs, Typography  } from "antd";
+import { CalendarOutlined, HomeOutlined, FilePdfOutlined } from '@ant-design/icons';
+import { Select, Button, Col, Form, Table, Layout, message, Row, Tabs, Typography, Modal } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -9,11 +9,13 @@ import styles from "./MyRoom.module.css";
 const { Content } = Layout;
 const { TabPane } = Tabs;
 const { Text, Title } = Typography;
+const { Option } = Select;
 
 const MyRoom = () => {
     const [loading, setLoading] = useState(false);
     const [roomInfo, setRoomInfo] = useState();
     const [pdfPath, setPdfPath] = useState();
+    const [contractId, setContractId] = useState()
 
     useEffect(() => {
         const fetchContractInfo = async () => {
@@ -24,7 +26,8 @@ const MyRoom = () => {
                 );
                 setRoomInfo(response.data.contract.room)
                 setPdfPath(response.data.contract.pdfPath)
-         
+                setContractId(response.data.contract._id)
+
             } catch (error) {
                 message.error("Error fetching user info");
             }
@@ -39,16 +42,13 @@ const MyRoom = () => {
                 <div>
                     <Tabs defaultActiveKey="1" tabBarStyle={{ fontWeight: 'bold' }}>
                         <TabPane tab="Thông tin phòng" key="1">
-                            <RoomInfoForm  roomInfo={roomInfo}/>
+                            <RoomInfoForm roomInfo={roomInfo} />
                         </TabPane>
                         <TabPane tab="Hợp đồng" key="2">
                             <Contract pdfPath={pdfPath} />
                         </TabPane>
                         <TabPane tab="Hóa đơn" key="3">
-                            <Invoice  loading={loading} />
-                        </TabPane>
-                        <TabPane tab="Hóa đơn" key="4">
-                            <MaintenanceRequest loading={loading} />
+                            <Invoice contractId={contractId} loading={loading} />
                         </TabPane>
                     </Tabs>
                 </div>
@@ -79,7 +79,7 @@ const RoomInfoForm = ({ roomInfo }) => {
                     <Text strong>Địa chỉ:</Text>
                     <div>
                         <HomeOutlined style={{ marginRight: '8px' }} />
-                        <Text>{roomInfo?.address.detail+", " + roomInfo?.address.ward +", "+roomInfo?.address.district+", " +roomInfo?.address.province || 'N/A'}</Text>
+                        <Text>{roomInfo?.address.detail + ", " + roomInfo?.address.ward + ", " + roomInfo?.address.district + ", " + roomInfo?.address.province || 'N/A'}</Text>
                     </div>
                 </Col>
                 <Col span={8}>
@@ -180,19 +180,202 @@ const Contract = ({ pdfPath }) => {
     );
 };
 
-const Invoice = ({ onFinish, loading }) => {
+const Invoice = ({ contractId, loading }) => {
+    const [invoices, setInvoices] = useState([]);
+    const [statusFilter, setStatusFilter] = useState(null);
+    const [qrCodeData, setQrCodeData] = useState(null);
+    const [selectedInvoice, setSelectedInvoice] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+
+    const fetchInvoices = async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:8000/api/invoice/byContract",
+                {
+                    params: {
+                        status: statusFilter,
+                        contractId: contractId,
+                    }
+                }
+            );
+            setInvoices(response.data);
+        } catch (error) {
+            message.error("Lỗi khi tải hóa đơn");
+        }
+    };
+
+    useEffect(() => {
+        fetchInvoices();
+    }, [contractId, statusFilter]);
+
+    const handleStatusChange = (value) => {
+        setStatusFilter(value === "" ? null : value === "true");
+    };
+
+    const columns = [
+        {
+            title: "STT",
+            render: (_, __, index) => index + 1,
+        },
+        {
+            title: "Tiêu đề",
+            dataIndex: "title",
+            key: "title",
+        },
+        {
+            title: "Tổng tiền",
+            dataIndex: "total",
+            key: "total",
+        },
+        {
+            title: "Trạng thái",
+            render: (text, record) => (
+                <span>
+                    {record.status ? "Đã thanh toán" : "Chưa thanh toán"}
+                </span>
+            ),
+            filterDropdown: () => (
+                <div style={{ padding: 8 }}>
+                    <Select
+                        value={statusFilter === null ? "" : String(statusFilter)}
+                        onChange={handleStatusChange}
+                        placeholder="Lọc theo trạng thái"
+                        style={{ width: 188 }}
+                    >
+                        <Option value="">Tất cả</Option>
+                        <Option value="false">Chưa thanh toán</Option>
+                        <Option value="true">Đã thanh toán</Option>
+                    </Select>
+                </div>
+            ),
+        },
+        {
+            title: "Action",
+            render: (text, record) => (
+                <Button
+                    icon={<FilePdfOutlined />}
+                    type="primary"
+                    shape="circle"
+                    onClick={() => handleViewInvoice(record)}
+                />
+            ),
+        },
+    ];
+
+    const handleViewInvoice = (invoice) => {
+        setSelectedInvoice(invoice);
+        setIsModalVisible(true);
+        setQrCodeData(null); // reset qrCodeData khi mở modal
+        generateQRCode(invoice); // tự động tạo mã QR khi mở modal
+    };
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+        setSelectedInvoice(null);
+        setQrCodeData(null);
+    };
+
+    const handlePayment = async () => {
+        setIsPaymentProcessing(true);
+        try {
+            message.success("Thanh toán thành công!");
+        } catch (error) {
+            message.error("Lỗi khi thanh toán");
+        } finally {
+            setIsPaymentProcessing(false);
+        }
+    };
+
+    const generateQRCode = async (invoice) => {
+        try {
+            const qrData = {
+                accountNo: 113366668888,
+                accountName: "QUY VAC XIN PHONG CHONG COVID",
+                acqId: 970415,
+                amount: invoice.total,
+                addInfo: invoice.title,
+                format: "text",
+                template: "print"
+            };
+
+            const response = await axios.post("https://api.vietqr.io/v2/generate", qrData);
+
+            if (response.data && response.data.data.qrDataURL) {
+                setQrCodeData(response.data.data.qrDataURL);
+            } else {
+                message.error("Không thể tạo mã QR");
+            }
+        } catch (error) {
+            message.error("Lỗi khi tạo mã QR");
+        }
+    };
 
     return (
-      `d`
+        <>
+            <Table
+                columns={columns}
+                dataSource={invoices}
+                loading={loading}
+                rowKey="_id"
+                pagination={false}
+            />
+
+            <Modal
+                title="Chi tiết hóa đơn"
+                visible={isModalVisible}
+                onCancel={handleCloseModal}
+                footer={[
+                    <Button key="back" onClick={handleCloseModal}>
+                        Đóng
+                    </Button>,
+                    <Button
+                        key="payment"
+                        type="primary"
+                        onClick={handlePayment}
+                        loading={isPaymentProcessing}
+                    >
+                        Thanh toán
+                    </Button>,
+                ]}
+
+                width="70%"
+                className={styles.modal}
+            >
+                {selectedInvoice && (
+                    <div className={styles.modalContent}>
+                        <div className={styles.invoiceInfo}>
+                            <p><strong>Tiêu đề:</strong> {selectedInvoice.title}</p>
+                            <div>
+                                <strong>Danh sách dịch vụ:</strong>
+                                <Table
+                                    columns={[
+                                        { title: "STT", render: (_, __, index) => index + 1 },
+                                        { title: "Tên dịch vụ", dataIndex: "name", key: "name" },
+                                        { title: "Số lượng", dataIndex: "quantity", key: "quantity" },
+                                        { title: "Tổng tiền", dataIndex: "totalAmount", key: "totalAmount" },
+                                    ]}
+                                    dataSource={selectedInvoice.totalOfSv}
+                                    pagination={false}
+                                    rowKey="_id"
+                                />
+                            </div>
+                            <p><strong>Tổng tiền:</strong> {selectedInvoice.total}</p>
+                            <p><strong>Trạng thái:</strong> {selectedInvoice.status ? "Đã thanh toán" : "Chưa thanh toán"}</p>
+                        </div>
+
+                        {/* Hiển thị mã QR bên phải thông tin hóa đơn */}
+                        {qrCodeData && (
+                            <div className={styles.qrContainer}>
+                                <img src={qrCodeData} alt="QR Code" className={styles.qrCode} />
+                            </div>
+                        )}
+                    </div>
+                )}
+            </Modal>
+        </>
     );
 };
 
-const MaintenanceRequest = ({ onFinish, loading }) => {
-    const [form] = Form.useForm();
-
-    return (
-        "d"
-    );
-};
 
 export default MyRoom;

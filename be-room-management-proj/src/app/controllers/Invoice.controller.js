@@ -134,6 +134,22 @@ class InvoiceController {
       });
     }
   }
+
+  async getInvoiceByContract(req, res) {
+    const { contractId, status } = req.query;
+    try {
+        const filter = { contract: contractId };
+        if (status !== undefined && status !== null) { // Kiểm tra nếu `status` không null/undefined
+          filter.status = status;
+        }
+        const invoices = await Invoice.find(filter).sort({ createdAt: -1 });
+        return res.status(200).json(invoices);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: error.toString() });
+    }
+  }
+  
 }
 
 module.exports = new InvoiceController();
