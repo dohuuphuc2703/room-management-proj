@@ -9,7 +9,7 @@ const { verifyJwt } = require("../app/middlewares/jwtMiddleware");
 router.post("/create", verifyJwt ,roleVerify("landlord"), InvoiceController.createInvoice); 
 router.get("invoiceInfo/:invoiceId", InvoiceController.getInvoiceById);
 router.get("/allInvoice", InvoiceController.getInvoices);
-router.put("/update/:invoiceId", InvoiceController.updateInvoice); 
+router.put("/update/:invoiceId", InvoiceController.updateInvoice);
 router.delete("/delete/:invoiceId", InvoiceController.deleteInvoice);
 router.get("/byContract", InvoiceController.getInvoiceByContract);
 

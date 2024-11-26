@@ -4,7 +4,7 @@ const Contract = require("../models/Contract.model");
 class InvoiceController {
   // [POST] /api/invoices/create
   async createInvoice(req, res) {
-    const { contractID, totalOfSv, title } = req.body;
+    const { contractID, totalOfSv } = req.body;
     if (!contractID || !totalOfSv || !Array.isArray(totalOfSv) || totalOfSv.length === 0) {
       return res.status(400).json({
         message: "Thiếu dữ liệu cần thiết hoặc dữ liệu không hợp lệ",
@@ -33,10 +33,14 @@ class InvoiceController {
         return sum + (Number(service.totalAmount) || 0);
       }, 0);
       
-      // Create a new invoice based on the contract details
+      const lastMonthDate = new Date();
+      lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
+      const lastMonth = lastMonthDate.toLocaleString("vi-VN", { month: "long", year: "numeric" });
+
+      // Tạo hóa đơn mới dựa trên thông tin hợp đồng
       const newInvoice = new Invoice({
         contract: contract._id,
-        title: title || `Hóa đơn cho phòng ${contract.room.title}`,
+        title: `Hóa đơn tháng ${lastMonth} phòng "${contract.room.title}"`,
         totalOfSv,
         status: false,
         total, // Tổng tiền đã tính
@@ -55,21 +59,45 @@ class InvoiceController {
     }
   }
 
-  // [GET] /api/invoices/ - Lấy danh sách hóa đơn (Read all)
-  async getInvoices(req, res) {
-    try {
-      const invoices = await Invoice.find().populate({
-        path: "contract", // Giả sử bạn có một bảng Contract liên quan
-        select: "-__v", // Loại bỏ các trường không cần thiết
-      });
-      return res.status(200).json(invoices);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-        message: error.toString(),
-      });
-    }
+  // [GET] /api/invoices/allInvoice
+async getInvoices(req, res) {
+  const landlordId = req.user.uid; // Lấy landlordId từ token đăng nhập
+  try {
+    // Lấy danh sách hóa đơn liên quan đến landlord
+    const invoices = await Invoice.find()
+      .populate({
+        path: "contract",
+        match: { landlord: landlordId }, // Lọc hợp đồng theo landlord
+        select: "-__v -pdfPath", // Loại bỏ trường không cần thiết
+        populate: [
+          { 
+            path: "room", // Populate thông tin phòng
+            select: "title address"
+          },
+          { 
+            path: "tenant", // Populate thông tin tenant
+            select: "user", // Lấy thông tin user trong tenant
+            populate: {
+              path: "user", // Populate thông tin user (tên, email,...)
+              select: "fullName email phone", // Lấy các trường thông tin cần thiết của user
+            }
+          }
+        ]
+      })
+      .lean();
+
+    // Loại bỏ các hóa đơn không khớp landlord
+    const filteredInvoices = invoices.filter(invoice => invoice.contract);
+
+    return res.status(200).json(filteredInvoices);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: error.toString(),
+    });
   }
+}
+
 
   // [GET] /api/invoices/:id - Lấy hóa đơn theo ID (Read by ID)
   async getInvoiceById(req, res) {

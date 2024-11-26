@@ -23,7 +23,7 @@ module.exports = (app) => {
   app.use("/api/landlord", verifyJwt, roleVerify("landlord"), landlordRoute);
   app.use("/api/tenant", verifyJwt, roleVerify("tenant"), tenantRoute);
   app.use("/api/maintenance-request", maintenanceRequestRoute);
-  app.use("/api/invoice", invoiceRoute);
+  app.use("/api/invoice", verifyJwt, invoiceRoute);
   app.use("/uploads/avatars", express.static(path.join(process.cwd(), "public/uploads/avatars")));
   app.use("/uploads/roomImages", express.static(path.join(process.cwd(), "public/uploads/roomImages")));
   app.use("/uploads/pdfContract", express.static(path.join(process.cwd(), "public/uploads/pdfContract")));
