@@ -11,5 +11,6 @@ router.get("invoiceInfo/:invoiceId", InvoiceController.getInvoiceById);
 router.get("/allInvoice", InvoiceController.getInvoices);
 router.put("/update/:invoiceId", InvoiceController.updateInvoice); 
 router.delete("/delete/:invoiceId", InvoiceController.deleteInvoice);
+router.get("/byContract", InvoiceController.getInvoiceByContract);
 
 module.exports = router;

@@ -15,3 +15,30 @@
     margin: 20px; /* Bỏ margin bên trái để không ảnh hưởng đến căn giữa */
     width: 60%;
 }
+
+
+
+.modalContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.invoiceInfo {
+    flex: 2;
+    padding-right: 20px;
+    word-wrap: break-word; /* Giúp văn bản không bị tràn */
+}
+
+.qrContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    max-width: 300px; /* Đảm bảo QR code không quá rộng */
+}
+
+.qrCode {
+    width: 300px; /* Chiều rộng của QR code chiếm hết không gian của .qrContainer */
+    height: auto;
+}
