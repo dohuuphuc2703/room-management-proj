@@ -26,9 +26,12 @@ const CreateInvoiceForm = () => {
   useEffect(() => {
     const fetchContracts = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/contract/byLandlord", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          "http://localhost:8000/api/contract/byLandlord",
+          {
+            withCredentials: true,
+          }
+        );
         setContracts(response.data.contracts);
       } catch (error) {
         console.error("Error fetching rooms:", error);
@@ -51,9 +54,11 @@ const CreateInvoiceForm = () => {
     if (!selectedContract) return;
 
     const electricAmount =
-      (newElectricIndex - selectedContract.room.electric.new) * selectedContract.room.electric.price || 0;
+      (newElectricIndex - selectedContract.room.electric.new) *
+        selectedContract.room.electric.price || 0;
     const waterAmount =
-      (newWaterIndex - selectedContract.room.water.new) * selectedContract.room.water.price || 0;
+      (newWaterIndex - selectedContract.room.water.new) *
+        selectedContract.room.water.price || 0;
 
     const updatedServices = [
       {
@@ -83,21 +88,26 @@ const CreateInvoiceForm = () => {
 
   const handleSubmit = async () => {
     if (!selectedContract || totalServices.length === 0) {
-      message.error("Vui lòng nhập đầy đủ thông tin và tính tổng trước khi tạo hóa đơn!");
+      message.error(
+        "Vui lòng nhập đầy đủ thông tin và tính tổng trước khi tạo hóa đơn!"
+      );
       return;
     }
 
     const invoiceData = {
       contractID: selectedContract._id,
-      title: `Invoice for Room: ${selectedContract.room.title}`,
       totalOfSv: totalServices,
     };
 
     try {
       // Tạo hóa đơn
-      await axios.post("http://localhost:8000/api/invoice/create", invoiceData, {
-        withCredentials: true,
-      });
+      await axios.post(
+        "http://localhost:8000/api/invoice/create",
+        invoiceData,
+        {
+          withCredentials: true,
+        }
+      );
 
       // Cập nhật chỉ số điện/nước
       const updateData = {
@@ -115,9 +125,13 @@ const CreateInvoiceForm = () => {
         },
       };
 
-      await axios.post(`http://localhost:8000/api/room/update/${selectedContract.room._id}`, updateData, {
-        withCredentials: true,
-      });
+      await axios.post(
+        `http://localhost:8000/api/room/update/${selectedContract.room._id}`,
+        updateData,
+        {
+          withCredentials: true,
+        }
+      );
 
       message.success("Hóa đơn được tạo và chỉ số điện/nước đã được cập nhật!");
       setSelectedContract(null);
@@ -152,7 +166,11 @@ const CreateInvoiceForm = () => {
           </Form.Item>
 
           <Form.Item label="Giá phòng">
-            <InputNumber value={selectedContract.room.price} disabled style={{ width: "100%" }} />
+            <InputNumber
+              value={selectedContract.room.price}
+              disabled
+              style={{ width: "100%" }}
+            />
           </Form.Item>
 
           <Divider>Chỉ số điện</Divider>
@@ -227,7 +245,11 @@ const CreateInvoiceForm = () => {
               </Col>
               <Col span={8}>
                 <Form.Item label="Giá dịch vụ">
-                  <InputNumber value={service.price} disabled style={{ width: "100%" }} />
+                  <InputNumber
+                    value={service.price}
+                    disabled
+                    style={{ width: "100%" }}
+                  />
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -238,7 +260,7 @@ const CreateInvoiceForm = () => {
             </Row>
           ))}
 
-          <Button type="primary" onClick={calculateTotalAmount}>
+          <Button type="primary" style={{ marginRight: "10px" }} onClick={calculateTotalAmount}>
             Tính tổng
           </Button>
 
@@ -246,18 +268,23 @@ const CreateInvoiceForm = () => {
             <div>
               <Divider>Tổng chi tiết</Divider>
               {totalServices.map((service, index) => (
-                <Typography.Text key={index}>
+                <Typography.Paragraph key={index} style={{ margin: 0 }}>
                   {service.name}: {service.totalAmount} VNĐ
-                </Typography.Text>
+                </Typography.Paragraph>
               ))}
               <Divider />
               <Typography.Text strong>
-                Tổng cộng: {totalServices.reduce((sum, s) => sum + s.totalAmount, 0)} VNĐ
+                Tổng cộng:{" "}
+                {totalServices.reduce((sum, s) => sum + s.totalAmount, 0)} VNĐ
               </Typography.Text>
             </div>
           )}
 
-          <Button type="primary" onClick={handleSubmit} style={{ marginTop: "16px" }}>
+          <Button
+            type="primary"
+            onClick={handleSubmit}
+            style={{ marginTop: "16px" }}
+          >
             Tạo hóa đơn
           </Button>
         </>

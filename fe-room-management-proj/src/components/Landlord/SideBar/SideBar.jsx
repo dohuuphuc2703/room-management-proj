@@ -70,7 +70,7 @@ function SideBar({user}) {
           <Link to="/landlord/contract">Hợp đồng</Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<DollarOutlined />}>
-          <Link to="/landlord/newInvoice">Hóa đơn</Link>
+          <Link to="/landlord/invoice">Hóa đơn</Link>
           </Menu.Item>
           <Menu.Item key="5" icon={<FileTextOutlined />}>
             Phiếu bảo trì
