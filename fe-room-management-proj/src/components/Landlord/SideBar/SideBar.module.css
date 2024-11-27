@@ -4,6 +4,7 @@
     background-color: #001529; /* Ant Design's default dark theme */
     height: 100vh;
     transition: width 0.3s;
+    flex-shrink: 0;
   }
   
   .sidebar.close {

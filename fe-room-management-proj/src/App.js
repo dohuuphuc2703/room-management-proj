@@ -18,6 +18,7 @@ import NewInvoice from "./components/Landlord/Invoice/NewInvoice/NewInvoice";
 import LandlordListRoom from "./components/Landlord/ManageRoom/LandlordListRoom";
 import MyRoom from "./components/Tenant/MyRoom/MyRoom";
 import LandlordView from "./pages/LandlordView/LandlordView";
+import Statistical from "./components/Landlord/Statistical/Statistical";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/search" element={<SearchRoom />} />
           
           <Route path="/landlord" element={<LandlordView />}>
+            <Route path="statistical" element={<Statistical />} />
             <Route path="createRoom" element={<CreateRoom />} />
             <Route path="rooms" element={<LandlordListRoom />} />
             <Route path="contract" element={<ContractIndex />} />

@@ -196,7 +196,8 @@ const Invoice = ({ contractId, loading }) => {
                     params: {
                         status: statusFilter,
                         contractId: contractId,
-                    }
+                    },
+                     withCredentials: true 
                 }
             );
             setInvoices(response.data);
