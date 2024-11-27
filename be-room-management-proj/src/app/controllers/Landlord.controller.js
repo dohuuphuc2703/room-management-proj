@@ -2,6 +2,9 @@ const Landlord = require("../models/Landlord.model");
 const User = require("../models/User.model");
 const Room = require("../models/Room.model");
 const Tenant = require("../models/Tenant.model");
+const Invoice = require("../models/Invoice.model");
+const mongoose = require("mongoose");
+
 class LandlordController {
   // [GET] /api/landlord/info/
   async getInfo(req, res) {
@@ -124,6 +127,96 @@ class LandlordController {
       return res.status(500).json({
         message: error.toString(),
       });
+    }
+  }
+
+  async getAllStatistics(req, res) {
+    const uid = req.user.uid;
+
+    try {
+      const availableCount = await Room.countDocuments({ landlord: uid, status: "available" });
+      const rentedCount = await Room.countDocuments({ landlord: uid, status: "rented" });
+      const roomsAvailable= await Room.find({ landlord: uid, status: "available" })
+      .select("address title");
+    
+      const invoices = await Invoice.find({status: false})
+      .populate({
+        path: "contract",
+        match: { landlord: uid },
+        select: "-__v -pdfPath", 
+        populate: [
+          { 
+            path: "room",
+            select: "title address",
+          },
+          { 
+            path: "tenant",
+            select: "user",
+            populate: {
+              path: "user",
+              select: "fullName email phone",
+            }
+          }
+        ]
+      })
+      .select("total createdAt")
+      .lean();
+
+      const filteredInvoices = invoices.filter(invoice => invoice.contract);
+
+      return res.status(200).json({
+        statusStats: {
+          available: availableCount,
+          rented: rentedCount,
+        },
+        roomsAvailable,
+        invoicesFalse: filteredInvoices,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Lỗi khi lấy thống kê tổng hợp" });
+    }
+  }
+
+  async getRevenueStats(req, res) {
+    const uid = req.user.uid;
+    const { year } = req.query;  // Lấy tham số năm từ query (nếu có)
+  
+    try {
+      // Nếu không có năm, sử dụng năm hiện tại
+      const currentYear = year ? parseInt(year, 10) : new Date().getFullYear();
+  
+      // Lấy tất cả các hóa đơn chưa thanh toán trong năm
+      const invoices = await Invoice.find({
+        status: true,
+        createdAt: { $gte: new Date(`${currentYear}-01-01`), $lt: new Date(`${currentYear + 1}-01-01`) }, // Lọc hóa đơn theo năm
+      })
+        .populate({
+          path: 'contract',
+          match: { landlord: uid },
+        })
+        .select('total createdAt')
+        .lean();
+  
+      const filteredInvoices = invoices.filter(invoice => invoice.contract);
+  
+      // Tạo mảng doanh thu theo tháng từ 1 đến 12
+      const revenueStats = Array.from({ length: 12 }, (_, index) => ({
+        month: index + 1,
+        totalRevenue: 0,
+      }));
+  
+      // Tính tổng doanh thu theo tháng
+      filteredInvoices.forEach(invoice => {
+        const month = new Date(invoice.createdAt).getMonth(); // Lấy tháng từ `createdAt`
+        revenueStats[month].totalRevenue += invoice.total; // Cộng doanh thu vào tháng
+      });
+  
+      // Trả về doanh thu theo tháng
+      return res.status(200).json({ revenueStats });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Lỗi khi lấy doanh thu' });
     }
   }
 }

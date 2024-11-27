@@ -1,0 +1,36 @@
+/* Statistical.module.css */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  height: 100%;
+  overflow: hidden;
+}
+
+.card {
+  height: 100%;
+  width: 100%;
+}
+
+.main-content {
+  height: 100vh; /* Chiều cao khớp với cửa sổ trình duyệt */
+  overflow: hidden; /* Ẩn thanh cuộn nếu cần */
+  padding: 16px; /* Khoảng cách giữa nội dung và viền */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Đảm bảo thanh sidebar không bị ảnh hưởng */
+.sidebar {
+  width: 250px; /* Giữ nguyên width khi mở rộng */
+  flex-shrink: 0;
+  transition: width 0.3s ease;
+}
+.layout.collapsed .sidebar {
+  width: 80px; /* Width khi thu gọn */
+}
+
+.layout {
+  display: flex;
+  height: 100vh;
+}
