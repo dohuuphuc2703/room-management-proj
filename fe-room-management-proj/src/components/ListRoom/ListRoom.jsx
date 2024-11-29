@@ -165,7 +165,7 @@ const ListRoom = ({
               >
                 <div className={styles.roomContent}>
                   <img
-                    src={(item.images && item.images.length > 0 ? `http://localhost:8000${item.images[0]}` : "/logo192.png")}
+                    src={(item.images && item.images.length > 0 ? item.images[0] : "/logo192.png")}
                     alt="room"
                     onClick={() => {
                       nav(`/detail-room/${item._id}`);
