@@ -92,14 +92,14 @@ class ReviewController {
           .json({ message: "Bạn đã review cho phòng này rồi!" });
       }
 
-      const newReview = new Review({
+      const newReview =await Review.create({
         rating,
         comment,
         tenant: tenant.id,
         room: roomId,
       });
 
-      await newReview.save();
+      console.log('New review created:', newReview);
 
       await calculateRatingForRoom(roomId);
   

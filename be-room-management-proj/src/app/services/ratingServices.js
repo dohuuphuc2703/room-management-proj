@@ -1,6 +1,7 @@
 // services/ratingService.js
 const Room = require("../models/Room.model");
 const Review = require("../models/Review.model");
+const mongoose = require('mongoose');
 
 async function calculateRoomRatings() {
     try {
@@ -24,9 +25,10 @@ async function calculateRatingForRoom(roomId) {
     try {
         // Tính trung bình rating của các review cho roomId
         const ratingData = await Review.aggregate([
-            { $match: { room: roomId, rating: { $ne: null } } },
+            { $match: { room:new mongoose.Types.ObjectId(roomId), rating: { $ne: null } } },
             { $group: { _id: "$room", avgRating: { $avg: "$rating" } } }
         ]);
+
 
         if (ratingData.length > 0) {
             const avgRating = ratingData[0].avgRating;
@@ -40,6 +42,7 @@ async function calculateRatingForRoom(roomId) {
         console.error(`Error updating rating for room ${roomId}:`, error);
     }
 }
+
 
 module.exports = {
     calculateRoomRatings,

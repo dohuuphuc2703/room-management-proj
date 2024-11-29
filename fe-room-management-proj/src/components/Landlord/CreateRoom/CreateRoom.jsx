@@ -100,7 +100,7 @@ const CreateRoom = () => {
 
         try {
             const formData = new FormData();
-            formData.append("roomImages", file);  // Thêm ảnh vào formData
+            formData.append("image", file);  // Thêm ảnh vào formData
 
             console.log("Gửi ảnh lên server...");
 
@@ -401,7 +401,7 @@ const CreateRoom = () => {
                     <Col span={12}>
                         <Form.Item label="Hình ảnh phòng" name="images">
                             <Upload
-                                name="roomImages"
+                                name="image"
                                 listType="picture-card"
                                 multiple={true}  // Cho phép chọn nhiều ảnh
                                 showUploadList={{ showRemoveIcon: true }}  // Hiển thị nút xóa
