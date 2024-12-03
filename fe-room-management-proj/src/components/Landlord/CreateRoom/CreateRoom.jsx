@@ -86,7 +86,7 @@ const CreateRoom = () => {
             });
 
             message.success("Phòng đã được tạo thành công!");
-            nav('http://localhost:8000/landlord/rooms');
+            nav('/landlord/rooms');
         } catch (error) {
             message.error("Có lỗi xảy ra khi tạo phòng.");
         } finally {

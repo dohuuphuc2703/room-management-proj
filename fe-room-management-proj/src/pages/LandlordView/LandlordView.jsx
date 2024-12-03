@@ -50,7 +50,7 @@ function LandlordView() {
       <div className={styles.container}>
         <SideBar user={user} />
         <div className={styles.content}>
-          <Outlet />
+          <Outlet context={{user}}/>
         </div>
 
       </div>

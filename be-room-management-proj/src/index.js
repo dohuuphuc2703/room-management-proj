@@ -11,7 +11,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
 const route = require("./routes");
-// const { runMessageService } = require("./app/controllers/MessageService");
+const { runMessageService } = require("./app/services/MessageService");
 
 const db = require("./config/database");
 
@@ -45,11 +45,11 @@ route(app);
 // require("../src/app/models/Tenant.model");
 // require("../src/app/models/Landlord.model");
 // require("../src/app/models/Contract.model");
-require("../src/app/models/Invoice.model");
+// require("../src/app/models/Chat.model");
 // require("../src/app/models/Review.model");
 // require("../src/app/models/Admin.model");
-// // Connect message service
-// runMessageService(server);
+// Connect message service
+runMessageService(server);
 
 const PORT = process.env.PORT || 8000;
 
