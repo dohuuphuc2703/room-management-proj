@@ -24,7 +24,7 @@ const AccountManagement = () => {
         );
         const { info } = response.data;
         console.log("info", info)
-        setAvatarUrl(`http://localhost:8000${info.user.avatar}`); // Set avatar URL from fetched user info
+        setAvatarUrl(info.user.avatar); // Set avatar URL from fetched user info
         form.setFieldsValue({
           email: info.user.email,
           fullName: info.user.fullName?info.user.fullName :"",
@@ -47,9 +47,16 @@ const AccountManagement = () => {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:8000/api/tenant/info/", values, {
+      // Thêm trường avatar vào values
+      const updatedValues = {
+        ...values,
+        avatar: avatarUrl, // Thêm avatarUrl vào values
+      };
+
+      const response = await axios.post("http://localhost:8000/api/tenant/info/", updatedValues, {
         withCredentials: true,
       });
+
       message.success("Thông tin đã được cập nhật thành công");
       dispatch(setTenantInfo({
         uid: response.data.info._id,
@@ -77,7 +84,7 @@ const AccountManagement = () => {
         );
 
         console.log("Upload response:", response.data);
-        setAvatarUrl(`http://localhost:8000${response.data.avatar}`);        
+        setAvatarUrl(response.data.avatar);        
       } catch (error) {
         console.error("Error uploading avatar:", error);
         message.error("Error uploading avatar");

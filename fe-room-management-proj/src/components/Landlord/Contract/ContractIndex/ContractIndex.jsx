@@ -79,10 +79,9 @@ const ContractIndex = () => {
     nav("/landlord/createContract");
   };
 
-  const handleViewPDF = (contractId) => {
-    // Mở PDF trong tab mới
-    const url = `http://localhost:8000/api/contract/pdf/${contractId}`;
-    window.open(url, "_blank");
+  const handleViewPDF = (pdfPath) => {
+    // Mở PDF trực tiếp từ đường dẫn
+    window.open(pdfPath, "_blank");
   };
 
   const columns = [
@@ -172,7 +171,7 @@ const ContractIndex = () => {
       render: (text, record) => (
         <Button
           icon={<FilePdfOutlined />} // Sử dụng icon PDF
-          onClick={() => handleViewPDF(record._id)}
+          onClick={() => handleViewPDF(record.pdfPath)}
           type="primary"
           shape="circle"
         />

@@ -1,4 +1,5 @@
 const express = require("express");
+const {uploadAvatar} = require("../config/multer/index");
 
 const router = express.Router();
 
@@ -7,7 +8,7 @@ const { roleVerify } = require("../app/middlewares/roleMiddleware");
 const { verifyJwt } = require("../app/middlewares/jwtMiddleware");
 
 router.post("/info/", TenantController.updateInfo);
-router.post("/update-avatar/", TenantController.uploadAvatar);
+router.post("/update-avatar/",uploadAvatar.single('avatar'),  TenantController.uploadAvatar);
 router.get("/info/", TenantController.getInfo);
 router.get("/all-saved-rooms/", TenantController.getAllSavedRooms);
 router.post("/save-room/", TenantController.saveRoom);
