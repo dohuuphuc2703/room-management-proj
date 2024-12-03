@@ -53,7 +53,7 @@ function Home() {
          user={user}
         />
         <div className={styles.content}>
-          <Outlet />
+          <Outlet context={{user}}/>
         </div>
         <div
           className={styles.footer_main}

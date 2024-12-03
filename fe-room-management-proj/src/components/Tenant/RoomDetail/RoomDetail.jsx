@@ -92,14 +92,9 @@ function RoomDetail() {
   const [coordinates, setCoordinates] = useState(null);
   const [averageRating, setAverageRating] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [landlord, setLandlord] = useState(null);
   const [isClicked, setIsClicked] = useState(false);
   const nav = useNavigate();
-
-
-  const handleZaloMessage = (phone) => {
-    const zaloLink = `https://zalo.me/${phone}`;
-    window.open(zaloLink, "_blank");
-  };
 
   const handleReviewSubmit = async (review) => {
     try {
@@ -138,7 +133,8 @@ function RoomDetail() {
       });
       const data = res.data;
       setRoomInfo(data.info);
-      setAverageRating(data.info.rating)
+      setLandlord(data.info.landlord.user);
+      setAverageRating(data.info.rating);
       if (data.info && data.info.address) {
         await getCoordinates(data.info.address);
         await getRoomByAddress(data.info.address.province, data.info.address.district, data.info.category._id);
@@ -201,11 +197,30 @@ function RoomDetail() {
     }
   };
 
+  const handleZaloMessage = (phone) => {
+    const zaloLink = `https://zalo.me/${phone}`;
+    window.open(zaloLink, "_blank");
+  };
 
+  const handleDirectMessage = () => {
+    if (!user || !user.role) {
+      notification.warning({
+        message: 'Bạn cần đăng nhập trước',
+        description: 'Hãy đăng nhập để sử dụng tính năng nhắn tin.',
+      });
+      setTimeout(() => nav('/login'), 2000);
+      return;
+    }
+    // Điều hướng đến giao diện chat với landlordId
+    nav(`/chat`);
+  };
+  
   useEffect(() => {
     getDetailRoomInfo();
     // getRoomByAddress();
   }, [roomId]);
+
+
 
   return (
     <div className={styles.container}>
@@ -343,7 +358,7 @@ function RoomDetail() {
                   >
                     {<MessageOutlined />} Nhắn Zalo
                   </Button>
-                  <Button className={styles.favoriteButton} type="link" block>{<WechatOutlined />} Nhắn tin trực tiếp</Button>
+                  <Button className={styles.favoriteButton} type="link" block onClick={handleDirectMessage}>{<WechatOutlined />} Nhắn tin trực tiếp</Button>
                 </div>
 
               </div>

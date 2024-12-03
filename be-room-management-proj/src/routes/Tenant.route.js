@@ -14,5 +14,7 @@ router.get("/all-saved-rooms/", TenantController.getAllSavedRooms);
 router.post("/save-room/", TenantController.saveRoom);
 router.post("/remove-saved-room/", TenantController.removeSavedRoom);
 router.post('/change-password', verifyJwt, TenantController.changePassword);
+router.get("/list-friends", TenantController.getListFriends);
+
 
 module.exports = router;

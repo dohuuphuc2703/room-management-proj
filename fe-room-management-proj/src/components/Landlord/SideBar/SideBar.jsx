@@ -76,7 +76,7 @@ function SideBar({user}) {
             Phiếu bảo trì
           </Menu.Item>
           <Menu.Item key="6" icon={<MessageOutlined />}>
-            Chat
+          <Link to="/landlord/chat">Nhắn tin</Link>
           </Menu.Item>
         </Menu>
         <button onClick={toggleCollapse} className={styles.collapseButton}>

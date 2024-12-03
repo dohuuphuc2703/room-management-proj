@@ -1,0 +1,14 @@
+.texting {
+  margin-top: 8px;
+}
+
+.texting .inputMessage {
+  border-radius: 24px;
+}
+
+.texting .send {
+  border-radius: 50%;
+  border: none;
+  padding: 18px;
+  font-size: 16px;
+}

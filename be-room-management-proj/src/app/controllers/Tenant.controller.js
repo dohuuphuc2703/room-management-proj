@@ -1,4 +1,6 @@
 const Tenant = require("../models/Tenant.model");
+const Chat = require("../models/Chat.model");
+const Landlord = require("../models/Landlord.model");
 const User = require("../models/User.model");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -210,6 +212,44 @@ async uploadAvatar(req, res) {
     console.log(error);
     return res.status(500).json({
       message: error.toString(),
+    });
+  }
+}
+// [GET] /api/tenant/list/landlord
+async getListFriends(req, res) {
+  const uid = req.user.id; // Lấy ID người dùng từ req.user (giả sử đã xác thực)
+
+  try {
+    // Lấy danh sách các senderId và receiverId mà có liên quan đến người dùng hiện tại
+    const senderIds = await Chat.find({
+      $or: [{ senderId: uid }, { receiverId: uid }],
+    }).distinct('senderId');
+
+    const receiverIds = await Chat.find({
+      $or: [{ senderId: uid }, { receiverId: uid }],
+    }).distinct('receiverId');
+
+    // Kết hợp hai danh sách và loại bỏ các giá trị trùng lặp
+    const allChatUserIds = [...new Set([...senderIds, ...receiverIds])];
+
+    // Loại bỏ ID của chính người dùng hiện tại
+    const distinctChatUsers = allChatUserIds.filter(id => id.toString() !== uid.toString());
+
+    // Lấy thông tin người dùng từ danh sách ID
+    const users = await User.find({
+      _id: { $in: distinctChatUsers },
+    }).select('-password -createdAt -updatedAt -hiddenAt -hiddenBy'); // Loại bỏ các trường không cần thiết
+
+    return res.json({
+      users,
+      info: {
+        total: users.length,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: `Có lỗi xảy ra: Error code <${error.code}>`,
     });
   }
 }
