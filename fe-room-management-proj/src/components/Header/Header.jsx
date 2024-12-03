@@ -90,7 +90,7 @@ function Header({user}) {
                   <Dropdown overlay={userMenu} trigger={["click"]}>
                     <Avatar
                       style={{ cursor: "pointer", backgroundColor: "#87d068" }}
-                      src={`http://localhost:8000${user.avatar}`}
+                      src={user.avatar}
                     />
                   </Dropdown>
                 </div>

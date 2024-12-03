@@ -16,6 +16,7 @@ const MyRoom = () => {
     const [roomInfo, setRoomInfo] = useState();
     const [pdfPath, setPdfPath] = useState();
     const [contractId, setContractId] = useState()
+    const [hasContract, setHasContract] = useState(false);
 
     useEffect(() => {
         const fetchContractInfo = async () => {
@@ -24,9 +25,14 @@ const MyRoom = () => {
                     "http://localhost:8000/api/contract/byTenant",
                     { withCredentials: true }
                 );
-                setRoomInfo(response.data.contract.room)
-                setPdfPath(response.data.contract.pdfPath)
-                setContractId(response.data.contract._id)
+                if (response.data && response.data.contract) {
+                    setRoomInfo(response.data.contract.room);
+                    setPdfPath(response.data.contract.pdfPath);
+                    setContractId(response.data.contract._id);
+                    setHasContract(true); // Nếu có hợp đồng, hiển thị TabPane
+                } else {
+                    setHasContract(false); // Nếu không có hợp đồng, không hiển thị TabPane
+                }
 
             } catch (error) {
                 message.error("Error fetching user info");
@@ -40,6 +46,9 @@ const MyRoom = () => {
         <Layout className={styles.layout}>
             <Content className={styles.content}>
                 <div>
+                {!hasContract ? (
+                <div> Bạn chưa thuê phòng </div> // Hiển thị thông báo nếu không có hợp đồng
+            ) : (
                     <Tabs defaultActiveKey="1" tabBarStyle={{ fontWeight: 'bold' }}>
                         <TabPane tab="Thông tin phòng" key="1">
                             <RoomInfoForm roomInfo={roomInfo} />
@@ -51,6 +60,7 @@ const MyRoom = () => {
                             <Invoice contractId={contractId} loading={loading} />
                         </TabPane>
                     </Tabs>
+            )}
                 </div>
             </Content>
         </Layout>
@@ -165,12 +175,11 @@ const RoomInfoForm = ({ roomInfo }) => {
 };
 
 const Contract = ({ pdfPath }) => {
-    const fullPdfUrl = `http://localhost:8000${pdfPath}`;
 
     return (
         <div style={{ width: "100%", height: "80vh" }}>
             <iframe
-                src={fullPdfUrl}
+                src={pdfPath}
                 title="Contract PDF"
                 width="100%"
                 height="100%"

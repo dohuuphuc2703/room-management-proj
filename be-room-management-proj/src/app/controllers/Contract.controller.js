@@ -10,6 +10,14 @@ const keys = require("../../config/secrets");
 const mailer = require("../../utils/mail/index");
 const bcrypt = require("bcrypt");
 
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
+
 class ContractController {
   constructor() {
     this.createContract = this.createContract.bind(this);
@@ -61,18 +69,23 @@ class ContractController {
       await newContract.save({ session });
 
       // Tạo PDF từ HTML và lưu vào server
-      const filename = await createPDFFromHTML(
+      const pdfPath  = await createPDFFromHTML(
         newContract,
         foundTenant,
         foundLandlord,
         foundRoom
       );
-      const pdfPath = `/uploads/pdfContract/${filename}`;
+
+      const cloudinaryResponse = await cloudinary.uploader.upload(pdfPath, {
+        folder: 'contracts', // Đặt thư mục lưu trữ trên Cloudinary
+        resource_type: 'raw', // Lưu file PDF dưới dạng raw file
+        access_mode: 'public',
+      });
       // Cập nhật trường linkPDF với đường dẫn của file PDF
-      newContract.pdfPath = pdfPath;
+      newContract.pdfPath = cloudinaryResponse.secure_url;
       await newContract.save({ session }); // Lưu lại hợp đồng với linkPDF
 
-      this.sendContractEmail(foundTenant, newContract, filename, pdfPath);
+      this.sendContractEmail(foundTenant, newContract);
       await session.commitTransaction();
       session.endSession();
 
@@ -88,7 +101,7 @@ class ContractController {
     }
   }
 
-  async sendContractEmail(tenant, contract, filename, pdfPath) {
+  async sendContractEmail(tenant, contract, pdfPath) {
     try {
       // Tạo link xác nhận hợp đồng
       const verificationToken = await bcrypt.hash(contract._id.toString(), keys.BCRYPT_SALT_ROUND);
@@ -104,7 +117,7 @@ class ContractController {
       ).replace(
         "{{verificationLink}}", verificationLink
       ).replace(
-        "{{contractLink}}", `${process.env.APP_URL}/uploads/pdfContract/${filename}`
+        "{{contractLink}}", `${contract.pdfPath}`
       );
 
       // Gửi email với hợp đồng đính kèm
@@ -115,7 +128,7 @@ class ContractController {
         [
           {
             filename: `contract_${contract._id}.pdf`,
-            path: pdfPath,
+            path: contract.pdfPath,
           },
         ]
       );

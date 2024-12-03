@@ -28,7 +28,8 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "puppeteer": "^23.7.1",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "tmp": "^0.2.3"
   },
   "devDependencies": {
     "morgan": "^1.10.0",

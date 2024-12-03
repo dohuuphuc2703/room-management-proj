@@ -1,18 +1,14 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const tmp = require("tmp");
 
 async function createPDFFromHTML(contract, tenant, landlord, room) {
   try {
     // Đảm bảo thư mục chứa file PDF tồn tại
-    const pdfDirectory = path.join(process.cwd(), "public/uploads/pdfContract");
-    if (!fs.existsSync(pdfDirectory)) {
-      fs.mkdirSync(pdfDirectory, { recursive: true });
-    }
 
-    // Tạo đường dẫn cho file PDF
-    const filename = `contract-${contract._id}-${Date.now()}.pdf`;
-    const pdfPath = path.join(pdfDirectory, filename);
+    // Tạo file tạm thời, nhưng không cần sử dụng tên mặc định
+    const tempFile = tmp.tmpNameSync({ postfix: '.pdf' }); 
 
     // HTML content mà bạn sẽ chuyển thành PDF
     const createdAt = new Date(contract.createdAt);
@@ -206,11 +202,11 @@ async function createPDFFromHTML(contract, tenant, landlord, room) {
     const pdf = await puppeteer.launch();
     const page = await pdf.newPage();
     await page.setContent(htmlContent);
-    await page.pdf({ path: pdfPath });
+    await page.pdf({ path: tempFile });
 
     await pdf.close();
 
-    return filename; // Trả về đường dẫn tới file PDF
+    return tempFile ;
   } catch (error) {
     console.error("Error creating PDF:", error);
     throw new Error("Error creating PDF");
