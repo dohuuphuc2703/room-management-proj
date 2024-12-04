@@ -60,7 +60,7 @@ function LandlordChat({ socket }) {
     if (text) {
       const payload = {
         senderId: user._id,
-        receiverId: chatWith.user._id,
+        receiverId: chatWith._id,
         content: text,
       };
 
