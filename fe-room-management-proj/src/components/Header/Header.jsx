@@ -27,6 +27,9 @@ function Header({user}) {
   const handleRegisterClick = () => {
     navigate("/sign-up");
   };
+  const handleNavigateToChat = () => {
+    navigate("/chat");
+  };
   const handleLogout = async () => {
     try {
       await axios.get("http://localhost:8000/auth/logout", {
@@ -78,13 +81,14 @@ function Header({user}) {
                   <Badge count={5} offset={[10, 0]} style={{marginRight: "20px"}}>
                     <BellOutlined
                       className={styles.icon}
-                      style={{ fontSize: "18px", marginRight: "20px" }}
+                      style={{ fontSize: "18px", marginRight: "20px", cursor: "pointer" }}
                     />
                   </Badge>
                   <Badge count={3} offset={[10, 0]} style={{marginRight: "20px"}}>
                     <MessageOutlined
                       className={styles.icon}
-                      style={{ fontSize: "18px", marginRight: "20px" }}
+                      style={{ fontSize: "18px", marginRight: "20px", cursor: "pointer" }}
+                      onClick={handleNavigateToChat}
                     />
                   </Badge>
                   <Dropdown overlay={userMenu} trigger={["click"]}>

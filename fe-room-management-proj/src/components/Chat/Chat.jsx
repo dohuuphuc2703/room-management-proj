@@ -1,5 +1,5 @@
 import { ConfigProvider, message as notify, Skeleton, Spin } from "antd";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 
 import axios from "axios";
 import clsx from "clsx";
@@ -43,13 +43,15 @@ function timeDifference(startDate) {
 
 function Chat({ socket }) {
   const { user } = useOutletContext();
+  const location = useLocation();
+  const { landlord } = location.state || {};
 
   const nav = useNavigate();
   
-  const [listFriends, setListFriends] = useState(null);
+  const [listFriends, setListFriends] = useState([]);
   const [chatWith, setChatWith] = useState(null);
 
-  const [sentMessages, setSentMessages] = useState(null);
+  const [sentMessages, setSentMessages] = useState([]);
 
   const chatFrameRef = useRef(null);
 
@@ -93,30 +95,65 @@ function Chat({ socket }) {
   }
 
   useEffect(() => {
-    // console.log("Chat.jsx call api");
-    axios.get("http://localhost:8000/api/tenant/list-friends", {
-      withCredentials: true,
-    })
-      .then(res => {
-        // console.log(res.data.members);
+    // Gọi API để lấy danh sách bạn bè
+    axios
+      .get("http://localhost:8000/api/tenant/list-friends", {
+        withCredentials: true,
+      })
+      .then((res) => {
         socket.on("receiver", handleReceiveMessage);
-        setListFriends(res.data.users);
+  
+        // Kết hợp danh sách bạn bè từ API với landlord nếu cần
+        setListFriends(() => {
+          const fetchedFriends = res.data.users;
+  
+          if (landlord) {
+            const existsInFetched = fetchedFriends.some(
+              (friend) => friend._id === landlord._id
+            );
+  
+            if (existsInFetched) {
+              // Nếu landlord đã nằm trong danh sách bạn bè, setChatWith là người bạn này
+              const existingFriend = fetchedFriends.find(
+                (friend) => friend._id === landlord._id
+              );
+              setChatWith(existingFriend);
+              return fetchedFriends; // Không cần thêm landlord vì đã tồn tại
+            } else {
+              // Nếu landlord chưa tồn tại, thêm vào danh sách
+              setChatWith(landlord);
+              return [...fetchedFriends, landlord];
+            }
+          }
+  
+          return fetchedFriends; // Nếu không có landlord, giữ nguyên danh sách từ API
+        });
       })
-      .catch(err => {
-        console.log(err);
-        messageApi.error(`Đã có lỗi xảy ra: ${err?.response?.data?.message}`);
+      .catch((err) => {
+        console.error(err);
+        messageApi.error(
+          `Đã có lỗi xảy ra: ${err?.response?.data?.message || "Không xác định"}`
+        );
         const code = err?.response?.status;
-        if (code === 401 || code === 403)
-          nav("/login");
-      })
-
+        if (code === 401 || code === 403) nav("/login");
+      });
+  
+    // Cleanup để loại bỏ listener
     return () => {
       socket.off("receiver", handleReceiveMessage);
       socket.emit("leave");
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  }, [landlord]); // Phụ thuộc vào landlord
+  
+  
+  useEffect(() => {
+    if (chatWith) {
+      // Gửi yêu cầu tới server để tải lịch sử tin nhắn với người bạn hiện tại
+      socket.emit("leave"); // Rời khỏi cuộc trò chuyện cũ
+      socket.emit("load", { owner: user._id, friend: chatWith._id }); // Yêu cầu lịch sử tin nhắn với bạn mới
+      setSentMessages([]); // Xóa khung tin nhắn tạm thời trong khi chờ dữ liệu
+    }
+  }, [chatWith]); // Chạy khi chatWith thay đổi
   useEffect(() => {
     if (chatFrameRef && chatFrameRef?.current)
       chatFrameRef.current.scrollTop = chatFrameRef.current.scrollHeight;
