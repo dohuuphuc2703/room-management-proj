@@ -212,7 +212,9 @@ function RoomDetail() {
       return;
     }
     // Điều hướng đến giao diện chat với landlordId
-    nav(`/chat`);
+    nav(`/chat`, {
+      state: { landlord },
+    });
   };
   
   useEffect(() => {

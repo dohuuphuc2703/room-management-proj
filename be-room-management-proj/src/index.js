@@ -45,7 +45,7 @@ route(app);
 // require("../src/app/models/Tenant.model");
 // require("../src/app/models/Landlord.model");
 // require("../src/app/models/Contract.model");
-// require("../src/app/models/Chat.model");
+require("../src/app/models/Chat.model");
 // require("../src/app/models/Review.model");
 // require("../src/app/models/Admin.model");
 // Connect message service
