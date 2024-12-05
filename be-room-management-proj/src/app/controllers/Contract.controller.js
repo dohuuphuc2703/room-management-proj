@@ -302,6 +302,77 @@ class ContractController {
       res.status(500).json({ message: "Lỗi máy chủ khi xử lý yêu cầu." });
     }
   }
+
+  async cancelRequest(req, res) {
+    const uid = req.user.id;
+    try {
+        const { contractId } = req.params; // Lấy contractId từ URL
+        const { reason } = req.body; // Dữ liệu từ request body
+
+        // Tìm hợp đồng
+        const contract = await Contract.findById(contractId);
+        if (!contract) {
+            return res.status(404).json({ message: "Hợp đồng không tồn tại" });
+        }
+
+        // Kiểm tra xem đã có yêu cầu hủy trước đó hay chưa
+        if (contract.cancelRequest && contract.cancelRequest.status === "pending") {
+            return res.status(400).json({ message: "Yêu cầu hủy đã tồn tại và đang chờ xử lý" });
+        }
+
+        // Cập nhật yêu cầu hủy
+        contract.cancelRequest = {
+            requestedBy: uid,
+            reason: reason || null,
+            status: "pending",
+        };
+
+        await contract.save(); // Lưu thay đổi vào database
+
+        res.status(200).json({ message: "Yêu cầu hủy hợp đồng đã được gửi", contract });
+    } catch (error) {
+        console.error("Error in cancelRequest:", error);
+        res.status(500).json({ message: "Lỗi server", error });
+    }
+}
+
+async cancelRequestHandle(req, res) {
+  try {
+      const { contractId } = req.params; // Lấy contractId từ URL
+      const { action } = req.body; // "approve" hoặc "reject"
+
+      // Tìm hợp đồng
+      const contract = await Contract.findById(contractId);
+      if (!contract) {
+          return res.status(404).json({ message: "Hợp đồng không tồn tại" });
+      }
+
+      // Kiểm tra xem có yêu cầu hủy hay không
+      if (!contract.cancelRequest || contract.cancelRequest.status !== "pending") {
+          return res.status(400).json({ message: "Không có yêu cầu hủy đang chờ xử lý" });
+      }
+
+      // Xử lý yêu cầu
+      if (action === "approve") {
+          contract.status = "canceled"; // Cập nhật trạng thái hợp đồng
+          contract.cancelRequest.status = "approved";
+      } else if (action === "reject") {
+          contract.cancelRequest.status = "rejected";
+      } else {
+          return res.status(400).json({ message: "Hành động không hợp lệ" });
+      }
+
+      await contract.save(); // Lưu thay đổi vào database
+
+      res.status(200).json({
+          message: `Yêu cầu hủy hợp đồng đã được ${action === "approve" ? "phê duyệt" : "từ chối"}`,
+          contract,
+      });
+  } catch (error) {
+      console.error("Error in cancelRequestHandle:", error);
+      res.status(500).json({ message: "Lỗi server", error });
+  }
+}
   
 }
 module.exports = new ContractController();

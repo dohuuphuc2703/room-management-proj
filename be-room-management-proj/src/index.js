@@ -35,7 +35,6 @@ app.use(cors({
 
 // Connect to database
 db.connect();
-require("../src/app/models/Room.model");
 
 // Route app
 route(app);
@@ -44,10 +43,11 @@ route(app);
 // require("../src/app/models/User.model");
 // require("../src/app/models/Tenant.model");
 // require("../src/app/models/Landlord.model");
-// require("../src/app/models/Contract.model");
-require("../src/app/models/Chat.model");
+require("../src/app/models/Contract.model");
+// require("../src/app/models/Chat.model");
 // require("../src/app/models/Review.model");
 // require("../src/app/models/Admin.model");
+
 // Connect message service
 runMessageService(server);
 

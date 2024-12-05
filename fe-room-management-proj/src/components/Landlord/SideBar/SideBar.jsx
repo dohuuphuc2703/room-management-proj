@@ -73,7 +73,7 @@ function SideBar({user}) {
           <Link to="/landlord/invoice">Hóa đơn</Link>
           </Menu.Item>
           <Menu.Item key="5" icon={<FileTextOutlined />}>
-            Phiếu bảo trì
+          <Link to="/landlord/account">Account</Link>
           </Menu.Item>
           <Menu.Item key="6" icon={<MessageOutlined />}>
           <Link to="/landlord/chat">Nhắn tin</Link>

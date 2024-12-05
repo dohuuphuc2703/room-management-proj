@@ -23,6 +23,7 @@ import LandlordListRoom from "./components/Landlord/ManageRoom/LandlordListRoom"
 import Statistical from "./components/Landlord/Statistical/Statistical";
 import MyRoom from "./components/Tenant/MyRoom/MyRoom";
 import LandlordView from "./pages/LandlordView/LandlordView";
+import AccountLandlord from "./components/Landlord/Account/AccountLandlord";
 
 const socket = socketClient("http://127.0.0.1:8000", {
   reconnectionAttempts: 5,
@@ -62,6 +63,7 @@ function App() {
             <Route path="createContract" element={<CreateContract />} />
             <Route path="invoice" element={<InvoiceIndex />} />
             <Route path="newInvoice" element={<NewInvoice />} />
+            <Route path="account" element={<AccountLandlord />} />
             <Route path="chat" element={<LandlordChat socket={socket}/>} />
           </Route>
         </Routes>

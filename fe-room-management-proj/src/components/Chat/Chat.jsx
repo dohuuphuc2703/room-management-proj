@@ -154,6 +154,9 @@ function Chat({ socket }) {
       setSentMessages([]); // Xóa khung tin nhắn tạm thời trong khi chờ dữ liệu
     }
   }, [chatWith]); // Chạy khi chatWith thay đổi
+
+  
+
   useEffect(() => {
     if (chatFrameRef && chatFrameRef?.current)
       chatFrameRef.current.scrollTop = chatFrameRef.current.scrollHeight;

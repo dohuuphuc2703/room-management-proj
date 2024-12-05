@@ -11,6 +11,7 @@ router.get("/byLandlord",verifyJwt, ContractController.getContractsByLandlord);
 router.get("/byTenant",verifyJwt, ContractController.getContractsByTenant);
 router.get("/pdf/:contractId", ContractController.getContractPDF);
 router.get('/verify', ContractController.verifyContract);
-
+router.post("/:contractId/cancel-request", verifyJwt, ContractController.cancelRequest);
+router.put("/:contractId/cancel-request/handle", verifyJwt, ContractController.cancelRequestHandle);
 
 module.exports = router;
