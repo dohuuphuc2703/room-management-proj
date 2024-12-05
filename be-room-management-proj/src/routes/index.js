@@ -24,7 +24,7 @@ module.exports = (app) => {
   app.use("/api/invoice", verifyJwt, invoiceRoute);
   app.get("/", (req, res) => {
     res.json({
-      message: "Initial backend for room protal website",
+      message: "Initial backend for room mgt website",
     })
   })
 };

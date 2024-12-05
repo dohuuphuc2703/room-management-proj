@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
 import clsx from "clsx";
 
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from "@ant-design/icons";
 
 import { useEffect, useRef, useState } from "react";
 import InputTexting from "../InputTexting/InputTexting";
@@ -47,7 +47,7 @@ function Chat({ socket }) {
   const { landlord } = location.state || {};
 
   const nav = useNavigate();
-  
+
   const [listFriends, setListFriends] = useState([]);
   const [chatWith, setChatWith] = useState(null);
 
@@ -67,23 +67,25 @@ function Chat({ socket }) {
       };
 
       socket.emit("sender", payload);
-      setSentMessages(prev => [...prev, {
-        _id: Date.now(),
-        ...payload,
-        sentAt: Date.now(),
-      }]);
+      setSentMessages((prev) => [
+        ...prev,
+        {
+          _id: Date.now(),
+          ...payload,
+          sentAt: Date.now(),
+        },
+      ]);
     }
-  }
+  };
 
   const handleReceiveMessage = (data) => {
     // console.log(data, chatWith?.member._id);
-    if (data.load)
-      setSentMessages(data.messages);
+    if (data.load) setSentMessages(data.messages);
     else {
       // console.log(data);
-      setSentMessages(prev => [...prev, ...data]);
+      setSentMessages((prev) => [...prev, ...data]);
     }
-  }
+  };
 
   const handleLoadMessage = ({ owner, friend }) => {
     // if (!chatWith || friend._id === chatWith?._id) {
@@ -92,7 +94,7 @@ function Chat({ socket }) {
     socket.emit("leave");
     setSentMessages(null);
     socket.emit("load", { owner, friend: friend._id });
-  }
+  };
 
   useEffect(() => {
     // Gọi API để lấy danh sách bạn bè
@@ -102,16 +104,16 @@ function Chat({ socket }) {
       })
       .then((res) => {
         socket.on("receiver", handleReceiveMessage);
-  
+
         // Kết hợp danh sách bạn bè từ API với landlord nếu cần
         setListFriends(() => {
           const fetchedFriends = res.data.users;
-  
+
           if (landlord) {
             const existsInFetched = fetchedFriends.some(
               (friend) => friend._id === landlord._id
             );
-  
+
             if (existsInFetched) {
               // Nếu landlord đã nằm trong danh sách bạn bè, setChatWith là người bạn này
               const existingFriend = fetchedFriends.find(
@@ -125,27 +127,28 @@ function Chat({ socket }) {
               return [...fetchedFriends, landlord];
             }
           }
-  
+
           return fetchedFriends; // Nếu không có landlord, giữ nguyên danh sách từ API
         });
       })
       .catch((err) => {
         console.error(err);
         messageApi.error(
-          `Đã có lỗi xảy ra: ${err?.response?.data?.message || "Không xác định"}`
+          `Đã có lỗi xảy ra: ${
+            err?.response?.data?.message || "Không xác định"
+          }`
         );
         const code = err?.response?.status;
         if (code === 401 || code === 403) nav("/login");
       });
-  
+
     // Cleanup để loại bỏ listener
     return () => {
       socket.off("receiver", handleReceiveMessage);
       socket.emit("leave");
     };
   }, [landlord]); // Phụ thuộc vào landlord
-  
-  
+
   useEffect(() => {
     if (chatWith) {
       // Gửi yêu cầu tới server để tải lịch sử tin nhắn với người bạn hiện tại
@@ -154,8 +157,6 @@ function Chat({ socket }) {
       setSentMessages([]); // Xóa khung tin nhắn tạm thời trong khi chờ dữ liệu
     }
   }, [chatWith]); // Chạy khi chatWith thay đổi
-
-  
 
   useEffect(() => {
     if (chatFrameRef && chatFrameRef?.current)
@@ -179,88 +180,144 @@ function Chat({ socket }) {
               hoverBorderColor: "#02c95b",
               activeBorderColor: primaryColor,
             },
-          }
+          },
         }}
       >
         <div className={styles.friends}>
           {/* Friends
           <Button onClick={() => { socket.io.engine.close();}} >Disconnect</Button> */}
-          {listFriends ? listFriends.map((friend) => (
-            <div className={clsx([styles.friend, friend._id === chatWith?._id ? styles.select : null])}
-              key={friend._id}
-              onClick={() => {
-                setChatWith(friend);
-                handleLoadMessage({ owner: user?._id, friend: friend });
-              }}
-            >
-              <div className={clsx([styles.avatarWrapper, friend.online ? styles.active : null])}>
-                <img src={friend.avatar} alt={friend.fullName} className={styles.avatar} />
-              </div>
-              <div className={styles.info}>
-                <h4>{friend.fullName}</h4>
-                <p>Hãy gửi lời chào trước khi bắt đầu nhắn tin nhé!</p>
-              </div>
-            </div>
-          )) : ([...Array(3)].map((_, index) => (
-            <div className={styles.friend} key={index}>
-              <Skeleton.Avatar active shape="circle" size="large" />
-              <div className={styles.info}>
-                <Skeleton.Input active size="default" />
-              </div>
-            </div>
-          )))}
+          {listFriends
+            ? listFriends.map((friend) => (
+                <div
+                  className={clsx([
+                    styles.friend,
+                    friend._id === chatWith?._id ? styles.select : null,
+                  ])}
+                  key={friend._id}
+                  onClick={() => {
+                    setChatWith(friend);
+                    handleLoadMessage({ owner: user?._id, friend: friend });
+                  }}
+                >
+                  <div
+                    className={clsx([
+                      styles.avatarWrapper,
+                      friend.online ? styles.active : null,
+                    ])}
+                  >
+                    <img
+                      src={friend.avatar}
+                      alt={friend.fullName}
+                      className={styles.avatar}
+                    />
+                  </div>
+                  <div className={styles.info}>
+                    <h4>{friend.fullName}</h4>
+                    <p>Hãy gửi lời chào trước khi bắt đầu nhắn tin nhé!</p>
+                  </div>
+                </div>
+              ))
+            : [...Array(3)].map((_, index) => (
+                <div className={styles.friend} key={index}>
+                  <Skeleton.Avatar active shape="circle" size="large" />
+                  <div className={styles.info}>
+                    <Skeleton.Input active size="default" />
+                  </div>
+                </div>
+              ))}
         </div>
 
         <div className={styles.content}>
-          {chatWith ? (<>
-            <div className={styles.header}>
-              <div className={clsx([styles.avatarWrapper, chatWith?.online ? styles.active : null])}>
-                <img src={chatWith.avatar}
-                  alt={chatWith.fullName} className={styles.avatar}
-                />
+          {chatWith ? (
+            <>
+              <div className={styles.header}>
+                <div
+                  className={clsx([
+                    styles.avatarWrapper,
+                    chatWith?.online ? styles.active : null,
+                  ])}
+                >
+                  <img
+                    src={chatWith.avatar}
+                    alt={chatWith.fullName}
+                    className={styles.avatar}
+                  />
+                </div>
+                <div className={styles.info}>
+                  <h4>{chatWith.fullName}</h4>
+                  <p>
+                    {chatWith.online
+                      ? "Đang hoạt động"
+                      : chatWith.onlineAt
+                      ? `Hoạt động ${timeDifference(chatWith.onlineAt)} trước`
+                      : "Không xác định"}
+                  </p>
+                </div>
               </div>
-              <div className={styles.info}>
-                <h4>{chatWith.fullName}</h4>
-                <p>{chatWith.online
-                  ? "Đang hoạt động"
-                  : (chatWith.onlineAt
-                    ? `Hoạt động ${timeDifference(chatWith.onlineAt)} trước`
-                    : "Không xác định")}</p>
-              </div>
-            </div>
-            <div className={styles.contentWrapper}>
-              <div className={styles.messages} ref={chatFrameRef}>
-                {sentMessages !== null ? (sentMessages.length > 0 ? (
-                  sentMessages.map(message => message.senderId === user._id ? (
-                    <div className={styles.yourMessage} key={message._id}>
-                      <div className={styles.messageWrapper}>{message.content}</div>
-                    </div>
+              <div className={styles.contentWrapper}>
+                <div className={styles.messages} ref={chatFrameRef}>
+                  {sentMessages !== null ? (
+                    sentMessages.length > 0 ? (
+                      sentMessages.map((message) =>
+                        message.senderId === user?._id ? (
+                          <div className={styles.yourMessage} key={message._id}>
+                            <div className={styles.messageWrapper}>
+                              {message.content}
+                            </div>
+                          </div>
+                        ) : (
+                          <div
+                            className={styles.friendMessage}
+                            key={message._id}
+                          >
+                            <div className={styles.messageWrapper}>
+                              {message.content}
+                            </div>
+                          </div>
+                        )
+                      )
+                    ) : chatWith ? (
+                      <div className={styles.firstMessage}>
+                        <div className={styles.avatarWrapper}>
+                          <img
+                            src={chatWith.avatar}
+                            alt={chatWith.fullName}
+                            className={styles.avatar}
+                          />
+                        </div>
+                        <h3>{chatWith.fullName}</h3>
+                        <p>Hãy bắt đầu cuộc trò chuyện bằng một lời chào 😍</p>
+                      </div>
+                    ) : (
+                      <></>
+                    )
                   ) : (
-                    <div className={styles.friendMessage} key={message._id}>
-                      <div className={styles.messageWrapper}>{message.content}</div>
-                    </div>
-                  )
-                  )) : chatWith ? (<div className={styles.firstMessage}>
-                    <div className={styles.avatarWrapper}>
-                      <img src={chatWith.avatar}
-                        alt={chatWith.fullName} className={styles.avatar}
+                    <div className={styles.loading}>
+                      <Spin
+                        indicator={
+                          <LoadingOutlined
+                            style={{ fontSize: "32px", color: "#00b14f" }}
+                            spin
+                          />
+                        }
                       />
                     </div>
-                    <h3>{ chatWith.fullName }</h3>
-                    <p>Hãy bắt đầu cuộc trò chuyện bằng một lời chào 😍</p>
-                  </div>) : (<></>))
-                  : (<div className={styles.loading}>
-                    <Spin indicator={<LoadingOutlined style={{ fontSize: "32px", color: "#00b14f" }} spin />} />
-                  </div>)
-                }
-              </div>
+                  )}
+                </div>
 
-              <InputTexting handleSendMessage={handleSendMessage} />
+                <InputTexting handleSendMessage={handleSendMessage} />
+              </div>
+            </>
+          ) : (
+            <div className={styles.requireChooseConversation}>
+              <img
+                src="/no-conversation.png"
+                alt="Không có cuộc trò chuyện nào"
+                className={styles.imgNoConversation}
+              />
+              <p>Bạn hiện không chọn cuộc trò chuyện nào...</p>
             </div>
-          </>) : (<div className={styles.requireChooseConversation}>
-            <img src="/no-conversation.png" alt="Không có cuộc trò chuyện nào" className={styles.imgNoConversation} />
-            <p>Bạn hiện không chọn cuộc trò chuyện nào...</p>
-          </div>)}
+          )}
         </div>
       </ConfigProvider>
     </div>
