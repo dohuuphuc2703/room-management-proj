@@ -146,6 +146,7 @@
 .chat .contentWrapper .messages {
   flex: 1;
   max-height: calc(100vh - 300px);
+  min-height: calc(100vh - 300px);
   overflow-y: auto;
   padding-top: 12px;
 }

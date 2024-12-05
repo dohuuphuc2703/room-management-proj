@@ -1,7 +1,7 @@
 import { Button, Checkbox, Form, Input, Modal, Radio } from "antd";
 import React, { useState } from "react";
 import { BsShieldFillCheck, BsShieldLockFill } from "react-icons/bs";
-import { FaUser } from "react-icons/fa";
+import { FaPhone, FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import styles from "./SignUpForm.module.css";
 
@@ -53,6 +53,19 @@ const SignUpForm = ({
             placeholder="Họ và tên"
             className={styles.field}
             addonBefore={<FaUser className={styles.icon} />}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Số điện thoại"
+          name="phone"
+          rules={[{ required: true, message: "Vui lòng nhập số điện thoại của bạn" }]}
+        >
+          <Input
+            size="large"
+            placeholder="Số điện thoại"
+            className={styles.field}
+            addonBefore={<FaPhone className={styles.icon} />}
           />
         </Form.Item>
 
