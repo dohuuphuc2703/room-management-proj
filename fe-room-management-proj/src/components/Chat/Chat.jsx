@@ -88,9 +88,6 @@ function Chat({ socket }) {
   };
 
   const handleLoadMessage = ({ owner, friend }) => {
-    // if (!chatWith || friend._id === chatWith?._id) {
-    // } else {
-    // }
     socket.emit("leave");
     setSentMessages(null);
     socket.emit("load", { owner, friend: friend._id });
@@ -195,8 +192,12 @@ function Chat({ socket }) {
                   ])}
                   key={friend._id}
                   onClick={() => {
-                    setChatWith(friend);
-                    handleLoadMessage({ owner: user?._id, friend: friend });
+                    if (user?._id) {
+                      setChatWith(friend);
+                      handleLoadMessage({ owner: user._id, friend });
+                    } else {
+                      console.error("Dữ liệu user chưa sẵn sàng");
+                    }
                   }}
                 >
                   <div

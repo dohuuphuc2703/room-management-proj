@@ -1,26 +1,26 @@
 import { ConfigProvider } from "antd";
-import styles from "./LandlordView.module.css";
+import styles from "./AdminView.module.css";
 
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
-import { setLandlordInfo } from "../../actions";
-import SideBar from "../../components/Landlord/SideBar/SideBar";
+import { setAdminInfo } from "../../actions";
+import SideBar from "../../components/Admin/SideBar/SideBar";
 
-function LandlordView() {
-  const user = useSelector((state) => state.userReducer);
+function AdminView() {
+  const admin = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/landlord/info", {
+        const res = await axios.get("http://localhost:8000/api/admin/info", {
           withCredentials: true,
         });
         if (res.data) {
           dispatch(
-            setLandlordInfo({
+            setAdminInfo({
               uid: res.data.info._id,
               ...res.data.info.user,
             })
@@ -31,10 +31,10 @@ function LandlordView() {
       }
     };
 
-    if (user === null) {
+    if (admin === null) {
       fetchUser();
     }
-  }, [dispatch, user]);
+  }, [dispatch, admin]);
 
   return (
     <ConfigProvider
@@ -50,12 +50,12 @@ function LandlordView() {
       }}
     >
       <div className={styles.container}>
-        <SideBar user={user} />
+        <SideBar admin={admin} />
         <div className={styles.content}>
-          {user ? (
-            <Outlet context={{ user }} />
+          {admin ? (
+            <Outlet context={{ admin }} />
           ) : (
-            <p>Loading user information...</p>
+            <p>Loading admin information...</p>
           )}
         </div>
       </div>
@@ -63,4 +63,4 @@ function LandlordView() {
   );
 }
 
-export default LandlordView;
+export default AdminView;

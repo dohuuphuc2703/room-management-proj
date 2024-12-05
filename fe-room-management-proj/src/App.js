@@ -3,16 +3,9 @@ import { Route, Routes } from "react-router-dom";
 import socketClient from "socket.io-client";
 
 import { ConfigProvider } from "antd";
-import AccountManagement from "./components/Tenant/Account/AccountManagement";
-import ListSavedRooms from "./components/Tenant/ListSavedRooms/ListSavedRooms";
-import RoomDetail from "./components/Tenant/RoomDetail/RoomDetail";
-import SearchRoom from "./components/Tenant/SearchRoom/SearchRoom";
-import { themes } from "./helper";
-import Home from "./pages/Home/Home";
-import Login from "./pages/Login/Login";
-import SignUp from "./pages/SignUp/SignUp";
-// import SideBar from "./components/Landlord/SideBar/SideBar";
+import AdminStatistical from "./components/Admin/AdminStatistical/AdminStatistical";
 import Chat from "./components/Chat/Chat";
+import AccountLandlord from "./components/Landlord/Account/AccountLandlord";
 import ContractIndex from "./components/Landlord/Contract/ContractIndex/ContractIndex";
 import CreateContract from "./components/Landlord/Contract/CreateContract/CreateContract";
 import CreateRoom from "./components/Landlord/CreateRoom/CreateRoom";
@@ -21,9 +14,17 @@ import NewInvoice from "./components/Landlord/Invoice/NewInvoice/NewInvoice";
 import LandlordChat from "./components/Landlord/LandlordChat/LandlordChat";
 import LandlordListRoom from "./components/Landlord/ManageRoom/LandlordListRoom";
 import Statistical from "./components/Landlord/Statistical/Statistical";
+import AccountManagement from "./components/Tenant/Account/AccountManagement";
+import ListSavedRooms from "./components/Tenant/ListSavedRooms/ListSavedRooms";
 import MyRoom from "./components/Tenant/MyRoom/MyRoom";
+import RoomDetail from "./components/Tenant/RoomDetail/RoomDetail";
+import SearchRoom from "./components/Tenant/SearchRoom/SearchRoom";
+import { themes } from "./helper";
+import AdminView from "./pages/Admin/AdminView";
+import Home from "./pages/Home/Home";
 import LandlordView from "./pages/LandlordView/LandlordView";
-import AccountLandlord from "./components/Landlord/Account/AccountLandlord";
+import Login from "./pages/Login/Login";
+import SignUp from "./pages/SignUp/SignUp";
 
 const socket = socketClient("http://127.0.0.1:8000", {
   reconnectionAttempts: 5,
@@ -66,6 +67,9 @@ function App() {
             <Route path="account" element={<AccountLandlord />} />
             <Route path="chat" element={<LandlordChat socket={socket}/>} />
           </Route>
+          <Route path="/admin" element={<AdminView />}>
+            <Route path="statistical" element={<AdminStatistical />} />
+          </Route >
         </Routes>
       </ConfigProvider>
 
