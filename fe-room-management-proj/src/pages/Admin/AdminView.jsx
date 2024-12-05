@@ -1,40 +1,38 @@
 import { ConfigProvider } from "antd";
 import styles from "./AdminView.module.css";
 
-import axios from "axios";
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
-import { setAdminInfo } from "../../actions";
 import SideBar from "../../components/Admin/SideBar/SideBar";
 
 function AdminView() {
   const admin = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get("http://localhost:8000/api/admin/info", {
-          withCredentials: true,
-        });
-        if (res.data) {
-          dispatch(
-            setAdminInfo({
-              uid: res.data.info._id,
-              ...res.data.info.user,
-            })
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-      }
-    };
+//   useEffect(() => {
+//     const fetchUser = async () => {
+//       try {
+//         const res = await axios.get("http://localhost:8000/api/admin/info", {
+//           withCredentials: true,
+//         });
+//         if (res.data) {
+//           dispatch(
+//             setAdminInfo({
+//               uid: res.data.info._id,
+//               ...res.data.info.user,
+//             })
+//           );
+//         }
+//       } catch (error) {
+//         console.error("Error fetching user:", error);
+//       }
+//     };
 
-    if (admin === null) {
-      fetchUser();
-    }
-  }, [dispatch, admin]);
+//     if (admin === null) {
+//       fetchUser();
+//     }
+//   }, [dispatch, admin]);
 
   return (
     <ConfigProvider
