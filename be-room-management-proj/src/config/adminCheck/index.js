@@ -7,13 +7,13 @@ const mongoose = require("mongoose");
 
 async function checkAndCreateAdmin() {
   // Kiểm tra xem tài khoản admin đã tồn tại trong bảng User chưa
-  const existingAdmin = await User.findOne({ email: "admin@gmail.com" });
+  const existingAdmin = await User.findOne({ email: process.env.ADMIN_NAME });
 
   if (!existingAdmin) {
     // Nếu chưa có tài khoản admin, tạo tài khoản mới với email admin@gmail.com
     const defaultAdmin = {
-      email: "admin@gmail.com",
-      password: "admin123", // mật khẩu mặc định
+      email: process.env.ADMIN_NAME,
+      password: process.env.ADMIN_PASSWORD, // mật khẩu mặc định
       role: "admin",
       fullName: "Admin",
       verifiedAt: new Date(), // Gán thời gian hiện tại
