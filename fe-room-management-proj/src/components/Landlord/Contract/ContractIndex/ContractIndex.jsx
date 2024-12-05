@@ -3,25 +3,33 @@ import { Button, Form, Input, message, Modal, Popconfirm, Select, Table } from "
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 
 const { Option } = Select;
 
 const ContractIndex = () => {
+  const user = useSelector(state => state.userReducer);
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState(""); // Trạng thái bộ lọc
-  const [titleFilter, setTitleFilter] = useState(""); // Tiêu đề bộ lọc
-  const [isModalVisible, setIsModalVisible] = useState(false); // Modal cho chỉnh sửa phòng
-  const [currentContract, setCurrentContract] = useState(null); // Phòng hiện tại đang được chỉnh sửa
-  const [form] = Form.useForm(); // Sử dụng form Ant Design để chỉnh sửa
+  const [statusFilter, setStatusFilter] = useState("");
+  const [titleFilter, setTitleFilter] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentContract, setCurrentContract] = useState(null);
+  const [cancelRequestModal, setCancelRequestModal] = useState(false);
+  const [selectedCancelRequest, setSelectedCancelRequest] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedContractId, setSelectedContractId] = useState(null);
+  const [reason, setReason] = useState();
+  const [cancelRequestModalVisible, setCancelRequestModalVisible] = useState(false);
+  const [form] = Form.useForm();
   const nav = useNavigate();
 
   useEffect(() => {
     const fetchContracts = async () => {
       try {
         const res = await axios.get(`http://localhost:8000/api/contract/byLandlord`, {
-         
+
           withCredentials: true,
         });
         console.log(res.data.contracts)
@@ -34,46 +42,90 @@ const ContractIndex = () => {
     };
 
     fetchContracts();
-  }, []); // Gọi lại API khi bất kỳ bộ lọc nào thay đổi
+  }, []);
 
-  const handleStatusChange = (value) => {
-    setStatusFilter(value); // Cập nhật trạng thái bộ lọc
-  };
-
-  // const handleTitleChange = (e) => {
-  //   setTitleFilter(e.target.value); // Cập nhật tiêu đề bộ lọc
-  // };
-
-
-  // const handleDelete = async (roomId) => {
-  //   try {
-  //     await axios.delete(`http://localhost:8000/api/room/delete/${roomId}`, {
-  //       withCredentials: true,
-  //     });
-  //     message.success("Đã xóa phòng thành công.");
-  //     setRooms(rooms.filter((room) => room._id !== roomId));
-  //   } catch (error) {
-  //     console.error(error);
-  //     message.error("Xóa phòng thất bại.");
-  //   }
-  // };
-
-  const handleUpdateRoom = async () => {
+  const handleCancelRequest = async (contractId) => {
+    setIsSubmitting(true);
     try {
-      const values = await form.validateFields();
-      await axios.post(`http://localhost:8000/api/room/${currentContract._id}`, values, {
-        withCredentials: true,
-      });
-      message.success("Cập nhật phòng thành công.");
-      setIsModalVisible(false);
-      setContracts(
-        contracts.map((contract) => (contract._id === currentContract._id ? { ...contract, ...values } : contract))
+      await axios.post(
+        `http://localhost:8000/api/contract/${contractId}/cancel-request`,
+        { reason },
+        { withCredentials: true }
       );
+      message.success("Yêu cầu hủy hợp đồng đã được gửi!");
+      setContracts((prev) =>
+        prev.map((contract) =>
+          contract._id === contractId
+            ? { ...contract, cancelRequest: { status: "pending", reason } }
+            : contract
+        )
+      );
+
     } catch (error) {
       console.error(error);
-      message.error("Cập nhật phòng thất bại.");
+      message.error("Không thể gửi yêu cầu hủy hợp đồng.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  const handleOpenCancelModal = (contractId) => {
+    setSelectedContractId(contractId);  // Lưu ID hợp đồng để gửi yêu cầu hủy
+    setCancelRequestModalVisible(true);  // Mở modal nhập lý do hủy
+  };
+
+  const handleCancelModalOk = () => {
+    if (reason.trim()) {
+      handleCancelRequest(selectedContractId);  // Gửi yêu cầu hủy
+    } else {
+      message.error("Vui lòng nhập lý do hủy.");
+    }
+  };
+
+  const handleCancelModalCancel = () => {
+    setCancelRequestModalVisible(false);  // Đóng modal nếu hủy
+  };
+
+  const handleApproveOrReject = async (contractId, action) => {
+    try {
+      await axios.put(
+        `http://localhost:8000/api/contract/${contractId}/cancel-request/handle`,
+        { action },
+        { withCredentials: true }
+      );
+      message.success(
+        action === "approve"
+          ? "Đã đồng ý hủy hợp đồng!"
+          : "Đã từ chối yêu cầu hủy hợp đồng!"
+      );
+      setContracts((prev) =>
+        prev.map((contract) =>
+          contract._id === contractId
+            ? {
+              ...contract,
+              status: action === "approve" ? "canceled" : contract.status,
+              cancelRequest: {
+                ...contract.cancelRequest,
+                status: action === "approve" ? "approved" : "rejected",
+              },
+            }
+            : contract
+        )
+      );
+      setCancelRequestModal(false);
+    } catch (error) {
+      console.error(error);
+      message.error(
+        action === "approve"
+          ? "Không thể đồng ý hủy hợp đồng"
+          : "Không thể từ chối yêu cầu hủy hợp đồng"
+      );
+    }
+  };
+  const handleStatusChange = (value) => {
+    setStatusFilter(value);
+  };
+
 
   const handleCreateContract = () => {
     nav("/landlord/createContract");
@@ -83,6 +135,8 @@ const ContractIndex = () => {
     // Mở PDF trực tiếp từ đường dẫn
     window.open(pdfPath, "_blank");
   };
+
+
 
   const columns = [
     {
@@ -117,24 +171,24 @@ const ContractIndex = () => {
       ),
     },
     {
-        title: "Địa chỉ",
-        dataIndex: "room",
-        key: "room",
-        render: (room) => room.address.province,
-      },
+      title: "Địa chỉ",
+      dataIndex: "room",
+      key: "room",
+      render: (room) => room.address.province,
+    },
 
-      {
-        title: "Người thuê",
-        dataIndex: "tenant",
-        key: "tenant",
-        render: (tenant) => tenant.user.fullName+ "-"+tenant.user.email,
-      },
-      {
-        title: "Số lượng TV",
-        dataIndex: "size",
-        key: "size",
-        
-      },
+    {
+      title: "Người thuê",
+      dataIndex: "tenant",
+      key: "tenant",
+      render: (tenant) => tenant.user.fullName + "-" + tenant.user.email,
+    },
+    {
+      title: "Số lượng TV",
+      dataIndex: "size",
+      key: "size",
+
+    },
     {
       title: "Trạng thái",
       render: (text, record) => (
@@ -178,23 +232,42 @@ const ContractIndex = () => {
       ),
     },
     {
-      title: "Xóa",
-      render: (text, record) => (
-        <Popconfirm
-          title="Bạn có chắc chắn muốn xóa phòng này không?"
-          // onConfirm={() => handleDelete(record._id)}
-          okText="Có"
-          cancelText="Không"
-        >
-          <Button 
-            icon={<DeleteOutlined />} 
-            type="danger" 
-            shape="circle" 
-          />
-        </Popconfirm>
-      ),
+      title: "Hủy hợp đồng",
+      render: (text, record) => {
+        if (!record.cancelRequest || record.cancelRequest.status === "rejected") {
+          return (
+            <Button
+              type="primary"
+              onClick={() => {
+                if (record.status === "confirmed") { // Kiểm tra nếu trạng thái là 'confirmed'
+                  handleOpenCancelModal(record._id)
+                }
+              }}
+              loading={isSubmitting}
+              disabled={record.status !== "confirmed"} // Disable nút nếu trạng thái không phải là 'confirmed'
+            >
+              Tạo yêu cầu hủy
+            </Button>
+          );
+        }
+        if (record.cancelRequest.status === "pending") {
+          return (
+            <Button
+              type="default"
+              onClick={() => {
+                setSelectedCancelRequest(record.cancelRequest);
+                setSelectedContractId(record._id);
+                setCancelRequestModal(true);
+              }}
+            >
+              Xem yêu cầu hủy
+            </Button>
+          );
+        }
+        return null;
+      },
     },
-    
+
   ];
 
   return (
@@ -211,29 +284,44 @@ const ContractIndex = () => {
       />
 
       <Modal
-        title="Chỉnh sửa phòng"
-        visible={isModalVisible}
-        onOk={handleUpdateRoom}
-        onCancel={() => setIsModalVisible(false)}
-        okText="Cập nhật"
-        cancelText="Hủy"
+        title="Chi tiết yêu cầu hủy"
+        visible={cancelRequestModal}
+        onCancel={() => setCancelRequestModal(false)}
+        footer={user._id === selectedCancelRequest?.requestedBy._id ? [] : [
+          <Button
+            key="approve"
+            type="primary"
+            onClick={() => handleApproveOrReject(selectedContractId, "approve")}
+          >
+            Đồng ý
+          </Button>,
+          <Button
+            key="reject"
+            onClick={() => handleApproveOrReject(selectedContractId, "reject")}
+          >
+            Từ chối
+          </Button>,
+        ]}
       >
-        <Form form={form} layout="vertical">
-          <Form.Item label="Tiêu đề phòng" name="title" rules={[{ required: true, message: 'Vui lòng nhập tiêu đề phòng!' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Địa chỉ quận" name="address.district" rules={[{ required: true, message: 'Vui lòng nhập quận!' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Địa chỉ thành phố" name="address.province" rules={[{ required: true, message: 'Vui lòng nhập thành phố!' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Trạng thái" name="status">
-            <Select>
-              <Option value="available">Còn trống</Option>
-              <Option value="rented">Đã thuê</Option>
-              <Option value="maintenance">Đang bảo trì</Option>
-            </Select>
+        <p><strong>Lý do:</strong> {selectedCancelRequest?.reason}</p>
+        <p><strong>Người yêu cầu:</strong> {selectedCancelRequest?.requestedBy?.fullName}-{selectedCancelRequest?.requestedBy?.email} </p>
+      </Modal>
+
+      <Modal
+        title="Nhập lý do hủy hợp đồng"
+        visible={cancelRequestModalVisible}
+        onOk={handleCancelModalOk}
+        onCancel={handleCancelModalCancel}
+        confirmLoading={isSubmitting}
+      >
+        <Form>
+          <Form.Item label="Lý do hủy" required>
+            <Input.TextArea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Nhập lý do hủy hợp đồng"
+              autoFocus
+            />
           </Form.Item>
         </Form>
       </Modal>
