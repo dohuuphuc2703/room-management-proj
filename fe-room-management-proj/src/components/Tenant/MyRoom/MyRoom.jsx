@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setTenantInfo } from "../../../actions";
 import styles from "./MyRoom.module.css";
+import { useSelector } from "react-redux";
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -12,6 +13,8 @@ const { Text, Title } = Typography;
 const { Option } = Select;
 
 const MyRoom = () => {
+    
+
     const [loading, setLoading] = useState(false);
     const [roomInfo, setRoomInfo] = useState();
     const [pdfPath, setPdfPath] = useState();
@@ -25,6 +28,8 @@ const MyRoom = () => {
                     "http://localhost:8000/api/contract/byTenant",
                     { withCredentials: true }
                 );
+                console.log(response.data.contract)
+            
                 if (response.data && response.data.contract) {
                     setRoomInfo(response.data.contract.room);
                     setPdfPath(response.data.contract.pdfPath);
@@ -393,10 +398,11 @@ const Invoice = ({ contractId, loading }) => {
 
 
 const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
+    const user = useSelector(state => state.userReducer); // Lấy thông tin người đăng nhập từ Redux
     const [cancelRequest, setCancelRequest] = useState(initialCancelRequest); // Nhận cancelRequest từ prop
     const [reason, setReason] = useState(""); // Lý do hủy
     const [isSubmitting, setIsSubmitting] = useState(false); // Trạng thái gửi yêu cầu
-
+    console.log(user)
     const handleCancelRequest = async () => {
         setIsSubmitting(true);
         try {
@@ -456,7 +462,18 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
             title: 'Người yêu cầu',
             dataIndex: 'requestedBy',
             key: 'requestedBy',
-            render: (text) => text || 'N/A',
+            render: (requestedBy) => {
+                if (requestedBy) {
+                    return (
+                        <div>
+                            <div>{requestedBy.email}</div>
+                            <div>{requestedBy.fullName || 'N/A'}</div>
+                        </div>
+                    );
+                } else {
+                    return 'N/A';
+                }
+            },
         },
         {
             title: 'Lý do',
@@ -491,7 +508,7 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
             title: 'Thao tác',
             key: 'action',
             render: (_, record) => (
-                cancelRequest && cancelRequest.status === "pending" ? (
+                cancelRequest && cancelRequest.status === "pending" && user._id !== cancelRequest.requestedBy._id ? (
                     <div className={styles.actionButtons}>
                         <Button
                             type="primary"
@@ -508,6 +525,13 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
                             Từ chối hủy
                         </Button>
                     </div>
+                ) : cancelRequest && cancelRequest.status === "rejected" ? (
+                    <Button
+                        type="dashed"
+                        onClick={() => setCancelRequest(null)} // Reset lại yêu cầu hủy để tạo mới
+                    >
+                        Tạo yêu cầu hủy mới
+                    </Button>
                 ) : null
             ),
         },
@@ -551,6 +575,8 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
         </div>
     );
 };
+
+
 
 
 

@@ -225,7 +225,8 @@ class ContractController {
           },
         })
         .populate("landlord", "-__v")
-        .populate("room", "-__v");
+        .populate("room", "-__v")
+        .populate("cancelRequest.requestedBy", "fullName email");
 
       return res.status(200).json({ contracts });
     } catch (error) {
@@ -246,7 +247,9 @@ class ContractController {
             select: "email fullName, phone",
           },
         })
-        .populate("room", "-__v");
+        .populate("room", "-__v")
+        .populate("cancelRequest.requestedBy", "fullName email");
+
 
       return res.status(200).json({ contract });
     } catch (error) {
@@ -342,7 +345,7 @@ async cancelRequestHandle(req, res) {
       const { action } = req.body; // "approve" hoặc "reject"
 
       // Tìm hợp đồng
-      const contract = await Contract.findById(contractId);
+      const contract = await Contract.findById(contractId).populate("room");
       if (!contract) {
           return res.status(404).json({ message: "Hợp đồng không tồn tại" });
       }
@@ -354,8 +357,14 @@ async cancelRequestHandle(req, res) {
 
       // Xử lý yêu cầu
       if (action === "approve") {
-          contract.status = "canceled"; // Cập nhật trạng thái hợp đồng
+          contract.status = "canceled"; 
           contract.cancelRequest.status = "approved";
+
+          await Room.findOneAndUpdate(
+            { _id: contract.room._id },
+            { status: "available" } 
+          );
+            
       } else if (action === "reject") {
           contract.cancelRequest.status = "rejected";
       } else {
