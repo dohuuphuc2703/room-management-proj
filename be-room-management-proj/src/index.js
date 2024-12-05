@@ -1,6 +1,6 @@
 const express = require("express");
 const { createServer } = require("node:http");
-
+const checkAndCreateAdmin  = require("../src/config/adminCheck/index");
 const app = express();
 const server = createServer(app);
 
@@ -35,6 +35,8 @@ app.use(cors({
 
 // Connect to database
 db.connect();
+
+checkAndCreateAdmin(); 
 
 // Route app
 route(app);
