@@ -17,7 +17,7 @@ const MyRoom = () => {
     const [pdfPath, setPdfPath] = useState();
     const [contractId, setContractId] = useState()
     const [hasContract, setHasContract] = useState(false);
-
+    const [cancelRequest, setCancelRequest] = useState()
     useEffect(() => {
         const fetchContractInfo = async () => {
             try {
@@ -29,7 +29,8 @@ const MyRoom = () => {
                     setRoomInfo(response.data.contract.room);
                     setPdfPath(response.data.contract.pdfPath);
                     setContractId(response.data.contract._id);
-                    setHasContract(true); // Nếu có hợp đồng, hiển thị TabPane
+                    setHasContract(true);
+                    setCancelRequest(response.data.contract.cancelRequest.requestedBy ? response.data.contract.cancelRequest : null);
                 } else {
                     setHasContract(false); // Nếu không có hợp đồng, không hiển thị TabPane
                 }
@@ -46,21 +47,24 @@ const MyRoom = () => {
         <Layout className={styles.layout}>
             <Content className={styles.content}>
                 <div>
-                {!hasContract ? (
-                <div> Bạn chưa thuê phòng </div> // Hiển thị thông báo nếu không có hợp đồng
-            ) : (
-                    <Tabs defaultActiveKey="1" tabBarStyle={{ fontWeight: 'bold' }}>
-                        <TabPane tab="Thông tin phòng" key="1">
-                            <RoomInfoForm roomInfo={roomInfo} />
-                        </TabPane>
-                        <TabPane tab="Hợp đồng" key="2">
-                            <Contract pdfPath={pdfPath} />
-                        </TabPane>
-                        <TabPane tab="Hóa đơn" key="3">
-                            <Invoice contractId={contractId} loading={loading} />
-                        </TabPane>
-                    </Tabs>
-            )}
+                    {!hasContract ? (
+                        <div> Bạn chưa thuê phòng </div> // Hiển thị thông báo nếu không có hợp đồng
+                    ) : (
+                        <Tabs defaultActiveKey="1" tabBarStyle={{ fontWeight: 'bold' }}>
+                            <TabPane tab="Thông tin phòng" key="1">
+                                <RoomInfoForm roomInfo={roomInfo} />
+                            </TabPane>
+                            <TabPane tab="Hợp đồng" key="2">
+                                <Contract pdfPath={pdfPath} />
+                            </TabPane>
+                            <TabPane tab="Hóa đơn" key="3">
+                                <Invoice contractId={contractId} loading={loading} />
+                            </TabPane>
+                            <TabPane tab="Hủy hợp đồng" key="4">
+                                <CancelRequest contractId={contractId} initialCancelRequest={cancelRequest} loading={loading} />
+                            </TabPane>
+                        </Tabs>
+                    )}
                 </div>
             </Content>
         </Layout>
@@ -206,7 +210,7 @@ const Invoice = ({ contractId, loading }) => {
                         status: statusFilter,
                         contractId: contractId,
                     },
-                     withCredentials: true 
+                    withCredentials: true
                 }
             );
             setInvoices(response.data);
@@ -386,6 +390,168 @@ const Invoice = ({ contractId, loading }) => {
         </>
     );
 };
+
+
+const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
+    const [cancelRequest, setCancelRequest] = useState(initialCancelRequest); // Nhận cancelRequest từ prop
+    const [reason, setReason] = useState(""); // Lý do hủy
+    const [isSubmitting, setIsSubmitting] = useState(false); // Trạng thái gửi yêu cầu
+
+    const handleCancelRequest = async () => {
+        setIsSubmitting(true);
+        try {
+            await axios.post(
+                `http://localhost:8000/api/contract/${contractId}/cancel-request`,
+                { reason },
+                { withCredentials: true }
+            );
+            message.success("Yêu cầu hủy hợp đồng đã được gửi!");
+            setReason(""); // Reset lý do
+
+            // Cập nhật trạng thái yêu cầu hủy
+            setCancelRequest({
+                ...cancelRequest,
+                reason,
+                status: "pending",
+            });
+        } catch (error) {
+            message.error("Không thể gửi yêu cầu hủy hợp đồng");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleApproveOrReject = async (action) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:8000/api/contract/${contractId}/cancel-request/handle`,
+                { action }, // action là "approve" hoặc "reject"
+                { withCredentials: true }
+            );
+
+            if (response.data && response.data.success) {
+                message.success(
+                    action === "approve"
+                        ? "Đã đồng ý hủy hợp đồng!"
+                        : "Đã từ chối yêu cầu hủy hợp đồng!"
+                );
+
+                // Cập nhật trạng thái sau khi xử lý
+                setCancelRequest((prev) => ({
+                    ...prev,
+                    status: action === "approve" ? "approved" : "rejected",
+                }));
+            }
+        } catch (error) {
+            message.error(
+                action === "approve"
+                    ? "Không thể đồng ý hủy hợp đồng"
+                    : "Không thể từ chối yêu cầu hủy hợp đồng"
+            );
+        }
+    };
+
+    const columns = [
+        {
+            title: 'Người yêu cầu',
+            dataIndex: 'requestedBy',
+            key: 'requestedBy',
+            render: (text) => text || 'N/A',
+        },
+        {
+            title: 'Lý do',
+            dataIndex: 'reason',
+            key: 'reason',
+            render: (text) => text || 'Không có lý do',
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => (
+                <span
+                    style={{
+                        color:
+                            status === "approved"
+                                ? "green"
+                                : status === "rejected"
+                                    ? "red"
+                                    : "orange",
+                    }}
+                >
+                    {status === "pending"
+                        ? "Đang chờ xử lý"
+                        : status === "approved"
+                            ? "Đã được phê duyệt"
+                            : "Đã bị từ chối"}
+                </span>
+            ),
+        },
+        {
+            title: 'Thao tác',
+            key: 'action',
+            render: (_, record) => (
+                cancelRequest && cancelRequest.status === "pending" ? (
+                    <div className={styles.actionButtons}>
+                        <Button
+                            type="primary"
+                            onClick={() => handleApproveOrReject("approve")}
+                            loading={loading}
+                        >
+                            Đồng ý hủy
+                        </Button>
+                        <Button
+                            type="default"
+                            onClick={() => handleApproveOrReject("reject")}
+                            loading={loading}
+                        >
+                            Từ chối hủy
+                        </Button>
+                    </div>
+                ) : null
+            ),
+        },
+    ];
+
+    return (
+        <div>
+            {!cancelRequest ? (
+                <div>
+                    <Title level={4}>Yêu cầu hủy hợp đồng</Title>
+                    <Form layout="vertical">
+                        <Form.Item label="Lý do hủy hợp đồng">
+                            <textarea
+                                className={styles.textarea}
+                                value={reason}
+                                onChange={(e) => setReason(e.target.value)}
+                                placeholder="Nhập lý do hủy hợp đồng..."
+                            />
+                        </Form.Item>
+                        <Button
+                            type="primary"
+                            onClick={handleCancelRequest}
+                            loading={isSubmitting}
+                            disabled={!reason.trim()}
+                        >
+                            Gửi yêu cầu hủy
+                        </Button>
+                    </Form>
+                </div>
+            ) : (
+                <div>
+                    <Table
+                        columns={columns}
+                        dataSource={cancelRequest ? [cancelRequest] : []}
+                        pagination={false}
+                        bordered
+                        size="middle"
+                    />
+                </div>
+            )}
+        </div>
+    );
+};
+
 
 
 export default MyRoom;

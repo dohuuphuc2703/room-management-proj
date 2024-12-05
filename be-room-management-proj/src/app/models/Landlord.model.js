@@ -8,6 +8,22 @@ const LandlordSchema = new Schema({
     ref: "User",
     unique: true,
     required: true,
+  },
+
+  bankDetails: {
+    bank: { 
+      type: Number, 
+      required: false,
+    },
+    accountNumber: { 
+      type: String, 
+      required: false,
+      match: [/^\d+$/, "Số tài khoản chỉ chứa số"],
+    },
+    accountName: { 
+      type: String, 
+      required: false, // Tên tài khoản ngân hàng
+    },
   }
 });
 

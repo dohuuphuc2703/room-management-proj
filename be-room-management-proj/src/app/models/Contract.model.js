@@ -67,6 +67,21 @@ const ContractSchema = new Schema({
         },
     },
 
+    cancelRequest: {
+        requestedBy: {
+            type: Schema.Types.ObjectId, 
+            ref: "User", 
+        },
+        reason: {
+            type: String,
+            required: false,
+        },
+        status: {
+            type: String,
+            enum: ["pending", "approved", "rejected"],
+        }
+    }
+
 },{
     timestamps : true,
 });

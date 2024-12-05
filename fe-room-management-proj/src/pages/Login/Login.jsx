@@ -34,7 +34,7 @@ function Login() {
               nav("/admin/dashboard");
               break;
             case "landlord":
-              nav("/landlord");
+              nav("/landlord/statistical");
               break;
             default:
               nav("/");

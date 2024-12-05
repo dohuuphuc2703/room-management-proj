@@ -1,5 +1,5 @@
 import { CalendarOutlined, HomeOutlined, LockOutlined, PhoneOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Form, Input, Layout, message, Row, Tabs, Upload } from "antd";
+import { Avatar, Button, Select, Col, Form, Input, Layout, message, Row, Tabs, Upload } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -31,6 +31,7 @@ const AccountManagement = () => {
           phone: info.user.phone?info.user.phone:"",
           dob: info.user.dob?info.user.dob.slice(0, 10):"",
           address: info.user.address?info.user.address:"",
+          gender: info.user.gender?info.user.gender:"",
         });
       } catch (error) {
         message.error("Error fetching user info");
@@ -194,6 +195,23 @@ const AccountManagement = () => {
                         maxLength={10}
                         prefix={<CalendarOutlined />}
                       />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      label="Giới tính"
+                      name="gender"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Vui lòng chọn giới tính của bạn!",
+                        },
+                      ]}
+                    >
+                      <Select placeholder="Chọn giới tính">
+                        <Select.Option value="male">Nam</Select.Option>
+                        <Select.Option value="female">Nữ</Select.Option>
+                      </Select>
                     </Form.Item>
                   </Col>
                 </Row>
