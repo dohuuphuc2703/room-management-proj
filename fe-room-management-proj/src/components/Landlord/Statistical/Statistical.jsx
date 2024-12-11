@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Card, Col, Row, Table, Select } from "antd";
-import { Pie, Bar } from "react-chartjs-2";
-import styles from './Statistical.module.css';
+import { Card, Col, Row, Select, Table } from "antd";
+import axios from "axios";
 import {
+  ArcElement,
+  BarElement,
+  CategoryScale,
   Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
-  ArcElement,
-  CategoryScale,
-  LinearScale,
-  BarElement,
 } from "chart.js";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Bar, Pie } from "react-chartjs-2";
+import styles from './Statistical.module.css';
 
 const { Option } = Select;
 

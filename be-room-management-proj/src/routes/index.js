@@ -7,6 +7,7 @@ const landlordRoute = require("./Landlord.route");
 const tenantRoute = require("./Tenant.route");
 const maintenanceRequestRoute = require("./MaintenanceRequest.route");
 const invoiceRoute = require("./Invoice.route");
+const adminRoute = require("./Admin.route");
 
 
 const { verifyJwt } = require("../app/middlewares/jwtMiddleware");
@@ -14,6 +15,7 @@ const { roleVerify } = require("../app/middlewares/roleMiddleware");
 
 module.exports = (app) => {
   app.use("/auth", authRoute);
+  app.use("/api/admin", verifyJwt, roleVerify("admin"), adminRoute);
   app.use("/api/room", roomRoute);
   app.use("/api/room-category", roomCategoryRoute);
   app.use("/api/review", reviewRoute);

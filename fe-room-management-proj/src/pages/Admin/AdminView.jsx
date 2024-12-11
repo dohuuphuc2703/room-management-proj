@@ -50,11 +50,7 @@ function AdminView() {
       <div className={styles.container}>
         <SideBar admin={admin} />
         <div className={styles.content}>
-          {admin ? (
             <Outlet context={{ admin }} />
-          ) : (
-            <p>Loading admin information...</p>
-          )}
         </div>
       </div>
     </ConfigProvider>
