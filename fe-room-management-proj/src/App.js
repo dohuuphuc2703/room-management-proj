@@ -26,6 +26,8 @@ import Home from "./pages/Home/Home";
 import LandlordView from "./pages/LandlordView/LandlordView";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
+import TenantManage from "./components/Admin/TenantManage/TenantManage";
+import Category from "./components/Admin/Category/Category";
 
 const socket = socketClient("http://127.0.0.1:8000", {
   reconnectionAttempts: 5,
@@ -71,6 +73,8 @@ function App() {
           <Route path="/admin" element={<AdminView />}>
             <Route path="statistical" element={<AdminStatistical />} />
             <Route path="landlord-manage" element={<LandlordManage />} />
+            <Route path="tenant-manage" element={<TenantManage />} />
+            <Route path="category-manage" element={<Category />} />
           </Route >
         </Routes>
       </ConfigProvider>
