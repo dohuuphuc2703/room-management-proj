@@ -4,6 +4,7 @@ import socketClient from "socket.io-client";
 
 import { ConfigProvider } from "antd";
 import AdminStatistical from "./components/Admin/AdminStatistical/AdminStatistical";
+import LandlordManage from "./components/Admin/LandlordManage/LandlordManage";
 import Chat from "./components/Chat/Chat";
 import AccountLandlord from "./components/Landlord/Account/AccountLandlord";
 import ContractIndex from "./components/Landlord/Contract/ContractIndex/ContractIndex";
@@ -69,6 +70,7 @@ function App() {
           </Route>
           <Route path="/admin" element={<AdminView />}>
             <Route path="statistical" element={<AdminStatistical />} />
+            <Route path="landlord-manage" element={<LandlordManage />} />
           </Route >
         </Routes>
       </ConfigProvider>
