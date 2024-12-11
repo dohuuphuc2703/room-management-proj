@@ -9,7 +9,10 @@ router.get("/tenant-stats", AdminController.getMonthlyTenantStats);
 router.get("/landlord-stats", AdminController.getMonthlyLandlordStats);
 router.get("/room-stats", AdminController.getRoomStatsByMonth);
 router.get("/landlords", AdminController.getLandlords);
-router.put("/landlord/block/:landlordId", AdminController.blockLandlord);
-router.put("/landlord/unlock/:landlordId", AdminController.unlockLandlord);
+router.put("/user/block/:uid", AdminController.blockUser);
+router.put("/user/unlock/:uid", AdminController.unlockUser);
+router.get("/list-tenant", AdminController.getListTenant);
+router.get("/list-category", AdminController.getListCategory);
+router.post("/new-category", AdminController.createCategory);
 
 module.exports = router;

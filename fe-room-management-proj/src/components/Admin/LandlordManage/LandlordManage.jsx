@@ -1,5 +1,5 @@
-import { DeleteOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons"; // Import icons từ Ant Design
-import { Button, message, Popconfirm, Table } from "antd";
+import { DeleteOutlined, LockOutlined, UnlockOutlined, CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons"; // Import icons từ Ant Design
+import { Button, message, Popconfirm, Table, Avatar } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +40,7 @@ const LandlordManage = () => {
   const handleToggleStatus = async (record) => {
     try {
       const action = record.user.hidden ? "unlock" : "block"; // Kiểm tra trạng thái để quyết định hành động
-      const response = await axios.put(`http://localhost:8000/api/admin/landlord/${action}/${record.user._id}`, {}, { withCredentials: true });
+      const response = await axios.put(`http://localhost:8000/api/admin/user/${action}/${record.user._id}`, {}, { withCredentials: true });
       if (response.data.success) {
         message.success(`${action === "block" ? "Khóa" : "Mở khóa"} tài khoản thành công!`);
         setLandlords((prev) => prev.map((item) => 
@@ -72,6 +72,18 @@ const LandlordManage = () => {
       render: (_, __, index) => index + 1,
     },
     {
+      title: "Avatar",
+      dataIndex: ["user", "avatar"],
+      key: "avatar",
+      render: (avatar) => (
+          avatar ? (
+              <Avatar size={50} src={avatar} />
+          ) : (
+              <span>Không có</span>
+          )
+      ),
+  },
+    {
       title: "Họ và tên",
       dataIndex: ["user", "fullName"],
       key: "fullName",
@@ -86,6 +98,52 @@ const LandlordManage = () => {
       dataIndex: ["user", "phone"],
       key: "phone",
     },
+    {
+      title: "DOB",
+      dataIndex: ["user", "dob"],
+      key: "dob",
+      render: (dob) =>
+          dob ? new Date(dob).toLocaleDateString("vi-VN") : "",
+  },
+  {
+    title: "Giới tính",
+    render: (_, record) => (
+        <span>{record.user.gender === "male" ? "Nam" : "Nữ"}</span>
+    ),
+},
+{
+  title: "Địa chỉ",
+  dataIndex: ["user", "address"],
+  key: "address",
+},
+{
+  title: "Xác thực",
+  dataIndex:  ["user", "verifiedAt"],
+  key: "verifiedAt",
+  render: (verifiedAt) =>
+      verifiedAt ? (
+          <CheckCircleFilled style={{ color: "green" , fontSize: "20px"}} />
+      ) : (
+          <CloseCircleFilled style={{ color: "red" ,  fontSize: "20px"}} />
+      ),
+},
+{
+  title: "Role",
+  dataIndex: ["user", "role"],
+  key: "role",
+  render: (role) => {
+      switch (role) {
+          case "tenant":
+              return "Người thuê";
+          case "landlord":
+              return "Chủ nhà";
+          case "admin":
+              return "Quản trị viên";
+          default:
+              return "Không xác định";
+      }
+  },
+},
     {
       title: "Tổng số phòng",
       dataIndex: "roomCount",

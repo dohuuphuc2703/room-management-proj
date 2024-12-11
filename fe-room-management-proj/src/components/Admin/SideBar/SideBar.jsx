@@ -1,11 +1,11 @@
 import {
-    AppstoreOutlined,
-    ArrowLeftOutlined,
-    ArrowRightOutlined,
-    PieChartOutlined,
-    PoweroffOutlined,
-    SettingOutlined,
-    TeamOutlined
+  AppstoreOutlined,
+  ArrowLeftOutlined,
+  ArrowRightOutlined,
+  PieChartOutlined,
+  PoweroffOutlined,
+  SettingOutlined,
+  TeamOutlined
 } from "@ant-design/icons";
 import { Menu, message } from "antd";
 import axios from "axios";
@@ -41,9 +41,10 @@ function SideBar({ admin }) {
     <div className={`${styles.sidebar} ${collapsed ? styles.close : ""}`}>
       <div className={styles.logoDetails}>
         <AppstoreOutlined />
+  
         {!collapsed && (
           <div>
-            <span className={styles.logoName}>{admin?.fullName}</span>
+            <span className={styles.logoName}>{admin?.fullName} Admin</span>
             <PoweroffOutlined onClick={handleLogout} />
           </div>
         )}
@@ -64,7 +65,7 @@ function SideBar({ admin }) {
           <Link to="/admin/landlord-manage">Chủ trọ</Link>
         </Menu.Item>
         <Menu.Item key="4" icon={<SettingOutlined />}>
-          <Link to="/admin/account">Account</Link>
+          <Link to="/admin/category-manage">Category</Link>
         </Menu.Item>
       </Menu>
       <button onClick={toggleCollapse} className={styles.collapseButton}>

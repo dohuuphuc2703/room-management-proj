@@ -1,7 +1,8 @@
 const Tenant = require("../models/Tenant.model");
+const User = require("../models/User.model");
 const Landlord = require("../models/Landlord.model");
 const Room = require("../models/Room.model");
-const User = require("../models/User.model");
+const RoomCategory = require("../models/RoomCategory.model");
 
 class AdminController {
     // [GET] /api/admin/tenant-stats
@@ -102,8 +103,6 @@ class AdminController {
             res.status(500).json({ error: "Internal server error" });
         }
     };
-
-// API thống kê số lượng phòng mới theo từng tháng
 // [GET] /api/admin/room-stats
     async getRoomStatsByMonth(req, res) {
         try {
@@ -158,7 +157,7 @@ class AdminController {
         try {
           // Lấy danh sách landlord và thông tin từ bảng User
           const landlords = await Landlord.find()
-            .populate("user", "email fullName phone dob gender address avatar role hidden hiddenAt")
+            .populate("user", "-password")
             .exec();
       
           // Lấy tổng số phòng mỗi landlord sở hữu
@@ -186,12 +185,11 @@ class AdminController {
         }
     };
     // [PUT] api/admin/landlord/block/:landlordId
-    async blockLandlord(req, res) {
-        const { landlordId } = req.params; // Lấy ID của landlord từ params
-
+    async blockUser(req, res) {
+        const { uid } = req.params; 
         try {
             const updatedUser = await User.findByIdAndUpdate(
-            landlordId,
+            uid,
             {
                 hidden: true,
                 hiddenAt: new Date(),
@@ -222,12 +220,12 @@ class AdminController {
     };
 
     //[PUT] api/admin/landlord/unlock/:landlordId
-    async unlockLandlord(req, res) {
-        const { landlordId } = req.params; // Lấy ID của landlord từ params
+    async unlockUser(req, res) {
+        const { uid } = req.params; // Lấy ID của landlord từ params
 
         try {
           const updatedUser = await User.findByIdAndUpdate(
-            landlordId,
+            uid,
             {
               hidden: false,
               hiddenAt: null,
@@ -257,6 +255,113 @@ class AdminController {
         }
       };
       
+    async getListTenant(req, res) {
+        try {
+            const role = "tenant";
+            const { hidden, page = 1, size = 10 } = req.query;
+
+            
+    
+            // Tạo bộ lọc
+            const filter = { role, ...hidden };
+    
+            // Tính toán skip và limit cho phân trang
+            const limit = parseInt(size, 10) || 10;
+            const skip = (parseInt(page, 10) - 1) * limit;
+    
+            // Lấy danh sách tenant với phân trang
+            const members = await User.find(filter)
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 }) // Sắp xếp theo thời gian tạo mới nhất
+                .select("-password") // Loại bỏ trường mật khẩu
+                .lean();
+    
+            // Đếm tổng số bản ghi phù hợp
+            const total = await User.countDocuments(filter);
+    
+            // Trả về kết quả
+            return res.status(200).json({
+                success: true,
+                data: members,
+                pagination: {
+                    total,
+                    currentPage: parseInt(page, 10),
+                    pageSize: limit,
+                },
+            });
+        } catch (error) {
+            console.error("Error fetching tenants:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
+
+    async getListCategory(req, res) {
+        try {
+            const { page = 1, size = 10 } = req.query;
+            // Tính toán skip và limit cho phân trang
+            const limit = parseInt(size, 10) || 10;
+            const skip = (parseInt(page, 10) - 1) * limit;
+    
+            // Lấy danh sách tenant với phân trang
+            const categories = await RoomCategory.find()
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 })
+                .lean();
+    
+            // Đếm tổng số bản ghi phù hợp
+            const total = await RoomCategory.countDocuments();
+    
+            // Trả về kết quả
+            return res.status(200).json({
+                success: true,
+                data: categories,
+                pagination: {
+                    total,
+                    currentPage: parseInt(page, 10),
+                    pageSize: limit,
+                },
+            });
+        } catch (error) {
+            console.error("Error fetching tenants:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
+
+    async createCategory(req, res){
+        try {
+            const { category, description } = req.body;
+    
+            // Kiểm tra dữ liệu đầu vào
+            if (!category || !description) {
+                return res.status(400).json({ message: "Tên category và mô tả là bắt buộc." });
+            }
+    
+            // Tạo mới category
+            const newCategory = await RoomCategory.create({
+            
+                category: category,
+                description: description,
+              });
+    
+            return res.status(201).json({
+                message: "Tạo mới category thành công.",
+                data: newCategory,
+            });
+        } catch (error) {
+            console.error("Lỗi khi tạo mới category:", error);
+            return res.status(500).json({
+                message: "Đã xảy ra lỗi khi tạo mới category.",
+            });
+        }
+    }
 }
 
 
