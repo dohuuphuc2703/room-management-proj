@@ -14,7 +14,7 @@ const route = require("./routes");
 const { runMessageService } = require("./app/services/MessageService");
 
 const db = require("./config/database");
-
+ 
 // HTTP request logger middleware for node.js
 app.use(morgan("dev"));
 

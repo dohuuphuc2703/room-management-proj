@@ -21,7 +21,7 @@ class RoomController {
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate({
           path: "landlord",
-          populate: { 
+          populate: {
             path: "user",
             select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
   
