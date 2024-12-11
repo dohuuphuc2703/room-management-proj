@@ -1,6 +1,7 @@
 const Tenant = require("../models/Tenant.model");
 const Landlord = require("../models/Landlord.model");
 const Room = require("../models/Room.model");
+const User = require("../models/User.model");
 
 class AdminController {
     // [GET] /api/admin/tenant-stats
@@ -152,6 +153,110 @@ class AdminController {
         }
     };
 
+    //[GET] api/admin/landlords
+    async getLandlords(req, res) {
+        try {
+          // Lấy danh sách landlord và thông tin từ bảng User
+          const landlords = await Landlord.find()
+            .populate("user", "email fullName phone dob gender address avatar role hidden hiddenAt")
+            .exec();
+      
+          // Lấy tổng số phòng mỗi landlord sở hữu
+          const landlordsWithRoomCount = await Promise.all(
+            landlords.map(async (landlord) => {
+              const roomCount = await Room.countDocuments({ landlord: landlord._id });
+              return {
+                ...landlord.toObject(),
+                roomCount,
+              };
+            })
+          );
+      
+          res.status(200).json({
+            success: true,
+            data: landlordsWithRoomCount,
+          });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({
+            success: false,
+            message: "Không thể lấy danh sách các landlord.",
+            error: error.message,
+          });
+        }
+    };
+    // [PUT] api/admin/landlord/block/:landlordId
+    async blockLandlord(req, res) {
+        const { landlordId } = req.params; // Lấy ID của landlord từ params
+
+        try {
+            const updatedUser = await User.findByIdAndUpdate(
+            landlordId,
+            {
+                hidden: true,
+                hiddenAt: new Date(),
+            },
+            { new: true } // Trả về user sau khi cập nhật
+            );
+
+            if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy tài khoản landlord.",
+            });
+            }
+
+            res.status(200).json({
+            success: true,
+            message: "Đã chặn tài khoản landlord thành công.",
+            data: updatedUser,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+            success: false,
+            message: "Không thể chặn tài khoản landlord.",
+            error: error.message,
+            });
+        }
+    };
+
+    //[PUT] api/admin/landlord/unlock/:landlordId
+    async unlockLandlord(req, res) {
+        const { landlordId } = req.params; // Lấy ID của landlord từ params
+
+        try {
+          const updatedUser = await User.findByIdAndUpdate(
+            landlordId,
+            {
+              hidden: false,
+              hiddenAt: null,
+            },
+            { new: true } // Trả về user sau khi cập nhật
+          );
+      
+          if (!updatedUser) {
+            return res.status(404).json({
+              success: false,
+              message: "Không tìm thấy tài khoản landlord.",
+            });
+          }
+      
+          res.status(200).json({
+            success: true,
+            message: "Đã mở khóa tài khoản landlord thành công.",
+            data: updatedUser,
+          });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({
+            success: false,
+            message: "Không thể mở khóa tài khoản landlord.",
+            error: error.message,
+          });
+        }
+      };
+      
 }
 
 
