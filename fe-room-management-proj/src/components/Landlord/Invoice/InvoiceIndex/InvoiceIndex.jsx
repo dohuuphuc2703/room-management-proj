@@ -11,6 +11,9 @@ const InvoiceIndex = () => {
   const [isModalVisible, setIsModalVisible] = useState(false); // Trạng thái Modal
   const [selectedInvoice, setSelectedInvoice] = useState(null); // Hóa đơn được chọn để xem chi tiết
   const nav = useNavigate();
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(1);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -19,9 +22,15 @@ const InvoiceIndex = () => {
           `http://localhost:8000/api/invoice/allInvoice`,
           {
             withCredentials: true,
+            params: {
+              status: statusFilter,
+              page,
+              size,
+            },
           }
         );
-        setInvoices(res.data);
+        setInvoices(res.data.data || []);
+        setTotal(res.data.pagination.total || 0);
       } catch (error) {
         console.error(error);
       } finally {
@@ -58,10 +67,15 @@ const InvoiceIndex = () => {
     nav("/landlord/newInvoice");
   };
 
+  const handleStatusChange = (value) => {
+    setStatusFilter(value)
+    setPage(1);
+  };
+
   const columns = [
     {
       title: "STT",
-      render: (_, __, index) => index + 1,
+      render: (_, __, index) => (page - 1) * size + index + 1,
     },
     {
       title: "Tiêu đề",
@@ -129,9 +143,16 @@ const InvoiceIndex = () => {
         )}
         rowKey="_id"
         loading={loading}
-        pagination={{ pageSize: 5 }}
+        pagination={{
+          current: page,
+          pageSize: size,
+          total: total,
+          onChange: (currentPage, pageSize) => {
+            setPage(currentPage);
+            setSize(pageSize);
+          },
+        }}
       />
-      {/* Modal hiển thị chi tiết hóa đơn */}
       {selectedInvoice && (
         <Modal
           title="Chi tiết hóa đơn"

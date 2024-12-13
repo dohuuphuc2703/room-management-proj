@@ -23,6 +23,9 @@ const ContractIndex = () => {
   const [reason, setReason] = useState();
   const [cancelRequestModalVisible, setCancelRequestModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(5);
+  const [total, setTotal] = useState(0);
   const nav = useNavigate();
 
   useEffect(() => {
@@ -31,9 +34,15 @@ const ContractIndex = () => {
         const res = await axios.get(`http://localhost:8000/api/contract/byLandlord`, {
 
           withCredentials: true,
+          params: {
+            status: statusFilter,
+            page,
+            size,
+          },
         });
-        console.log(res.data.contracts)
-        setContracts(res.data.contracts);
+
+        setContracts(res.data.data || []);
+        setTotal(res.data.pagination.total || 0);
       } catch (error) {
         console.error(error);
       } finally {
@@ -42,7 +51,7 @@ const ContractIndex = () => {
     };
 
     fetchContracts();
-  }, []);
+  }, [statusFilter, page, size]);
 
   const handleCancelRequest = async (contractId) => {
     setIsSubmitting(true);
@@ -124,6 +133,7 @@ const ContractIndex = () => {
   };
   const handleStatusChange = (value) => {
     setStatusFilter(value);
+    setPage(1);
   };
 
 
@@ -141,7 +151,7 @@ const ContractIndex = () => {
   const columns = [
     {
       title: "STT",
-      render: (_, __, index) => index + 1,
+      render: (_, __, index) => (page - 1) * size + index + 1,
     },
     {
       title: "Phòng",
@@ -201,22 +211,13 @@ const ContractIndex = () => {
             placeholder="Lọc theo trạng thái"
             value={statusFilter}
             onChange={handleStatusChange}
-            style={{ width: 188, marginBottom: 8, display: 'block' }}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
           >
             <Option value="">Tất cả</Option>
             <Option value="waiting">Chờ xác nhận</Option>
             <Option value="canceled">Đã hủy</Option>
             <Option value="confirmed">Đang hiệu lực</Option>
           </Select>
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            icon={<EditOutlined />}
-            size="small"
-            style={{ width: 90, marginRight: 8 }}
-          >
-            Lọc
-          </Button>
         </div>
       ),
     },
@@ -280,7 +281,15 @@ const ContractIndex = () => {
         dataSource={contracts}
         rowKey="_id"
         loading={loading}
-        pagination={{ pageSize: 5 }}
+        pagination={{
+          current: page,
+          pageSize: size,
+          total: total,
+          onChange: (currentPage, pageSize) => {
+              setPage(currentPage);
+              setSize(pageSize);
+          },
+      }}
       />
 
       <Modal

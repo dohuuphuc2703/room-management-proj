@@ -14,6 +14,8 @@ const LandlordListRoom = () => {
   const [provinces, setProvinces] = useState([]);
   const [province, setProvince] = useState("");
   const [page, setPage] = useState(1);
+  const [size, setSize] = useState(5);
+  const [total, setTotal] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false); // Modal cho chỉnh sửa phòng
   const [currentRoom, setCurrentRoom] = useState(null); // Phòng hiện tại đang được chỉnh sửa
   const [imageUrls, setImageUrls] = useState([]);
@@ -33,6 +35,7 @@ const LandlordListRoom = () => {
           }
         );
         setRooms(res.data.rooms);
+        setTotal(res.data.info.total || 0);
       } catch (error) {
         console.error(error);
       } finally {
@@ -135,9 +138,8 @@ const LandlordListRoom = () => {
         <span>
           {record.status === "available"
             ? "Còn trống"
-            : record.status === "rented"
-            ? "Đã thuê"
-            : "Đang bảo trì"}
+            : "Đã thuê"
+}
         </span>
       ),
       filterDropdown: ({ setSelectedKeys, confirm }) => (
@@ -152,7 +154,6 @@ const LandlordListRoom = () => {
             <Option value="">Tất cả</Option>
             <Option value="available">Còn trống</Option>
             <Option value="rented">Đã thuê</Option>
-            <Option value="maintenance">Đang bảo trì</Option>
           </Select>
         </div>
       ),
@@ -198,20 +199,22 @@ const LandlordListRoom = () => {
         loading={loading}
         rowKey="_id"
         pagination={{
-          pageSize: 10,
-          onChange: (page) => {
-            setPage(page);
+          current: page,
+          pageSize: size,
+          total: total,
+          onChange: (currentPage, pageSize) => {
+              setPage(currentPage);
+              setSize(pageSize);
           },
-          total: rooms.length, // Replace with the actual total count if available
-        }}
+      }}
       />
 
       <ModalUpdateRoom
         visible={isModalVisible}
         onCancel={handleCloseModal}
         currentRoom={currentRoom}
-        setImageUrls={setImageUrls}  // Truyền setImageUrls vào ModalUpdateRoom
-        imageUrls={imageUrls}  // Truyền imageUrls vào ModalUpdateRoom
+        setImageUrls={setImageUrls}  
+        imageUrls={imageUrls}
         setIsModalVisible={setIsModalVisible}
         setRooms={setRooms}
         rooms={rooms}

@@ -5,7 +5,6 @@ const reviewRoute = require("./Review.route")
 const contractRoute = require("./Contract.route")
 const landlordRoute = require("./Landlord.route");
 const tenantRoute = require("./Tenant.route");
-const maintenanceRequestRoute = require("./MaintenanceRequest.route");
 const invoiceRoute = require("./Invoice.route");
 const adminRoute = require("./Admin.route");
 
@@ -22,7 +21,6 @@ module.exports = (app) => {
   app.use("/api/contract", contractRoute);
   app.use("/api/landlord", verifyJwt, roleVerify("landlord"), landlordRoute);
   app.use("/api/tenant", verifyJwt, roleVerify("tenant"), tenantRoute);
-  app.use("/api/maintenance-request", maintenanceRequestRoute);
   app.use("/api/invoice", verifyJwt, invoiceRoute);
   app.get("/", (req, res) => {
     res.json({
