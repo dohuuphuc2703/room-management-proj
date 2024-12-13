@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import { login } from "../../actions";
 import Footer from "../../components/Footer/Footer";
-import LoginForm from "../../components/Login/LoginForm";
+import LoginForm from "../../components/LoginForm/LoginForm";
 
 import { Outlet } from "react-router-dom";
 

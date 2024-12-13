@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import ListReviewRoom from "../../ListReviewRoom/ListReviewRoom";
+import ListReviewRoom from "../ListReviewRoom/ListReviewRoom";
 import styles from "./RoomDetail.module.css";
 
 import L from 'leaflet';

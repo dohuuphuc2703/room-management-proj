@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { LoadingOutlined } from "@ant-design/icons";
 
 import { useEffect, useRef, useState } from "react";
-import InputTexting from "../InputTexting/InputTexting";
+import InputTexting from "../../InputTexting/InputTexting";
 import styles from "./Chat.module.css";
 
 const primaryColor = "#00b14f";
