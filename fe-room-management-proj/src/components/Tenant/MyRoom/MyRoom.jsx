@@ -1,4 +1,4 @@
-import { CalendarOutlined, HomeOutlined, FilePdfOutlined } from '@ant-design/icons';
+import { CalendarOutlined, HomeOutlined, FilePdfOutlined, BulbOutlined, EnvironmentOutlined, UsergroupAddOutlined, DollarOutlined,CloudOutlined, AreaChartOutlined } from '@ant-design/icons';
 import { Select, Button, Col, Form, Table, Layout, message, Row, Tabs, Typography, Modal } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -89,49 +89,50 @@ const RoomInfoForm = ({ roomInfo }) => {
                     <Text strong>Loại phòng:</Text>
                     <div>
                         <CalendarOutlined style={{ marginRight: '8px' }} />
-                        <Text>{roomInfo?.price || 'N/A'} VND</Text>
+                        <Text>{roomInfo?.category.category || 'N/A'} </Text>
                     </div>
                 </Col>
                 <Col span={8}>
                     <Text strong>Địa chỉ:</Text>
                     <div>
-                        <HomeOutlined style={{ marginRight: '8px' }} />
+                        <EnvironmentOutlined style={{ marginRight: '8px' }} />
                         <Text>{roomInfo?.address.detail + ", " + roomInfo?.address.ward + ", " + roomInfo?.address.district + ", " + roomInfo?.address.province || 'N/A'}</Text>
                     </div>
                 </Col>
                 <Col span={8}>
                     <Text strong>Diện tích:</Text>
                     <div>
-                        <HomeOutlined style={{ marginRight: '8px' }} />
+                        <AreaChartOutlined style={{ marginRight: '8px' }} />
                         <Text>{roomInfo?.acreage || 'N/A'} m²</Text>
                     </div>
                 </Col>
                 <Col span={8}>
                     <Text strong>Giá phòng:</Text>
                     <div>
-                        <HomeOutlined style={{ marginRight: '8px' }} />
-                        <Text>{roomInfo?.price || 'N/A'} VND</Text>
+                        <DollarOutlined style={{ marginRight: '8px' }} />
+                        <Text>{roomInfo?.price.toLocaleString()  || 'N/A'} VND</Text>
                     </div>
                 </Col>
                 <Col span={8}>
                     <Text strong>Số người tối đa:</Text>
                     <div>
-                        <HomeOutlined style={{ marginRight: '8px' }} />
+                        <UsergroupAddOutlined style={{ marginRight: '8px' }} />
                         <Text>{roomInfo?.maxSize || 'N/A'} người</Text>
                     </div>
                 </Col>
                 <Col span={12}>
                     <Text strong>Điện:</Text>
                     <div>
-                        <HomeOutlined style={{ marginRight: '8px' }} />
-                        <Text>{roomInfo?.electric.price || 'N/A'}/{roomInfo?.electric.description || 'N/A'}</Text>
+                 
+                        <BulbOutlined style={{ marginRight: '8px' }} />
+                        <Text>{roomInfo?.electric.price.toLocaleString()  || 'N/A'}/{roomInfo?.electric.description || 'N/A'}</Text>
                     </div>
                 </Col>
                 <Col span={12}>
                     <Text strong>Nước:</Text>
                     <div>
-                        <HomeOutlined style={{ marginRight: '8px' }} />
-                        <Text>{roomInfo?.water.price || 'N/A'}/{roomInfo?.water.description || 'N/A'}</Text>
+                        <CloudOutlined style={{ marginRight: '8px' }} />
+                        <Text>{roomInfo?.water.price.toLocaleString()  || 'N/A'}/{roomInfo?.water.description || 'N/A'}</Text>
 
                     </div>
                 </Col>
@@ -141,9 +142,9 @@ const RoomInfoForm = ({ roomInfo }) => {
                         <div style={{ marginTop: '8px' }}>
                             {roomInfo.servicerooms.map((service, index) => (
                                 <div key={service._id || index} style={{ marginBottom: '8px' }}>
-                                    <HomeOutlined style={{ marginRight: '8px' }} />
+                                    
                                     <Text>
-                                        {service.name} - {service.price} VND ({service.description || 'Không có mô tả'})
+                                        -  {service.name} - {service.price.toLocaleString() } VND ({service.description || ''})
                                     </Text>
                                 </div>
                             ))}
@@ -158,9 +159,9 @@ const RoomInfoForm = ({ roomInfo }) => {
                         <div style={{ marginTop: '8px' }}>
                             {roomInfo.amenities.map((amenitie, index) => (
                                 <div key={amenitie._id || index} style={{ marginBottom: '8px' }}>
-                                    <HomeOutlined style={{ marginRight: '8px' }} />
+                                    
                                     <Text>
-                                        {amenitie}
+                                        -  {amenitie}
                                     </Text>
                                 </div>
                             ))}

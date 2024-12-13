@@ -44,7 +44,7 @@ function SideBar({ admin }) {
   
         {!collapsed && (
           <div>
-            <span className={styles.logoName}>{admin?.fullName}</span>
+            <span className={styles.logoName}>Admin</span>
             <PoweroffOutlined onClick={handleLogout} />
           </div>
         )}
