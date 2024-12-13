@@ -13,5 +13,6 @@ router.get("/pdf/:contractId", ContractController.getContractPDF);
 router.get('/verify', ContractController.verifyContract);
 router.post("/:contractId/cancel-request", verifyJwt, ContractController.cancelRequest);
 router.put("/:contractId/cancel-request/handle", verifyJwt, ContractController.cancelRequestHandle);
+router.get("/room",verifyJwt, ContractController.getRoomByContract);
 
 module.exports = router;

@@ -27,12 +27,12 @@ const CreateInvoiceForm = () => {
     const fetchContracts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/contract/byLandlord",
+          "http://localhost:8000/api/contract/room",
           {
             withCredentials: true,
           }
         );
-        setContracts(response.data.contracts);
+        setContracts(response.data.data);
       } catch (error) {
         console.error("Error fetching rooms:", error);
       }
@@ -173,7 +173,7 @@ const CreateInvoiceForm = () => {
         rules={[{ required: true, message: "Please select a room!" }]}
       >
         <Select placeholder="Select a room" onChange={handleRoomChange}>
-          {contracts.map((contract) => (
+          {contracts?.map((contract) => (
             <Option key={contract.room._id} value={contract.room._id}>
               {contract.room.title}
             </Option>
