@@ -139,7 +139,7 @@ const CreateInvoiceForm = () => {
       setTotalServices([]);
     } catch (error) {
       console.error("Error creating invoice:", error);
-      message.error("Lỗi khi tạo hóa đơn, vui lòng thử lại!");
+      message.error(`Lỗi khi tạo hóa đơn ${error.response?.data.message || ""}, vui lòng thử lại!`);
     }
   };
 
