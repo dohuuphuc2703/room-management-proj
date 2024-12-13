@@ -1,9 +1,9 @@
-import { DeleteOutlined, EditOutlined, FilePdfOutlined } from '@ant-design/icons'; // Import icons từ Ant Design
-import { Button, Form, Input, message, Modal, Popconfirm, Select, Table } from "antd";
+import { EditOutlined, FilePdfOutlined } from '@ant-design/icons'; // Import icons từ Ant Design
+import { Button, Form, Input, message, Modal, Select, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 
 const { Option } = Select;
@@ -157,28 +157,7 @@ const ContractIndex = () => {
       title: "Phòng",
       dataIndex: "room",
       key: "room",
-      render: (room) => room.title,
-      filterDropdown: ({ setSelectedKeys, confirm }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            autoFocus
-            placeholder="Lọc theo tiêu đề"
-            onChange={(e) => setTitleFilter(e.target.value)} // Cập nhật bộ lọc theo tiêu đề
-            value={titleFilter}
-            onPressEnter={() => confirm()}
-            style={{ width: 188, marginBottom: 8, display: 'block' }}
-          />
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            icon={<EditOutlined />}
-            size="small"
-            style={{ width: 90, marginRight: 8 }}
-          >
-            Lọc
-          </Button>
-        </div>
-      ),
+      render: (room) => room.title
     },
     {
       title: "Địa chỉ",

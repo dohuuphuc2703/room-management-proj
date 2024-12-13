@@ -2,6 +2,7 @@ import {
   CalendarOutlined,
   HomeOutlined,
   LockOutlined,
+  MailOutlined,
   PhoneOutlined,
   UploadOutlined,
   UserOutlined,
@@ -10,12 +11,12 @@ import {
   Avatar,
   Button,
   Col,
-  Select,
   Form,
   Input,
   Layout,
   message,
   Row,
+  Select,
   Tabs,
   Upload,
 } from "antd";
@@ -202,7 +203,7 @@ const AccountLandlord = () => {
                       name="email"
                       rules={[{ required: true }]}
                     >
-                      <Input disabled prefix={<UserOutlined />} />
+                      <Input disabled prefix={<MailOutlined />} />
                     </Form.Item>
                   </Col>
                   <Col span={12}>
