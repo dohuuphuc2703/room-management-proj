@@ -271,7 +271,14 @@ class ContractController {
             select: "email fullName, phone",
           },
         })
-        .populate("room", "-__v")
+        .populate({
+          path: "room",
+          select: "-__v", // Bỏ trường không cần thiết
+          populate: {
+            path: "category",
+            select: "category description", // Chỉ lấy các trường trong category
+          },
+        })
         .populate("cancelRequest.requestedBy", "fullName email");
 
       return res.status(200).json({ contract });
