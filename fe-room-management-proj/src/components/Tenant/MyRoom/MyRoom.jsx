@@ -1,11 +1,10 @@
-import { CalendarOutlined, HomeOutlined, FilePdfOutlined, BulbOutlined, EnvironmentOutlined, UsergroupAddOutlined, DollarOutlined,CloudOutlined, AreaChartOutlined } from '@ant-design/icons';
-import { Select, Button, Col, Form, Table, Layout, message, Row, Tabs, Typography, Modal } from "antd";
+import { AreaChartOutlined, BulbOutlined, DollarOutlined, EnvironmentOutlined, FilePdfOutlined, HomeOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { Button, Col, Form, Layout, message, Modal, Row, Select, Table, Tabs, Typography } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { setTenantInfo } from "../../../actions";
-import styles from "./MyRoom.module.css";
+import { FaWater } from 'react-icons/fa';
 import { useSelector } from "react-redux";
+import styles from "./MyRoom.module.css";
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -39,7 +38,7 @@ const MyRoom = () => {
                 }
 
             } catch (error) {
-                message.error("Error fetching user info");
+                console.log(error);
             }
         };
 
@@ -88,7 +87,7 @@ const RoomInfoForm = ({ roomInfo }) => {
                 <Col span={8}>
                     <Text strong>Loại phòng:</Text>
                     <div>
-                        <CalendarOutlined style={{ marginRight: '8px' }} />
+                        <HomeOutlined style={{ marginRight: '8px' }} />
                         <Text>{roomInfo?.category.category || 'N/A'} </Text>
                     </div>
                 </Col>
@@ -131,7 +130,7 @@ const RoomInfoForm = ({ roomInfo }) => {
                 <Col span={12}>
                     <Text strong>Nước:</Text>
                     <div>
-                        <CloudOutlined style={{ marginRight: '8px' }} />
+                        <FaWater style={{ marginRight: '8px' }} />
                         <Text>{roomInfo?.water.price.toLocaleString()  || 'N/A'}/{roomInfo?.water.description || 'N/A'}</Text>
 
                     </div>
@@ -205,7 +204,7 @@ const Invoice = ({ contractId, loading }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
     const [page, setPage] = useState(1);
-    const [size, setSize] = useState(5);
+    const [size, setSize] = useState(1);
     const [total, setTotal] = useState(0);
 
     const fetchInvoices = async () => {
@@ -252,7 +251,9 @@ const Invoice = ({ contractId, loading }) => {
             title: "Tổng tiền",
             dataIndex: "total",
             key: "total",
+            render: (total) => total.toLocaleString("vi-VN", { style: "currency", currency: "VND" }),
         },
+        
         {
             title: "Trạng thái",
             render: (text, record) => (
@@ -343,7 +344,15 @@ const Invoice = ({ contractId, loading }) => {
                 dataSource={invoices}
                 loading={loading}
                 rowKey="_id"
-                pagination={false}
+                pagination={{
+                    current: page,
+                    pageSize: size,
+                    total: total,
+                    onChange: (currentPage, pageSize) => {
+                        setPage(currentPage);
+                        setSize(pageSize);
+                    },
+                }}
             />
 
             <Modal

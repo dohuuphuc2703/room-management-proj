@@ -256,6 +256,7 @@ class ContractController {
     }
   }
 
+  // [GET] /api/contract/byTenant
   async getContractsByTenant(req, res) {
     const tenantId = req.user.uid; // Lấy landlordId từ thông tin user đã đăng nhập
 
@@ -421,6 +422,22 @@ class ContractController {
     } catch (error) {
       console.error("Error in cancelRequestHandle:", error);
       res.status(500).json({ message: "Lỗi server", error });
+    }
+  }
+  // [GET] /api/contract/room
+  async getRoomByContract(req, res) {
+    const landlordId = req.user.uid;
+    try {
+      const filter = { landlord: landlordId, status: "confirmed" };
+      const contracts = await Contract.find(filter)
+        .populate("room", "-__v")
+        .lean();
+      return res.status(200).json({
+        data: contracts,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: error.toString() });
     }
   }
 }
