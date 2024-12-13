@@ -13,8 +13,6 @@ const { Text, Title } = Typography;
 const { Option } = Select;
 
 const MyRoom = () => {
-    
-
     const [loading, setLoading] = useState(false);
     const [roomInfo, setRoomInfo] = useState();
     const [pdfPath, setPdfPath] = useState();
@@ -205,20 +203,26 @@ const Invoice = ({ contractId, loading }) => {
     const [selectedInvoice, setSelectedInvoice] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(5);
+    const [total, setTotal] = useState(0);
 
     const fetchInvoices = async () => {
         try {
-            const response = await axios.get(
+            const res = await axios.get(
                 "http://localhost:8000/api/invoice/byContract",
                 {
                     params: {
                         status: statusFilter,
                         contractId: contractId,
+                        page,
+                        size,
                     },
                     withCredentials: true
                 }
             );
-            setInvoices(response.data);
+            setInvoices(res.data.data || []);
+            setTotal(res.data.pagination.total || 0);
         } catch (error) {
             message.error("Lỗi khi tải hóa đơn");
         }
@@ -226,16 +230,17 @@ const Invoice = ({ contractId, loading }) => {
 
     useEffect(() => {
         fetchInvoices();
-    }, [contractId, statusFilter]);
+    }, [contractId, statusFilter, page, size]);
 
     const handleStatusChange = (value) => {
         setStatusFilter(value === "" ? null : value === "true");
+        setPage(1); 
     };
 
     const columns = [
         {
             title: "STT",
-            render: (_, __, index) => index + 1,
+            render: (_, __, index) => (page - 1) * size + index + 1,
         },
         {
             title: "Tiêu đề",

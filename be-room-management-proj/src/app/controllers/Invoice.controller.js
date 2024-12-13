@@ -5,7 +5,12 @@ class InvoiceController {
   // [POST] /api/invoices/create
   async createInvoice(req, res) {
     const { contractID, totalOfSv } = req.body;
-    if (!contractID || !totalOfSv || !Array.isArray(totalOfSv) || totalOfSv.length === 0) {
+    if (
+      !contractID ||
+      !totalOfSv ||
+      !Array.isArray(totalOfSv) ||
+      totalOfSv.length === 0
+    ) {
       return res.status(400).json({
         message: "Thiếu dữ liệu cần thiết hoặc dữ liệu không hợp lệ",
       });
@@ -21,21 +26,28 @@ class InvoiceController {
         });
       }
 
-      if (contract.status ==="waiting" || contract.status ==="canceled") {
+      if (contract.status === "waiting" || contract.status === "canceled") {
         return res.status(400).json({
           message: "Contract chưa/không có hiệu lực",
         });
       }
       const total = totalOfSv.reduce((sum, service) => {
-        if (!service.name || service.quantity == null || service.totalAmount == null) {
+        if (
+          !service.name ||
+          service.quantity == null ||
+          service.totalAmount == null
+        ) {
           throw new Error("Dữ liệu dịch vụ không hợp lệ");
         }
         return sum + (Number(service.totalAmount) || 0);
       }, 0);
-      
+
       const lastMonthDate = new Date();
       lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
-      const lastMonth = lastMonthDate.toLocaleString("vi-VN", { month: "long", year: "numeric" });
+      const lastMonth = lastMonthDate.toLocaleString("vi-VN", {
+        month: "long",
+        year: "numeric",
+      });
 
       // Tạo hóa đơn mới dựa trên thông tin hợp đồng
       const newInvoice = new Invoice({
@@ -60,44 +72,54 @@ class InvoiceController {
   }
 
   // [GET] /api/invoices/allInvoice
-async getInvoices(req, res) {
-  const landlordId = req.user.uid; // Lấy landlordId từ token đăng nhập
-  try {
-    // Lấy danh sách hóa đơn liên quan đến landlord
-    const invoices = await Invoice.find()
-      .populate({
-        path: "contract",
-        match: { landlord: landlordId }, // Lọc hợp đồng theo landlord
-        select: "-__v -pdfPath", // Loại bỏ trường không cần thiết
-        populate: [
-          { 
-            path: "room", // Populate thông tin phòng
-            select: "title address"
-          },
-          { 
-            path: "tenant", // Populate thông tin tenant
-            select: "user", // Lấy thông tin user trong tenant
-            populate: {
-              path: "user", // Populate thông tin user (tên, email,...)
-              select: "fullName email phone", // Lấy các trường thông tin cần thiết của user
-            }
-          }
-        ]
-      })
-      .lean();
+  async getInvoices(req, res) {
+    const landlordId = req.user.uid;
+    const { status, page = 1, size = 10 } = req.query;
+    try {
+      const limit = parseInt(size, 10) || 10;
+      const skip = (parseInt(page, 10) - 1) * limit;
+      const filter = status ? { status } : {};
+      const invoices = await Invoice.find(filter)
+        .populate({
+          path: "contract",
+          match: { landlord: landlordId },
+          select: "-__v -pdfPath",
+          populate: [
+            {
+              path: "room",
+              select: "title address",
+            },
+            {
+              path: "tenant",
+              select: "user",
+              populate: {
+                path: "user",
+                select: "fullName email phone",
+              },
+            },
+          ],
+        })
+        .lean();
 
-    // Loại bỏ các hóa đơn không khớp landlord
-    const filteredInvoices = invoices.filter(invoice => invoice.contract);
+      const filteredInvoices = invoices.filter((invoice) => invoice.contract);
+      const total = filteredInvoices.length;
+      const paginatedInvoices = filteredInvoices.slice(skip, skip + limit);
+      return res.status(200).json({
+        data: filteredInvoices,
+        pagination: {
+          total,
+          currentPage: parseInt(paginatedInvoices, 10),
+          pageSize: limit,
+      },
 
-    return res.status(200).json(filteredInvoices);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: error.toString(),
-    });
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: error.toString(),
+      });
+    }
   }
-}
-
 
   // [GET] /api/invoices/:id - Lấy hóa đơn theo ID (Read by ID)
   async getInvoiceById(req, res) {
@@ -164,20 +186,34 @@ async getInvoices(req, res) {
   }
 
   async getInvoiceByContract(req, res) {
-    const { contractId, status } = req.query;
+    const { contractId, status, page = 1, size = 10 } = req.query;
     try {
-        const filter = { contract: contractId };
-        if (status !== undefined && status !== null) { // Kiểm tra nếu `status` không null/undefined
-          filter.status = status;
-        }
-        const invoices = await Invoice.find(filter).sort({ createdAt: -1 });
-        return res.status(200).json(invoices);
+      const filter = { contract: contractId };
+      if (status !== undefined && status !== null) {
+        // Kiểm tra nếu `status` không null/undefined
+        filter.status = status;
+      }
+      const limit = parseInt(size, 10) || 10;
+      const skip = (parseInt(page, 10) - 1) * limit;
+      const invoices = await Invoice
+      .find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+      const total = await Invoice.countDocuments(filter);
+      return res.status(200).json({
+        data: invoices,
+        pagination: {
+          total,
+          currentPage: parseInt(page, 10),
+          pageSize: limit,
+      },
+      });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: error.toString() });
+      console.log(error);
+      return res.status(500).json({ message: error.toString() });
     }
   }
-  
 }
 
 module.exports = new InvoiceController();

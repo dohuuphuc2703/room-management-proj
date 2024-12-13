@@ -259,10 +259,6 @@ class AdminController {
         try {
             const role = "tenant";
             const { hidden, page = 1, size = 10 } = req.query;
-
-            
-    
-            // Tạo bộ lọc
             const filter = { role, ...hidden };
     
             // Tính toán skip và limit cho phân trang

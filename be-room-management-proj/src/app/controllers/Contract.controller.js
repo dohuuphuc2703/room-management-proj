@@ -10,7 +10,7 @@ const keys = require("../../config/secrets");
 const mailer = require("../../utils/mail/index");
 const bcrypt = require("bcrypt");
 
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -69,7 +69,7 @@ class ContractController {
       await newContract.save({ session });
 
       // Tạo PDF từ HTML và lưu vào server
-      const pdfPath  = await createPDFFromHTML(
+      const pdfPath = await createPDFFromHTML(
         newContract,
         foundTenant,
         foundLandlord,
@@ -77,9 +77,9 @@ class ContractController {
       );
 
       const cloudinaryResponse = await cloudinary.uploader.upload(pdfPath, {
-        folder: 'contracts', // Đặt thư mục lưu trữ trên Cloudinary
-        resource_type: 'raw', // Lưu file PDF dưới dạng raw file
-        access_mode: 'public',
+        folder: "contracts", // Đặt thư mục lưu trữ trên Cloudinary
+        resource_type: "raw", // Lưu file PDF dưới dạng raw file
+        access_mode: "public",
       });
       // Cập nhật trường linkPDF với đường dẫn của file PDF
       newContract.pdfPath = cloudinaryResponse.secure_url;
@@ -88,7 +88,6 @@ class ContractController {
       this.sendContractEmail(foundTenant, newContract);
       await session.commitTransaction();
       session.endSession();
-
 
       return res.status(201).json({
         message: "Contract created successfully",
@@ -104,21 +103,24 @@ class ContractController {
   async sendContractEmail(tenant, contract, pdfPath) {
     try {
       // Tạo link xác nhận hợp đồng
-      const verificationToken = await bcrypt.hash(contract._id.toString(), keys.BCRYPT_SALT_ROUND);
+      const verificationToken = await bcrypt.hash(
+        contract._id.toString(),
+        keys.BCRYPT_SALT_ROUND
+      );
       const verificationLink = `${process.env.APP_URL}/api/contract/verify?contractId=${contract._id}&token=${verificationToken}`;
 
       // Đọc template email
-      const emailTemplatePath = path.join(__dirname, "../../resources/views/form-contract.html");
+      const emailTemplatePath = path.join(
+        __dirname,
+        "../../resources/views/form-contract.html"
+      );
       const emailTemplate = fs.readFileSync(emailTemplatePath, "utf8");
 
       // Tạo nội dung email
-      const emailContent = emailTemplate.replace(
-        "{{tenantName}}", tenant.user.fullName
-      ).replace(
-        "{{verificationLink}}", verificationLink
-      ).replace(
-        "{{contractLink}}", `${contract.pdfPath}`
-      );
+      const emailContent = emailTemplate
+        .replace("{{tenantName}}", tenant.user.fullName)
+        .replace("{{verificationLink}}", verificationLink)
+        .replace("{{contractLink}}", `${contract.pdfPath}`);
 
       // Gửi email với hợp đồng đính kèm
       await mailer.sendMail(
@@ -133,38 +135,40 @@ class ContractController {
         ]
       );
 
-      console.log('Email with contract sent!');
+      console.log("Email with contract sent!");
     } catch (error) {
-      console.error('Error sending email:', error);
-      throw new Error('Error sending contract email');
+      console.error("Error sending email:", error);
+      throw new Error("Error sending contract email");
     }
   }
 
   async verifyContract(req, res) {
     const { contractId, token } = req.query;
-  
+
     try {
       const contract = await Contract.findById(contractId).populate("room");
       if (!contract) {
         return res.status(404).json({ message: "Contract not found" });
       }
-  
+
       // So sánh token với token đã mã hóa của hợp đồng
       const isTokenValid = await bcrypt.compare(contractId.toString(), token);
       if (!isTokenValid) {
         return res.status(400).json({ message: "Invalid token" });
       }
-      
+
       const room = await Room.findById(contract.room._id);
-      room.status="rented";
+      room.status = "rented";
       // Cập nhật trạng thái hợp đồng
       contract.status = "confirmed";
       await contract.save();
 
-      room.status="rented";
+      room.status = "rented";
       await room.save();
-  
-      return res.status(200).json({ message: "Contract confirmed successfully" });
+
+      return res
+        .status(200)
+        .json({ message: "Contract confirmed successfully" });
     } catch (error) {
       return res.status(500).json({ message: error.toString() });
     }
@@ -213,10 +217,16 @@ class ContractController {
 
   // [GET] /api/contract/byLandlord
   async getContractsByLandlord(req, res) {
-    const landlordId = req.user.uid; // Lấy landlordId từ thông tin user đã đăng nhập
-
+    const landlordId = req.user.uid;
+    const { status, page = 1, size = 10 } = req.query;
     try {
-      const contracts = await Contract.find({ landlord: landlordId }) // Tìm hợp đồng của landlord đó
+      const filter = { landlord: landlordId };
+      if (status) {
+        filter.status = status; // Thêm điều kiện lọc theo status
+      }
+      const limit = parseInt(size, 10) || 10;
+      const skip = (parseInt(page, 10) - 1) * limit;
+      const contracts = await Contract.find(filter) // Tìm hợp đồng của landlord đó
         .populate({
           path: "tenant",
           populate: {
@@ -226,9 +236,20 @@ class ContractController {
         })
         .populate("landlord", "-__v")
         .populate("room", "-__v")
-        .populate("cancelRequest.requestedBy", "fullName email");
-
-      return res.status(200).json({ contracts });
+        .populate("cancelRequest.requestedBy", "fullName email")
+        .skip(skip)
+        .limit(limit)
+        .lean();
+      const total = await Contract.countDocuments(filter);
+      console.log(total)
+      return res.status(200).json({
+        data: contracts,
+        pagination: {
+          total,
+          currentPage: parseInt(page, 10),
+          pageSize: limit,
+        },
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: error.toString() });
@@ -239,7 +260,10 @@ class ContractController {
     const tenantId = req.user.uid; // Lấy landlordId từ thông tin user đã đăng nhập
 
     try {
-      const contract = await Contract.findOne({ tenant: tenantId, status: "confirmed" }) // Tìm hợp đồng của landlord đó
+      const contract = await Contract.findOne({
+        tenant: tenantId,
+        status: "confirmed",
+      }) // Tìm hợp đồng của landlord đó
         .populate({
           path: "landlord",
           populate: {
@@ -249,7 +273,6 @@ class ContractController {
         })
         .populate("room", "-__v")
         .populate("cancelRequest.requestedBy", "fullName email");
-
 
       return res.status(200).json({ contract });
     } catch (error) {
@@ -269,11 +292,9 @@ class ContractController {
 
       // Kiểm tra xem filePath có tồn tại không
       if (!contract.pdfPath) {
-        return res
-          .status(400)
-          .json({
-            message: "Không tìm thấy đường dẫn file trong cơ sở dữ liệu.",
-          });
+        return res.status(400).json({
+          message: "Không tìm thấy đường dẫn file trong cơ sở dữ liệu.",
+        });
       }
       // Đường dẫn tới thư mục chứa file PDF
       const filePath = path.join(
@@ -309,79 +330,91 @@ class ContractController {
   async cancelRequest(req, res) {
     const uid = req.user.id;
     try {
-        const { contractId } = req.params; // Lấy contractId từ URL
-        const { reason } = req.body; // Dữ liệu từ request body
+      const { contractId } = req.params; // Lấy contractId từ URL
+      const { reason } = req.body; // Dữ liệu từ request body
 
-        // Tìm hợp đồng
-        const contract = await Contract.findById(contractId);
-        if (!contract) {
-            return res.status(404).json({ message: "Hợp đồng không tồn tại" });
-        }
+      // Tìm hợp đồng
+      const contract = await Contract.findById(contractId);
+      if (!contract) {
+        return res.status(404).json({ message: "Hợp đồng không tồn tại" });
+      }
 
-        // Kiểm tra xem đã có yêu cầu hủy trước đó hay chưa
-        if (contract.cancelRequest && contract.cancelRequest.status === "pending") {
-            return res.status(400).json({ message: "Yêu cầu hủy đã tồn tại và đang chờ xử lý" });
-        }
+      // Kiểm tra xem đã có yêu cầu hủy trước đó hay chưa
+      if (
+        contract.cancelRequest &&
+        contract.cancelRequest.status === "pending"
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Yêu cầu hủy đã tồn tại và đang chờ xử lý" });
+      }
 
-        // Cập nhật yêu cầu hủy
-        contract.cancelRequest = {
-            requestedBy: uid,
-            reason: reason || null,
-            status: "pending",
-        };
+      // Cập nhật yêu cầu hủy
+      contract.cancelRequest = {
+        requestedBy: uid,
+        reason: reason || null,
+        status: "pending",
+      };
 
-        await contract.save(); // Lưu thay đổi vào database
+      await contract.save(); // Lưu thay đổi vào database
 
-        res.status(200).json({ message: "Yêu cầu hủy hợp đồng đã được gửi", contract });
+      res
+        .status(200)
+        .json({ message: "Yêu cầu hủy hợp đồng đã được gửi", contract });
     } catch (error) {
-        console.error("Error in cancelRequest:", error);
-        res.status(500).json({ message: "Lỗi server", error });
+      console.error("Error in cancelRequest:", error);
+      res.status(500).json({ message: "Lỗi server", error });
     }
-}
+  }
 
-async cancelRequestHandle(req, res) {
-  try {
+  async cancelRequestHandle(req, res) {
+    try {
       const { contractId } = req.params; // Lấy contractId từ URL
       const { action } = req.body; // "approve" hoặc "reject"
 
       // Tìm hợp đồng
       const contract = await Contract.findById(contractId).populate("room");
       if (!contract) {
-          return res.status(404).json({ message: "Hợp đồng không tồn tại" });
+        return res.status(404).json({ message: "Hợp đồng không tồn tại" });
       }
 
       // Kiểm tra xem có yêu cầu hủy hay không
-      if (!contract.cancelRequest || contract.cancelRequest.status !== "pending") {
-          return res.status(400).json({ message: "Không có yêu cầu hủy đang chờ xử lý" });
+      if (
+        !contract.cancelRequest ||
+        contract.cancelRequest.status !== "pending"
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Không có yêu cầu hủy đang chờ xử lý" });
       }
 
       // Xử lý yêu cầu
       if (action === "approve") {
-          contract.status = "canceled"; 
-          contract.cancelRequest.status = "approved";
+        contract.status = "canceled";
+        contract.cancelRequest.status = "approved";
 
-          await Room.findOneAndUpdate(
-            { _id: contract.room._id },
-            { status: "available" } 
-          );
-            
+        await Room.findOneAndUpdate(
+          { _id: contract.room._id },
+          { status: "available" }
+        );
       } else if (action === "reject") {
-          contract.cancelRequest.status = "rejected";
+        contract.cancelRequest.status = "rejected";
       } else {
-          return res.status(400).json({ message: "Hành động không hợp lệ" });
+        return res.status(400).json({ message: "Hành động không hợp lệ" });
       }
 
       await contract.save(); // Lưu thay đổi vào database
 
       res.status(200).json({
-          message: `Yêu cầu hủy hợp đồng đã được ${action === "approve" ? "phê duyệt" : "từ chối"}`,
-          contract,
+        message: `Yêu cầu hủy hợp đồng đã được ${
+          action === "approve" ? "phê duyệt" : "từ chối"
+        }`,
+        contract,
       });
-  } catch (error) {
+    } catch (error) {
       console.error("Error in cancelRequestHandle:", error);
       res.status(500).json({ message: "Lỗi server", error });
+    }
   }
-}
-  
 }
 module.exports = new ContractController();

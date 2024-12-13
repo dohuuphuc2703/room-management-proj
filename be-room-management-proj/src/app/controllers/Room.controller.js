@@ -252,19 +252,6 @@ async getRoomsByAddressAndCat(req, res) {
       });
     }
   }
-  async test(req, res) {
-    try {
-      const imageURL = req.files
-      return res.json({
-        image: imageURL 
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-        message: error.toString(),
-      });
-    }
-  }
   // [DELETE] /api/room/delete/:roomId
   async deleteRoom(req, res) {
     const { roomId } = req.params;  // Lấy ID phòng từ tham số URL
@@ -338,12 +325,14 @@ async getTopRatedRooms(req, res) {
     const {
       status = null,
       page = 1,
-      size = 10, // Giá trị mặc định cho kích thước trang
-      province = null, // Tỉnh
-      category = null, // Danh mục
+      size = 10,
+      province = null,
+      category = null,
     } = req.query;
     
     try {
+      const limit = parseInt(size, 10) || 10;
+      const skip = (parseInt(page, 10) - 1) * limit;
       const conditions = {landlord: landlordId};
   
       // Thêm điều kiện cho tỉnh
@@ -363,8 +352,8 @@ async getTopRatedRooms(req, res) {
 
       const rooms = await Room.find(conditions)
         .sort({ createdAt: -1 })
-        .skip((page - 1) * size)
-        .limit(size)
+        .skip(skip)
+        .limit(limit)
         .select("-__v -updatedAt -hiddenAt -hiddenBy")
         .populate("category")
   
