@@ -52,13 +52,31 @@ const CreateInvoiceForm = () => {
 
   const calculateTotalAmount = () => {
     if (!selectedContract) return;
+    if (newElectricIndex === null) {
+      message.error("Vui lòng nhập số điện mới!");
+      return;
+    }
+  
+    if (newWaterIndex === null) {
+      message.error("Vui lòng nhập số nước mới!");
+      return;
+    }
 
+    if (newElectricIndex < selectedContract.room.electric.new) {
+      message.error("Số điện mới không thể nhỏ hơn số điện cũ!");
+      return;
+    }
+  
+    if (newWaterIndex < selectedContract.room.water.new) {
+      message.error("Số nước mới không thể nhỏ hơn số nước cũ!");
+      return;
+    }
     const electricAmount =
       (newElectricIndex - selectedContract.room.electric.new) *
-        selectedContract.room.electric.price || 0;
+        selectedContract.room.electric.price;
     const waterAmount =
       (newWaterIndex - selectedContract.room.water.new) *
-        selectedContract.room.water.price || 0;
+        selectedContract.room.water.price;
 
     const updatedServices = [
       {
@@ -139,7 +157,11 @@ const CreateInvoiceForm = () => {
       setTotalServices([]);
     } catch (error) {
       console.error("Error creating invoice:", error);
-      message.error(`Lỗi khi tạo hóa đơn ${error.response?.data.message || ""}, vui lòng thử lại!`);
+      message.error(
+        `Lỗi khi tạo hóa đơn ${
+          error.response?.data.message || ""
+        }, vui lòng thử lại!`
+      );
     }
   };
 
@@ -185,7 +207,13 @@ const CreateInvoiceForm = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="Số điện mới">
+              <Form.Item
+                label="Số điện mới"
+                name="newElectricIndex"
+                rules={[
+                  { required: true, message: "Vui lòng nhập số nước mới!" },
+                ]}
+              >
                 <InputNumber
                   placeholder="Nhập số điện mới"
                   style={{ width: "100%" }}
@@ -216,7 +244,13 @@ const CreateInvoiceForm = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="Số nước mới">
+              <Form.Item
+                label="Số nước mới"
+                name="newWaterIndex"
+                rules={[
+                  { required: true, message: "Vui lòng nhập số nước mới!" },
+                ]}
+              >
                 <InputNumber
                   placeholder="Nhập số nước mới"
                   style={{ width: "100%" }}
@@ -260,7 +294,11 @@ const CreateInvoiceForm = () => {
             </Row>
           ))}
 
-          <Button type="primary" style={{ marginRight: "10px" }} onClick={calculateTotalAmount}>
+          <Button
+            type="primary"
+            style={{ marginRight: "10px" }}
+            onClick={calculateTotalAmount}
+          >
             Tính tổng
           </Button>
 
