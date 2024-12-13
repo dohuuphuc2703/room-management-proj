@@ -114,7 +114,7 @@ function SearchRoom() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-  
+
 
   useEffect(() => {
     // Lấy danh sách tỉnh và loại phòng
@@ -202,28 +202,39 @@ function SearchRoom() {
 
           <Modal title="Chọn diện tích và giá" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
             <div>
-              <p>Chọn diện tích từ (m³)</p>
+              <p>Chọn diện tích từ (m³): <b>{minArea} m³</b> đến <b>{maxArea} m³</b></p>
               <Slider
                 range
                 min={0}
                 max={100}
                 value={[minArea, maxArea]}
+                marks={{
+                  0: '0 m³',
+                  100: '100 m³',
+                }}
                 onChange={(value) => {
                   setMinArea(value[0]);
                   setMaxArea(value[1]);
                 }}
               />
-              <p>Chọn giá từ (VNĐ)</p>
+              <br />
+              <p>Chọn giá từ (VNĐ): <b>{minPrice.toLocaleString()} VNĐ</b> đến <b>{maxPrice.toLocaleString()} VNĐ</b></p>
               <Slider
                 range
                 min={0}
                 max={10000000}
+                step={100000}
                 value={[minPrice, maxPrice]}
+                marks={{
+                  0: '0 VNĐ',
+                  10000000: '10.000.000 VNĐ',
+                }}
                 onChange={(value) => {
                   setMinPrice(value[0]);
                   setMaxPrice(value[1]);
                 }}
               />
+               <br />
             </div>
           </Modal>
         </div>
@@ -239,7 +250,7 @@ function SearchRoom() {
             setPageSize={setPageSize}
             totalItems={totalItems}
             setTotalItems={setTotalItems}
-            messageApi={messageApi} 
+            messageApi={messageApi}
             handleSearchRoom={handleSearchRoom}
             isSearch={isSearch}
           />
