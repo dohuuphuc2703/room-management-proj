@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./ListSavedRooms.module.css";
 
 function ListSavedRooms() {
-  const user = useSelector(state => state.userReduce)
+  const user = useSelector(state => state.userReducer)
   const [savedRooms, setSavedRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,7 +51,6 @@ function ListSavedRooms() {
   useEffect(() => {
     fetchSavedRooms(currentPage);
   }, [currentPage]);
-  console.log(user)
   if (!user?.role) { 
       return nav('/login');
     };

@@ -12,6 +12,7 @@ function AdminView() {
   const admin = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
 
+  console.log(admin)
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -30,9 +31,10 @@ function AdminView() {
         console.error("Error fetching user:", error);
       }
     };
-
-    fetchUser();
-  }, []);
+    if(!admin?._id){
+      fetchUser();
+    }
+  }, [admin, dispatch]);
 
   return (
     <ConfigProvider

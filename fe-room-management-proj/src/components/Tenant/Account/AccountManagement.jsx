@@ -11,7 +11,7 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 const AccountManagement = () => {
-  const user = useSelector((state) => state.userReduce)
+  const user = useSelector((state) => state.userReducer)
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(null); // State to store avatar URL

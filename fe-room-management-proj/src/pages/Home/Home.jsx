@@ -13,6 +13,7 @@ function Home() {
   const user = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
 
+  console.log(user)
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -29,8 +30,12 @@ function Home() {
         console.error("Error fetching user:", error);
       }
     };
-    fetchUser();
-  }, []);
+
+    if(!user?._id){
+      fetchUser();
+    }
+
+  }, [user, dispatch]);
   
   return (
     <ConfigProvider
