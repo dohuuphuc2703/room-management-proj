@@ -30,9 +30,10 @@ function LandlordView() {
         console.error("Error fetching user:", error);
       }
     };
-    fetchUser();
-  }, [ ]);
-
+    if(!user?._id){
+      fetchUser();
+    }
+  }, [user, dispatch]);
   return (
     <ConfigProvider
       theme={{

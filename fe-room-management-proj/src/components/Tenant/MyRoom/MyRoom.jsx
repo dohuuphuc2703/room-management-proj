@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaWater } from 'react-icons/fa';
 import { useSelector } from "react-redux";
+import { Navigate } from 'react-router-dom';
 import styles from "./MyRoom.module.css";
 
 const { Content } = Layout;
@@ -12,6 +13,8 @@ const { Text, Title } = Typography;
 const { Option } = Select;
 
 const MyRoom = () => {
+      const user = useSelector(state => state.userReducer)
+    
     const [loading, setLoading] = useState(false);
     const [roomInfo, setRoomInfo] = useState();
     const [pdfPath, setPdfPath] = useState();
@@ -44,7 +47,9 @@ const MyRoom = () => {
 
         fetchContractInfo();
     }, []);
-
+    if (!user?.role) { 
+        return <Navigate to="/login" />;
+      };
     return (
         <Layout className={styles.layout}>
             <Content className={styles.content}>
