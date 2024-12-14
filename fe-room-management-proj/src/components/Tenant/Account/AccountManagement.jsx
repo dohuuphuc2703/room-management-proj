@@ -1,8 +1,9 @@
 import { CalendarOutlined, HomeOutlined, LockOutlined, PhoneOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Select, Col, Form, Input, Layout, message, Row, Tabs, Upload } from "antd";
+import { Avatar, Button, Col, Form, Input, Layout, message, Row, Select, Tabs, Upload } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate } from 'react-router-dom';
 import { setTenantInfo } from "../../../actions";
 import styles from "./AccountManagement.module.css";
 
@@ -10,6 +11,7 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 const AccountManagement = () => {
+  const user = useSelector((state) => state.userReduce)
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(null); // State to store avatar URL
@@ -107,6 +109,10 @@ const AccountManagement = () => {
       setLoading(false);
     }
   };
+
+  if (user?.role !== 'tenant') {
+      return <Navigate to="/login" />;
+    };
 
   return (
     <Layout className={styles.layout}>

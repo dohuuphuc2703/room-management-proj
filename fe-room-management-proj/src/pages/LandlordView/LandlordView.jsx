@@ -9,7 +9,7 @@ import { setLandlordInfo } from "../../actions";
 import SideBar from "../../components/Landlord/SideBar/SideBar";
 
 function LandlordView() {
-  const user = useSelector((state) => state.userReducer);
+  const user = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,11 +30,8 @@ function LandlordView() {
         console.error("Error fetching user:", error);
       }
     };
-
-    if (user === null) {
-      fetchUser();
-    }
-  }, [dispatch, user]);
+    fetchUser();
+  }, [ ]);
 
   return (
     <ConfigProvider
@@ -52,11 +49,7 @@ function LandlordView() {
       <div className={styles.container}>
         <SideBar user={user} />
         <div className={styles.content}>
-          {user ? (
-            <Outlet context={{ user }} />
-          ) : (
-            <p>Loading user information...</p>
-          )}
+            <Outlet />
         </div>
       </div>
     </ConfigProvider>

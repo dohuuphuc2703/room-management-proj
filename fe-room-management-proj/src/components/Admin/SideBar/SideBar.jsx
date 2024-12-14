@@ -15,7 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../../actions";
 import styles from "./SideBar.module.css";
 
-function SideBar({ admin }) {
+function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();

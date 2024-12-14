@@ -3,8 +3,31 @@ const User = require("../models/User.model");
 const Landlord = require("../models/Landlord.model");
 const Room = require("../models/Room.model");
 const RoomCategory = require("../models/RoomCategory.model");
+const Admin = require("../models/Admin.model");
 
 class AdminController {
+    // [GET] /api/admin/info/
+    async getInfo(req, res) {
+        const uid = req.user.id;
+
+        try {
+        const admin = await Admin.findOne({ user: uid })
+            .select("-__v")
+            .populate({
+            path: "user",
+            select: "-updatedAt -password -hidden -__v",
+            });
+
+        return res.json({
+            info: admin,
+        });
+        } catch (error) {
+        console.log(error);
+        return res.json(500).json({
+            message: error.toString(),
+        });
+        }
+    }
     // [GET] /api/admin/tenant-stats
     async getMonthlyTenantStats(req, res) {
         try {

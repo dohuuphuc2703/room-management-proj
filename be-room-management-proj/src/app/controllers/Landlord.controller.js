@@ -64,7 +64,7 @@ class LandlordController {
         .select("-__v")
         .populate({
           path: "user",
-          select: "-updatedAt -password -role -hidden -__v",
+          select: "-updatedAt -password -hidden -__v",
         });
 
       return res.json({
@@ -100,7 +100,7 @@ class LandlordController {
           ...info,
         },
         { new: true }
-      ).select("-updatedAt -password -role -hidden -__v");
+      ).select("-updatedAt -password -hidden -__v");
 
       await session.commitTransaction();
       session.endSession();

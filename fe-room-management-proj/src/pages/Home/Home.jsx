@@ -29,12 +29,9 @@ function Home() {
         console.error("Error fetching user:", error);
       }
     };
+    fetchUser();
+  }, []);
   
-    if (user === null) {
-      fetchUser();
-    }
-  }, [dispatch, user]);
-
   return (
     <ConfigProvider
       theme={{
@@ -49,11 +46,9 @@ function Home() {
       }}
     >
       <div>
-        <Header 
-         user={user}
-        />
+        <Header user = {user}/>
         <div className={styles.content}>
-          <Outlet context={{user}}/>
+          <Outlet />
         </div>
         <div
           className={styles.footer_main}
