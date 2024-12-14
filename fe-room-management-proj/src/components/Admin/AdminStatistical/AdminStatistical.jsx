@@ -13,13 +13,15 @@ import {
 } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 import styles from './AdminStatistical.module.css';
-
 const { Option } = Select;
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale, LineElement, PointElement);
 
 const AdminStatistical = () => {
+  const admin = useSelector(state => state.userReducer);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [monthlyTenants, setMonthlyTenants] = useState([]);
   const [monthlyLandlords, setMonthlyLandlords] = useState([]);
@@ -58,7 +60,11 @@ const AdminStatistical = () => {
 
     fetchData();
   }, [selectedYear]);
-
+  console.log(admin)
+  if (admin?.role !== 'admin') {
+    return <Navigate to="/login" />;
+  };
+  
   return (
     <div className="main-content">
       <Row gutter={[16, 16]} className={styles.row}>

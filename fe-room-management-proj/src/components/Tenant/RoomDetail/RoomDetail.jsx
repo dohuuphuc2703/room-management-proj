@@ -1,5 +1,23 @@
-import { HeartOutlined, LeftOutlined, MessageOutlined, PhoneOutlined, RightOutlined, StarFilled, StarOutlined, WechatOutlined } from "@ant-design/icons";
-import { Avatar, Button, Carousel, Space, Typography, message, notification } from "antd";
+import {
+  HeartOutlined,
+  LeftOutlined,
+  MessageOutlined,
+  PhoneOutlined,
+  RightOutlined,
+  StarFilled,
+  StarOutlined,
+  WechatOutlined,
+} from "@ant-design/icons";
+import {
+  Avatar,
+  Button,
+  Carousel,
+  Modal,
+  Space,
+  Typography,
+  message,
+  notification,
+} from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -7,17 +25,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import ListReviewRoom from "../ListReviewRoom/ListReviewRoom";
 import styles from "./RoomDetail.module.css";
 
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import ReviewRoom from "../ReviewRoom/ReviewRoom";
 
 // Thiết lập lại hình ảnh marker mặc định
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconUrl: require("leaflet/dist/images/marker-icon.png"),
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
 const { Text } = Typography;
@@ -38,7 +56,7 @@ const renderStars = (rating) => {
       stars.push(
         <StarFilled
           key={i}
-          style={{ color: 'rgb(250, 219, 20)', fontSize: '16px' }}
+          style={{ color: "rgb(250, 219, 20)", fontSize: "16px" }}
         />
       );
     } else if (i - rating <= 0.5) {
@@ -47,19 +65,16 @@ const renderStars = (rating) => {
         <StarFilled
           key={i}
           style={{
-            color: 'rgb(250, 219, 20)',
-            fontSize: '16px',
-            clipPath: 'inset(0 50% 0 0)', // Cắt nửa sao bằng CSS
+            color: "rgb(250, 219, 20)",
+            fontSize: "16px",
+            clipPath: "inset(0 50% 0 0)", // Cắt nửa sao bằng CSS
           }}
         />
       );
     } else {
       // Sao rỗng nếu rating thấp hơn vị trí này
       stars.push(
-        <StarOutlined
-          key={i}
-          style={{ color: '#eaeaea', fontSize: '16px' }}
-        />
+        <StarOutlined key={i} style={{ color: "#eaeaea", fontSize: "16px" }} />
       );
     }
   }
@@ -84,7 +99,7 @@ const timeAgo = (date) => {
 };
 
 function RoomDetail() {
-  const user = useSelector((state) => state.userReducer);
+  const user = useSelector(state => state.userReducer);
   const { roomId } = useParams();
   const [roomInfo, setRoomInfo] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
@@ -97,12 +112,46 @@ function RoomDetail() {
   const nav = useNavigate();
 
   const handleReviewSubmit = async (review) => {
+    setIsFavorite(!isFavorite);
+    setIsClicked(true);
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 300);
+
+    if (!user || !user.role) {
+      // Hiển thị thông báo cảnh báo trong Modal
+      Modal.warning({
+        title: "Bạn chưa đăng nhập",
+        content: (
+          <div>
+            <p>Bạn cần đăng nhập để đánh giá phòng.</p>
+          </div>
+        ),
+        okText: "Đăng nhập",
+        cancelText: "Để sau",
+        closable: true,
+        onOk: () => {
+          nav("/login"); // Điều hướng tới trang đăng nhập khi nhấn "Đăng nhập"
+        },
+        onCancel: () => {
+          notification.info({
+            message: "Thông báo",
+            description: 'Bạn đã chọn "Để sau".',
+            placement: "topRight",
+          });
+        },
+      });
+
+      return; // Dừng việc thêm vào yêu thích nếu chưa đăng nhập
+    }
     try {
       await axios.post(`http://localhost:8000/api/review/create`, review, {
         withCredentials: true,
       });
       messageApi.success("Đánh giá đã được gửi!");
     } catch (err) {
+      if (err.status === 403) {
+      }
       messageApi.error(`Thông báo. ${err.response?.data.message || ""}`);
     }
   };
@@ -112,11 +161,16 @@ function RoomDetail() {
       const { province, district, ward, detail } = address;
       const fullAddress = `${detail}, ${ward}, ${district}, ${province}`;
       const res = await axios.get(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          fullAddress
+        )}`
       );
       const location = res.data[0];
       if (location) {
-        setCoordinates({ lat: parseFloat(location.lat), lng: parseFloat(location.lon) });
+        setCoordinates({
+          lat: parseFloat(location.lat),
+          lng: parseFloat(location.lon),
+        });
       } else {
         messageApi.error("Không tìm thấy tọa độ cho địa chỉ này.");
       }
@@ -128,16 +182,23 @@ function RoomDetail() {
 
   const getDetailRoomInfo = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/room/info/${roomId}`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `http://localhost:8000/api/room/info/${roomId}`,
+        {
+          withCredentials: true,
+        }
+      );
       const data = res.data;
       setRoomInfo(data.info);
       setLandlord(data.info.landlord.user);
       setAverageRating(data.info.rating);
       if (data.info && data.info.address) {
         await getCoordinates(data.info.address);
-        await getRoomByAddress(data.info.address.province, data.info.address.district, data.info.category._id);
+        await getRoomByAddress(
+          data.info.address.province,
+          data.info.address.district,
+          data.info.category._id
+        );
       }
     } catch (err) {
       console.error(err);
@@ -147,7 +208,9 @@ function RoomDetail() {
 
   const getRoomByAddress = async (province, district, category) => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/room/byAddress?province=${province}&district=${district}&category=${category}`);
+      const res = await axios.get(
+        `http://localhost:8000/api/room/byAddress?province=${province}&district=${district}&category=${category}`
+      );
       const data = res.data;
       setRoomByAddress(data.rooms);
     } catch (err) {
@@ -161,38 +224,53 @@ function RoomDetail() {
     setTimeout(() => {
       setIsClicked(false);
     }, 300);
+
     if (!user || !user.role) {
-      // Hiển thị thông báo nếu người dùng chưa đăng nhập
-      notification.warning({
-        message: 'Bạn cần đăng nhập trước',
-        description: 'Hãy đăng nhập để thêm phòng vào danh sách yêu thích.',
-        placement: 'topRight', // Vị trí thông báo ở góc trên bên phải
+      // Hiển thị thông báo cảnh báo trong Modal
+      Modal.warning({
+        title: "Bạn chưa đăng nhập",
+        content: (
+          <div>
+            <p>Bạn cần đăng nhập để thêm phòng vào danh sách yêu thích.</p>
+          </div>
+        ),
+        okText: "Đăng nhập",
+        cancelText: "Để sau",
+        closable: true,
+        onOk: () => {
+          nav("/login"); // Điều hướng tới trang đăng nhập khi nhấn "Đăng nhập"
+        },
+        onCancel: () => {
+          notification.info({
+            message: "Thông báo",
+            description: 'Bạn đã chọn "Để sau".',
+            placement: "topRight",
+          });
+        },
       });
 
-      // Điều hướng về trang đăng nhập sau khi thông báo
-      setTimeout(() => {
-        nav('/login');
-      }, 2000); // Sau 2 giây, chuyển hướng đến trang đăng nhập
-
-      return;  // Dừng việc thêm vào yêu thích nếu chưa đăng nhập
+      return; // Dừng việc thêm vào yêu thích nếu chưa đăng nhập
     }
+
     try {
-      const response = await axios.post('http://localhost:8000/api/tenant/save-room', { roomId },
+      const response = await axios.post(
+        "http://localhost:8000/api/tenant/save-room",
+        { roomId },
         {
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
           withCredentials: true,
         }
       );
       if (response.status === 200) {
-        messageApi.success('Phòng đã được lưu thành công');
+        messageApi.success("Phòng đã được lưu thành công");
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        messageApi.warning('Phòng này đã được lưu trước đó');
+        messageApi.warning("Phòng này đã được lưu trước đó");
       } else {
-        messageApi.error('Đã xảy ra lỗi khi lưu phòng');
+        messageApi.error("Đã xảy ra lỗi khi lưu phòng");
       }
     }
   };
@@ -203,26 +281,48 @@ function RoomDetail() {
   };
 
   const handleDirectMessage = () => {
+    setIsFavorite(!isFavorite);
+    setIsClicked(true);
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 300);
+
     if (!user || !user.role) {
-      notification.warning({
-        message: 'Bạn cần đăng nhập trước',
-        description: 'Hãy đăng nhập để sử dụng tính năng nhắn tin.',
+      // Hiển thị thông báo cảnh báo trong Modal
+      Modal.warning({
+        title: "Bạn chưa đăng nhập",
+        content: (
+          <div>
+            <p>Bạn cần đăng nhập để nhắn tin với chủ phòng.</p>
+          </div>
+        ),
+        okText: "Đăng nhập",
+        cancelText: "Để sau",
+        closable: true,
+        onOk: () => {
+          nav("/login"); // Điều hướng tới trang đăng nhập khi nhấn "Đăng nhập"
+        },
+        onCancel: () => {
+          notification.info({
+            message: "Thông báo",
+            description: 'Bạn đã chọn "Để sau".',
+            placement: "topRight",
+          });
+        },
       });
-      setTimeout(() => nav('/login'), 2000);
-      return;
+
+      return; // Dừng việc thêm vào yêu thích nếu chưa đăng nhập
     }
     // Điều hướng đến giao diện chat với landlordId
     nav(`/chat`, {
       state: { landlord },
     });
   };
-  
+
   useEffect(() => {
     getDetailRoomInfo();
     // getRoomByAddress();
   }, [roomId]);
-
-
 
   return (
     <div className={styles.container}>
@@ -241,7 +341,7 @@ function RoomDetail() {
                   roomInfo.images.map((img, index) => (
                     <div key={index}>
                       <img
-                        src={img} 
+                        src={img}
                         alt={`Room image ${index + 1}`}
                         className={styles.roomImage}
                       />
@@ -252,10 +352,11 @@ function RoomDetail() {
 
             <div className={styles.textContent}>
               <p className={styles.roomTitle}>{roomInfo.title}</p>
-              <Button className={styles.favoriteRoom}
+              <Button
+                className={styles.favoriteRoom}
                 type="link"
                 block
-                onClick= {handleFavoriteRoom}
+                onClick={handleFavoriteRoom}
               >
                 {<HeartOutlined />}Yêu thích
               </Button>
@@ -271,9 +372,15 @@ function RoomDetail() {
                 <Text className={styles.roomPrice}>
                   Giá: {roomInfo.price.toLocaleString()} VNĐ
                 </Text>
-                <Text className={styles.roomArea}>Diện tích: {roomInfo.acreage} m²</Text>
-                <Text className={styles.roomRating}>Đánh giá: {renderStars(roomInfo.rating)}</Text>
-                <Text className={styles.roomStatus}>Trạng thái: {roomInfo.status}</Text>
+                <Text className={styles.roomArea}>
+                  Diện tích: {roomInfo.acreage} m²
+                </Text>
+                <Text className={styles.roomRating}>
+                  Đánh giá: {renderStars(roomInfo.rating)}
+                </Text>
+                <Text className={styles.roomStatus}>
+                  Trạng thái: {roomInfo.status}
+                </Text>
                 <Text>{timeAgo(roomInfo.createdAt)}</Text>
               </div>
 
@@ -308,10 +415,16 @@ function RoomDetail() {
 
             <div className={styles.mapContainer}>
               <h3>Bản đồ</h3>
-              <p>Địa chỉ: {roomInfo.address.detail}, {roomInfo.address.ward},{" "}
-                {roomInfo.address.district}, {roomInfo.address.province}</p>
+              <p>
+                Địa chỉ: {roomInfo.address.detail}, {roomInfo.address.ward},{" "}
+                {roomInfo.address.district}, {roomInfo.address.province}
+              </p>
               {coordinates ? (
-                <MapContainer center={coordinates} zoom={13} style={{ height: "400px", width: "100%" }}>
+                <MapContainer
+                  center={coordinates}
+                  zoom={13}
+                  style={{ height: "400px", width: "100%" }}
+                >
                   <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -329,7 +442,6 @@ function RoomDetail() {
         <div>
           <ReviewRoom roomId={roomId} onReviewSubmit={handleReviewSubmit} />
           <ListReviewRoom roomId={roomId} averageRating={averageRating} />
-
         </div>
       </div>
 
@@ -344,48 +456,82 @@ function RoomDetail() {
                 src={roomInfo.landlord.user.avatar || "/logo192.png"}
               />
               <div className={styles.landlordDetails}>
-                <Text className={styles.landlordName}>{roomInfo.landlord.user.fullName}</Text>
+                <Text className={styles.landlordName}>
+                  {roomInfo.landlord.user.fullName}
+                </Text>
                 <div className={styles.landlordStatus}>
-                  <span className={styles.statusIndicator} style={{ backgroundColor: roomInfo.landlord.active ? '#4caf50' : '#999' }}></span>
-                  {roomInfo.landlord.active ? 'Hoạt động' : 'Không hoạt động'}
+                  <span
+                    className={styles.statusIndicator}
+                    style={{
+                      backgroundColor: roomInfo.landlord.active
+                        ? "#4caf50"
+                        : "#999",
+                    }}
+                  ></span>
+                  {roomInfo.landlord.active ? "Hoạt động" : "Không hoạt động"}
                 </div>
 
-                <div >
-                  <Button className={styles.phoneButton} type="primary" block>{<PhoneOutlined />} {roomInfo.landlord.user.phone}</Button>
+                <div>
+                  <Button className={styles.phoneButton} type="primary" block>
+                    {<PhoneOutlined />} {roomInfo.landlord.user.phone}
+                  </Button>
                   <Button
                     className={styles.favoriteButton}
                     type="link"
                     block
-                    onClick={() => handleZaloMessage(roomInfo.landlord.user.phone)}
+                    onClick={() =>
+                      handleZaloMessage(roomInfo.landlord.user.phone)
+                    }
                   >
                     {<MessageOutlined />} Nhắn Zalo
                   </Button>
-                  <Button className={styles.favoriteButton} type="link" block onClick={handleDirectMessage}>{<WechatOutlined />} Nhắn tin trực tiếp</Button>
+                  <Button
+                    className={styles.favoriteButton}
+                    type="link"
+                    block
+                    onClick={handleDirectMessage}
+                  >
+                    {<WechatOutlined />} Nhắn tin trực tiếp
+                  </Button>
                 </div>
-
               </div>
             </div>
           )}
-
         </div>
 
         <div className={styles.featuredSection}>
           <h3>
-            Cho thuê {roomInfo?.category?.category || 'phòng'} ở {roomInfo?.address?.district || 'quận'}, {roomInfo?.address?.province || 'tỉnh'}
+            Cho thuê {roomInfo?.category?.category || "phòng"} ở{" "}
+            {roomInfo?.address?.district || "quận"},{" "}
+            {roomInfo?.address?.province || "tỉnh"}
           </h3>
           <div className={styles.featuredList}>
             {roomByAddress && roomByAddress.length > 0 ? (
               roomByAddress.map((item, index) => (
-                <div className={styles.featuredItem} key={index}
+                <div
+                  className={styles.featuredItem}
+                  key={index}
                   onClick={() => {
                     nav(`/detail-room/${item._id}`);
-                  }}>
-                  <img src={item.images[0] || "/logo192.png"} alt="Featured room" className={styles.featuredImage} />
+                  }}
+                >
+                  <img
+                    src={item.images[0] || "/logo192.png"}
+                    alt="Featured room"
+                    className={styles.featuredImage}
+                  />
                   <div className={styles.featuredDetails}>
-                    <Text className={styles.featuredTitle}>{renderStars(item.rating)}{item.title}</Text>
+                    <Text className={styles.featuredTitle}>
+                      {renderStars(item.rating)}
+                      {item.title}
+                    </Text>
                     <div className={styles.featuredInfo}>
-                      <Text className={styles.featuredPrice}>Giá: {item.price.toLocaleString()}</Text>
-                      <Text className={styles.featuredTime}>{timeAgo(item.createdAt)}</Text>
+                      <Text className={styles.featuredPrice}>
+                        Giá: {item.price.toLocaleString()}
+                      </Text>
+                      <Text className={styles.featuredTime}>
+                        {timeAgo(item.createdAt)}
+                      </Text>
                     </div>
                   </div>
                 </div>

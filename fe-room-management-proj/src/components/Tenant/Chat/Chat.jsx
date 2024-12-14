@@ -1,5 +1,5 @@
 import { ConfigProvider, message as notify, Skeleton, Spin } from "antd";
-import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 import clsx from "clsx";
@@ -7,9 +7,9 @@ import clsx from "clsx";
 import { LoadingOutlined } from "@ant-design/icons";
 
 import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import InputTexting from "../../InputTexting/InputTexting";
 import styles from "./Chat.module.css";
-
 const primaryColor = "#00b14f";
 
 function timeDifference(startDate) {
@@ -42,7 +42,7 @@ function timeDifference(startDate) {
 }
 
 function Chat({ socket }) {
-  const { user } = useOutletContext();
+  const user = useSelector((state) => state.userReducer);
   const location = useLocation();
   const { landlord } = location.state || {};
 
@@ -159,6 +159,10 @@ function Chat({ socket }) {
     if (chatFrameRef && chatFrameRef?.current)
       chatFrameRef.current.scrollTop = chatFrameRef.current.scrollHeight;
   }, [sentMessages]);
+
+  if (user?.role !== 'tenant') {
+      return nav('/login');
+    };
 
   return (
     <div className={styles.chat}>

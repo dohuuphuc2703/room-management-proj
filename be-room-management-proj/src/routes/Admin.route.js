@@ -5,6 +5,7 @@ const router = express.Router();
 const AdminController = require("../app/controllers/Admin.controller")
 const { verifyJwt } = require("../app/middlewares/jwtMiddleware");
 
+router.get("/info", AdminController.getInfo);
 router.get("/tenant-stats", AdminController.getMonthlyTenantStats);
 router.get("/landlord-stats", AdminController.getMonthlyLandlordStats);
 router.get("/room-stats", AdminController.getRoomStatsByMonth);
