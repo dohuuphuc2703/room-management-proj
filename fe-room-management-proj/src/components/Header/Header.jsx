@@ -72,8 +72,7 @@ function Header({user}) {
         <div className={styles.header}>
           <div className={styles.header_top}>
             <div className={styles.logo} onClick={() => navigate("/")}>
-              <img src="/logo192.png" alt="logo" />
-              <span>Kênh thông tin phòng trọ số 1 Việt Nam</span>
+              <img src="/logo.png" alt="logo" />
             </div>
             <div className={styles.actions}>
               {user && user.fullName ? (
