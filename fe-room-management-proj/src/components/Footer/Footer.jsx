@@ -6,7 +6,7 @@ function Footer() {
     <footer className={styles.footer}>
       <div className={styles.top_section}>
         <div className={styles.logo_section}>
-          <img src="/logo192.png" alt="Phongtro123" className={styles.logo} />
+          <img src="/logo.png" alt="Phongtro123" className={styles.logo} />
           <p>Kênh thông tin phòng trọ số 1 Việt Nam</p>
           <p>
             Phongtro123.com tự hào có lượng dữ liệu bài đăng lớn nhất trong lĩnh
@@ -39,36 +39,30 @@ function Footer() {
           <h4>Liên hệ với chúng tôi</h4>
           <div className={styles.social_icons}>
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-              <img src="/icons/facebook.png" alt="Facebook" />
+              <img src="/facebook.png" alt="Facebook" />
             </a>
             <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
-              <img src="/icons/youtube.png" alt="YouTube" />
+              <img src="/youtube.png" alt="YouTube" />
             </a>
             <a href="https://zalo.me" target="_blank" rel="noopener noreferrer">
-              <img src="/icons/zalo.png" alt="Zalo" />
+              <img src="/zalo.png" alt="Zalo" />
             </a>
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-              <img src="/icons/twitter.png" alt="Twitter" />
+              <img src="/twitter.png" alt="Twitter" />
             </a>
           </div>
           <h4>Phương thức thanh toán</h4>
           <div className={styles.payment_methods}>
-            <img src="/icons/visa.png" alt="Visa" />
-            <img src="/icons/mastercard.png" alt="MasterCard" />
-            <img src="/icons/jcb.png" alt="JCB" />
-            <img src="/icons/internet-banking.png" alt="Internet Banking" />
-            <img src="/icons/momo.png" alt="MoMo" />
-            <img src="/icons/tien-mat.png" alt="Tiền mặt" />
+            <img src="/momo.png" alt="Momo" />
+            <img src="/visa.png" alt="Visa" />
+            <img src="/mastercard.png" alt="MasterCard" />
+            <img src="/jcb.png" alt="JCB" />
+            <img src="/ib.png" alt="Internet Banking" />
+            <img src="/tienmat.png" alt="Tiền mặt" />
           </div>
         </div>
       </div>
       <div className={styles.bottom_section}>
-        <p>Cùng hệ thống LBKCorp:</p>
-        <div className={styles.partner_logos}>
-          <img src="/logos/bds123.png" alt="bds123.vn" />
-          <img src="/logos/chothuenha.png" alt="chothuenha.me" />
-          <img src="/logos/thuecanho.png" alt="thuecanho123.com" />
-        </div>
         <p>Copyright © 2015 - 2024 Phongtro123.com</p>
         <p>CÔNG TY TNHH LBKCORP - Tổng đài CSKH: 0917686101</p>
       </div>
