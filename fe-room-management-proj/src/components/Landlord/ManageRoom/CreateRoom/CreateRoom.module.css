@@ -126,3 +126,12 @@
     margin-top: 10px;
   }
   
+  .removeServiceButton {
+    background-color: #ff4d4f !important; /* Màu đỏ */
+    border-color: #ff4d4f !important; /* Đổi màu viền */
+  }
+  
+  .removeServiceButton:hover {
+    background-color: #f5222d !important; /* Màu đỏ đậm hơn khi hover */
+    border-color: #f5222d !important; /* Đổi màu viền khi hover */
+  }

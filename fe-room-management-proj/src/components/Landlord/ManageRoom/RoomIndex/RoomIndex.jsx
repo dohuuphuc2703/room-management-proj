@@ -61,7 +61,8 @@ const LandlordListRoom = () => {
   }, [statusFilter, province]); // Gọi lại API khi bất kỳ bộ lọc nào thay đổi
 
   const handleStatusChange = (value) => {
-    setStatusFilter(value); // Cập nhật trạng thái bộ lọc
+    setStatusFilter(value);
+    setPage(1);
   };
 
   const handleChangeProvince = async (value) => {
@@ -73,7 +74,7 @@ const LandlordListRoom = () => {
     // Lấy thông tin phòng để chỉnh sửa
     const room = rooms.find((r) => r._id === roomId);
     setCurrentRoom(room);
-    
+
     setIsModalVisible(true); // Mở modal
     // Đặt giá trị của form cho các trường đã có sẵn
   };
@@ -91,8 +92,8 @@ const LandlordListRoom = () => {
       message.success("Đã xóa phòng thành công.");
       setRooms(rooms.filter((room) => room._id !== roomId));
     } catch (error) {
-      console.error(error);
-      message.error("Xóa phòng thất bại.");
+      const errorMessage = error.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại.";
+      message.error(errorMessage);
     }
   };
 
@@ -139,7 +140,7 @@ const LandlordListRoom = () => {
           {record.status === "available"
             ? "Còn trống"
             : "Đã thuê"
-}
+          }
         </span>
       ),
       filterDropdown: ({ setSelectedKeys, confirm }) => (
@@ -203,17 +204,17 @@ const LandlordListRoom = () => {
           pageSize: size,
           total: total,
           onChange: (currentPage, pageSize) => {
-              setPage(currentPage);
-              setSize(pageSize);
+            setPage(currentPage);
+            setSize(pageSize);
           },
-      }}
+        }}
       />
 
       <ModalUpdateRoom
         visible={isModalVisible}
         onCancel={handleCloseModal}
         currentRoom={currentRoom}
-        setImageUrls={setImageUrls}  
+        setImageUrls={setImageUrls}
         imageUrls={imageUrls}
         setIsModalVisible={setIsModalVisible}
         setRooms={setRooms}

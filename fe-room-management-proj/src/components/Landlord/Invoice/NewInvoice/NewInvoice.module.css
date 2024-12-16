@@ -1,0 +1,83 @@
+.container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    max-width: 1200px;
+    min-height: 650px;
+    margin: 0 auto;
+  }
+
+  .invoiceModal {
+    width: 40% !important;
+    left: 100px;
+    top: 80px;
+    padding: 20px;
+  }
+  
+  /* Title style */
+  .invoiceTitle {
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+    padding: 20px 0;
+    border-bottom: 2px solid #000;
+  }
+  
+  /* Content area */
+  .invoiceContent {
+    padding: 20px;
+    font-family: 'Arial', sans-serif; /* Add a more professional font */
+  }
+  
+  /* Divider styling */
+  .invoiceDivider {
+    border-color: #000;
+    margin: 16px 0;
+  }
+
+  .invoiceTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .invoiceTable td,
+  .invoiceTable th {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .invoiceTable th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .invoiceTable .totalRow {
+    font-weight: bold;
+    background-color: #f9f9f9;
+  }
+  
+  /* Amount and total amount styling */
+  .invoiceTotal {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+    margin-top: 20px;
+  }
+  
+  /* Button styling */
+  .invoiceButton {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #4CAF50; /* Green color */
+    border-color: #4CAF50;
+  }
+  
+  .invoiceButton:hover {
+    background-color: #45a049; /* Darker green on hover */
+    border-color: #45a049;
+  }

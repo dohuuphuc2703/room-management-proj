@@ -1,13 +1,15 @@
 import { DeleteOutlined, FilePdfOutlined } from "@ant-design/icons";
-import { Button, message, Modal, Popconfirm, Table } from "antd";
+import { Button, message, Modal, Popconfirm, Select, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./InvoiceIndex.module.css";
+const { Option } = Select;
 
 const InvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState(""); // Bộ lọc trạng thái hóa đơn
+  const [statusFilter, setStatusFilter] = useState(null); // Bộ lọc trạng thái hóa đơn
   const [isModalVisible, setIsModalVisible] = useState(false); // Trạng thái Modal
   const [selectedInvoice, setSelectedInvoice] = useState(null); // Hóa đơn được chọn để xem chi tiết
   const nav = useNavigate();
@@ -93,11 +95,21 @@ const InvoiceIndex = () => {
       render: (text, record) => (
         <span>{record.status ? "Đã thanh toán" : "Chưa thanh toán"}</span>
       ),
-      filters: [
-        { text: "Đã thanh toán", value: true },
-        { text: "Chưa thanh toán", value: false },
-      ],
-      onFilter: (value, record) => record.status === value,
+      filterDropdown: ({ setSelectedKeys, confirm }) => (
+        <div style={{ padding: 8 }}>
+          <Select
+            showSearch
+            placeholder="Lọc theo trạng thái"
+            value={statusFilter}
+            onChange={handleStatusChange}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
+          >
+            <Option value={null}>Tất cả</Option>
+            <Option value={true}>Đã thanh toán</Option>
+            <Option value={false}>Chưa thanh toán</Option>
+          </Select>
+        </div>
+      ),
     },
     {
       title: "Xem",
@@ -136,11 +148,10 @@ const InvoiceIndex = () => {
       </Button>
       <Table
         columns={columns}
-        dataSource={invoices?.filter((invoice) =>
-          statusFilter === ""
-            ? true
-            : invoice.status === (statusFilter === "true")
-        )}
+        dataSource={invoices?.filter((invoice) => {
+          if (statusFilter === null) return true; 
+          return invoice.status === statusFilter;
+        })}
         rowKey="_id"
         loading={loading}
         pagination={{
@@ -160,13 +171,13 @@ const InvoiceIndex = () => {
           onCancel={() => setIsModalVisible(false)}
           footer={null}
           width={800}
+          className={styles.invoiceModal}
         >
           <h3>Thông tin hợp đồng</h3>
           <p><strong>Người thuê:</strong> {selectedInvoice.contract.tenant?.user?.fullName}</p>
           <p><strong>Email:</strong> {selectedInvoice.contract.tenant.user.email}</p>
           <p><strong>Số điện thoại:</strong> {selectedInvoice.contract.tenant.user.phone}</p>
-          <h4>Phòng:</h4>
-          <span>{selectedInvoice.contract.room.title}</span>
+          <h4>Phòng: {selectedInvoice.contract.room.title}</h4>
           <h4>Thành viên trong phòng:</h4>
           <ul>
             {selectedInvoice.contract.members.map((member, index) => (

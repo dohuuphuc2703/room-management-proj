@@ -54,6 +54,7 @@ function SideBar() {
         mode="inline"
         theme="dark"
         inlineCollapsed={collapsed}
+        defaultSelectedKeys={['1']} 
         className={styles.menu}
       >
         <Menu.Item key="1" icon={<PieChartOutlined />}>

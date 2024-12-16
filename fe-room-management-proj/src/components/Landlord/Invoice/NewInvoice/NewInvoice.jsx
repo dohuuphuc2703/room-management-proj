@@ -9,9 +9,11 @@ import {
   Select,
   Typography,
   message,
+  Modal
 } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import styles from "./NewInvoice.module.css";
 
 const { Option } = Select;
 
@@ -21,6 +23,7 @@ const CreateInvoiceForm = () => {
   const [newElectricIndex, setNewElectricIndex] = useState(null);
   const [newWaterIndex, setNewWaterIndex] = useState(null);
   const [totalServices, setTotalServices] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -56,7 +59,7 @@ const CreateInvoiceForm = () => {
       message.error("Vui lòng nhập số điện mới!");
       return;
     }
-  
+
     if (newWaterIndex === null) {
       message.error("Vui lòng nhập số nước mới!");
       return;
@@ -66,17 +69,17 @@ const CreateInvoiceForm = () => {
       message.error("Số điện mới không thể nhỏ hơn số điện cũ!");
       return;
     }
-  
+
     if (newWaterIndex < selectedContract.room.water.new) {
       message.error("Số nước mới không thể nhỏ hơn số nước cũ!");
       return;
     }
     const electricAmount =
       (newElectricIndex - selectedContract.room.electric.new) *
-        selectedContract.room.electric.price;
+      selectedContract.room.electric.price;
     const waterAmount =
       (newWaterIndex - selectedContract.room.water.new) *
-        selectedContract.room.water.price;
+      selectedContract.room.water.price;
 
     const updatedServices = [
       {
@@ -87,7 +90,7 @@ const CreateInvoiceForm = () => {
       {
         name: "Electric",
         quantity: newElectricIndex - selectedContract.room.electric.new || 0,
-        totalAmount: electricAmount,
+        totalAmount: electricAmount ,
       },
       {
         name: "Water",
@@ -102,6 +105,7 @@ const CreateInvoiceForm = () => {
     ];
 
     setTotalServices(updatedServices);
+    setIsModalVisible(true);
   };
 
   const handleSubmit = async () => {
@@ -143,7 +147,7 @@ const CreateInvoiceForm = () => {
         },
       };
 
-      await axios.post(
+      await axios.put(
         `http://localhost:8000/api/room/update/${selectedContract.room._id}`,
         updateData,
         {
@@ -158,176 +162,208 @@ const CreateInvoiceForm = () => {
     } catch (error) {
       console.error("Error creating invoice:", error);
       message.error(
-        `Lỗi khi tạo hóa đơn ${
-          error.response?.data.message || ""
+        `Lỗi khi tạo hóa đơn ${error.response?.data.message || ""
         }, vui lòng thử lại!`
       );
     }
   };
 
   return (
-    <Form layout="vertical" form={form}>
-      <Form.Item
-        label="Chọn phòng"
-        name="room"
-        rules={[{ required: true, message: "Please select a room!" }]}
-      >
-        <Select placeholder="Select a room" onChange={handleRoomChange}>
-          {contracts?.map((contract) => (
-            <Option key={contract.room._id} value={contract.room._id}>
-              {contract.room.title}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
+    <div className={styles.container}>
+      <Form layout="vertical" form={form}>
+        <h2>Tạo hóa đơn mới</h2>
+        <Form.Item
+          label="Chọn phòng"
+          name="room"
+          rules={[{ required: true, message: "Please select a room!" }]}
+        >
+          <Select placeholder="Select a room" onChange={handleRoomChange}>
+            {contracts?.map((contract) => (
+              <Option key={contract.room._id} value={contract.room._id}>
+                {contract.room.title}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-      {selectedContract && (
-        <>
-          <Form.Item label="Tên phòng">
-            <Input value={selectedContract.room.title} disabled />
-          </Form.Item>
-
-          <Form.Item label="Giá phòng">
-            <InputNumber
-              value={selectedContract.room.price}
-              disabled
-              style={{ width: "100%" }}
-            />
-          </Form.Item>
-
-          <Divider>Chỉ số điện</Divider>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item label="Số điện cũ">
-                <InputNumber
-                  value={selectedContract.room.electric.new ?? 0}
-                  disabled
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item
-                label="Số điện mới"
-                name="newElectricIndex"
-                rules={[
-                  { required: true, message: "Vui lòng nhập số nước mới!" },
-                ]}
-              >
-                <InputNumber
-                  placeholder="Nhập số điện mới"
-                  style={{ width: "100%" }}
-                  onChange={(value) => setNewElectricIndex(value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="Đơn giá">
-                <InputNumber
-                  value={selectedContract.room.electric.price}
-                  disabled
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Divider>Chỉ số nước</Divider>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item label="Số nước cũ">
-                <InputNumber
-                  value={selectedContract.room.water.new ?? 0}
-                  disabled
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item
-                label="Số nước mới"
-                name="newWaterIndex"
-                rules={[
-                  { required: true, message: "Vui lòng nhập số nước mới!" },
-                ]}
-              >
-                <InputNumber
-                  placeholder="Nhập số nước mới"
-                  style={{ width: "100%" }}
-                  onChange={(value) => setNewWaterIndex(value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="Đơn giá">
-                <InputNumber
-                  value={selectedContract.room.water.price}
-                  disabled
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Divider>Dịch vụ phòng</Divider>
-          {selectedContract.room.servicerooms.map((service, index) => (
-            <Row key={index} gutter={16} style={{ marginBottom: "16px" }}>
-              <Col span={8}>
-                <Form.Item label="Tên dịch vụ">
-                  <Input value={service.name} disabled />
+        {selectedContract && (
+          <>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item label="Tên phòng">
+                  <Input value={selectedContract.room.title} disabled />
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item label="Giá dịch vụ">
+              <Col span={12}>
+                <Form.Item label="Giá phòng">
                   <InputNumber
-                    value={service.price}
+                    value={selectedContract.room.price}
                     disabled
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item label="Mô tả">
-                  <Input value={service.description || "Không có"} disabled />
+
+            </Row>
+            <Divider>Chỉ số điện, nước</Divider>
+            <Row gutter={16}>
+              <Col span={4}>
+                <Form.Item label="Số điện cũ">
+                  <InputNumber
+                    value={selectedContract.room.electric.new ?? 0}
+                    disabled
+                    style={{ width: "100%" }}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item
+                  label="Số điện mới"
+                  name="newElectricIndex"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập số nước mới!" },
+                  ]}
+                >
+                  <InputNumber
+                    placeholder="Nhập số điện mới"
+                    style={{ width: "100%" }}
+                    onChange={(value) => setNewElectricIndex(value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item label="Đơn giá">
+                  <InputNumber
+                    value={selectedContract.room.electric.price}
+                    disabled
+                    style={{ width: "100%" }}
+                  />
+                </Form.Item>
+              </Col>
+
+
+              <Col span={4}>
+                <Form.Item label="Số nước cũ">
+                  <InputNumber
+                    value={selectedContract.room.water.new ?? 0}
+                    disabled
+                    style={{ width: "100%" }}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item
+                  label="Số nước mới"
+                  name="newWaterIndex"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập số nước mới!" },
+                  ]}
+                >
+                  <InputNumber
+                    placeholder="Nhập số nước mới"
+                    style={{ width: "100%" }}
+                    onChange={(value) => setNewWaterIndex(value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item label="Đơn giá">
+                  <InputNumber
+                    value={selectedContract.room.water.price}
+                    disabled
+                    style={{ width: "100%" }}
+                  />
                 </Form.Item>
               </Col>
             </Row>
-          ))}
 
-          <Button
-            type="primary"
-            style={{ marginRight: "10px" }}
-            onClick={calculateTotalAmount}
-          >
-            Tính tổng
-          </Button>
+            <Divider>Dịch vụ phòng</Divider>
+            {selectedContract.room.servicerooms.map((service, index) => (
+              <Row key={index} gutter={16} style={{ marginBottom: "16px" }}>
+                <Col span={8}>
+                  <Form.Item label="Tên dịch vụ">
+                    <Input value={service.name} disabled />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="Giá dịch vụ">
+                    <InputNumber
+                      value={service.price}
+                      disabled
+                      style={{ width: "100%" }}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="Mô tả">
+                    <Input value={service.description || "Không có"} disabled />
+                  </Form.Item>
+                </Col>
+              </Row>
+            ))}
 
-          {totalServices.length > 0 && (
-            <div>
-              <Divider>Tổng chi tiết</Divider>
-              {totalServices.map((service, index) => (
-                <Typography.Paragraph key={index} style={{ margin: 0 }}>
-                  {service.name}: {service.totalAmount} VNĐ
-                </Typography.Paragraph>
-              ))}
-              <Divider />
-              <Typography.Text strong>
-                Tổng cộng:{" "}
-                {totalServices.reduce((sum, s) => sum + s.totalAmount, 0)} VNĐ
-              </Typography.Text>
-            </div>
-          )}
+            <Button
+              type="primary"
+              style={{ marginRight: "10px" }}
+              onClick={calculateTotalAmount}
+            >
+              Tính tổng
+            </Button>
 
-          <Button
-            type="primary"
-            onClick={handleSubmit}
-            style={{ marginTop: "16px" }}
-          >
-            Tạo hóa đơn
-          </Button>
-        </>
-      )}
-    </Form>
+            <Modal
+              title="Chi tiết hóa đơn"
+              visible={isModalVisible}
+              onCancel={() => setIsModalVisible(false)}
+              footer={null}
+              className={styles.invoiceModal}
+            >
+              {totalServices.length > 0 && (
+                <div className={styles.invoiceContent}>
+                  <table className={styles.invoiceTable}>
+                    <thead>
+                      <tr>
+                      <th>STT</th>
+                        <th>Tên dịch vụ</th>
+                        <th>Số lượng</th>
+                        <th>Tổng tiền</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {totalServices.map((service, index) => (
+                        <tr key={index}>
+                          <td>{index+1}</td>
+                          <td>{service.name}</td>
+                          <td>{service.quantity}</td>
+                          <td>{service.totalAmount} VNĐ</td>
+                        </tr>
+                      ))}
+                      <tr className={styles.totalRow}>
+                        <td colSpan="3" style={{ textAlign: "right" }}>
+                          <strong>Tổng cộng</strong>
+                        </td>
+                        <td>
+                          <strong>
+                            {totalServices.reduce((sum, s) => sum + s.totalAmount, 0)}{" "}
+                            VNĐ
+                          </strong>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <Button
+                    type="primary"
+                    onClick={handleSubmit}
+                    className={styles.invoiceButton} // Apply the CSS class for button
+                  >
+                    Tạo hóa đơn
+                  </Button>
+                </div>
+              )}
+            </Modal>
+          </>
+        )}
+      </Form>
+    </div>
   );
 };
 

@@ -1,23 +1,24 @@
 import {
-    AreaChartOutlined,
-    CalendarOutlined,
-    DollarOutlined,
-    HomeOutlined,
-    MailOutlined,
-    PhoneOutlined,
-    UserOutlined
+  AreaChartOutlined,
+  CalendarOutlined,
+  DollarOutlined,
+  HomeOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 import {
-    Button,
-    Col,
-    Form,
-    Input,
-    Layout,
-    message,
-    Row,
-    Select,
-    Table,
-    Tabs,
+  Button,
+  Col,
+  Form,
+  Input,
+  Layout,
+  message,
+  Row,
+  Select,
+  Table,
+  Tabs,
+  InputNumber,
 } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -48,7 +49,7 @@ const CreateContract = () => {
           }
         ); // Thay URL bằng API lấy phòng
         if (response.data) {
-          setRooms(response.data.rooms); // Cập nhật danh sách phòng
+          setRooms(response.data.rooms);
         }
       } catch (error) {
         console.error("Error fetching rooms:", error);
@@ -64,6 +65,7 @@ const CreateContract = () => {
     const room = rooms.find((r) => r._id === roomId);
     if (room) {
       setSelectedRoom(room);
+      console.log(selectedRoom)
       // Cập nhật thông tin phòng vào form
       form.setFieldsValue({
         roomTitle: room.title,
@@ -73,14 +75,18 @@ const CreateContract = () => {
         roomServices: room.servicerooms
           .map(
             (service) =>
-              `${service.name} - ${service.price}/${service.description}`
+              `${service.name} - ${service.price.toLocaleString() }${service.description}`
           )
           .join(", "),
         deposit: room.price,
+        electric: room.electric.price,
+        water: room.water.price
       });
     }
+    console.log(selectedRoom)
   };
   // Hàm để load thông tin người dùng dựa trên email
+  console.log(selectedRoom)
   const handleEmailChange = async (value) => {
     if (!value) return;
 
@@ -258,7 +264,7 @@ const CreateContract = () => {
                     <Form.Item label="Diện tích" name="roomAcreage">
                       <Input
                         readOnly={true}
-                        prefix={<AreaChartOutlined  />}
+                        prefix={<AreaChartOutlined />}
                       />
                     </Form.Item>
                   </Col>
@@ -289,7 +295,15 @@ const CreateContract = () => {
 
                   <Col span={12}>
                     <Form.Item label="Giá phòng" name="roomPrice">
-                      <Input readOnly={true} placeholder="" prefix={<DollarOutlined />} />
+                      <InputNumber
+                        min={1}
+                        placeholder="Nhập giá phòng"
+                        prefix="VNĐ"
+                        formatter={(value) =>
+                          value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
+                        }
+                        style={{ width: "100%" }}
+                      />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -350,9 +364,14 @@ const CreateContract = () => {
                   </Col>
                   <Col span={12}>
                     <Form.Item label="Tiền cọc" name="deposit">
-                      <Input
-                        placeholder="Nhập tiền cọc"
-                        prefix={<DollarOutlined />}
+                      <InputNumber
+                        min={1}
+                        placeholder="Tiền cọc"
+                        prefix="VNĐ"
+                        formatter={(value) =>
+                          value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
+                        }
+                        style={{ width: "100%" }}
                       />
                     </Form.Item>
                   </Col>
@@ -373,6 +392,34 @@ const CreateContract = () => {
                       <Input
                         placeholder="Nhập đúng định dạng yyyy-mm-dd"
                         prefix={<CalendarOutlined />}
+                      />
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={6}>
+                    <Form.Item label="Tiền điện" name="electric">
+                      <InputNumber
+                        min={1}
+                        placeholder="Tiền điện"
+                        prefix="VNĐ"
+                        formatter={(value) =>
+                          value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
+                        }
+                        style={{ width: "100%" }}
+                      />
+                    </Form.Item>
+                  </Col>
+             
+                  <Col span={6}>
+                    <Form.Item label="Tiền nước" name="water">
+                      <InputNumber
+                        min={1}
+                        placeholder="Tiền nước"
+                        prefix="VNĐ"
+                        formatter={(value) =>
+                          value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
+                        }
+                        style={{ width: "100%" }}
                       />
                     </Form.Item>
                   </Col>

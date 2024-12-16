@@ -12,7 +12,7 @@ router.get("/search", RoomController.searchRooms);
 router.get("/latest", RoomController.getLatestRooms);
 router.get("/top-rated", RoomController.getTopRatedRooms);
 router.get("/info/:roomId", RoomController.getRoomInfo);
-router.post("/update/:roomId", RoomController.updateRoomInfo);
+router.put("/update/:roomId", RoomController.updateRoomInfo);
 router.post("/addRoom",verifyJwt, RoomController.addRoom);
 router.delete("/delete/:roomId", RoomController.deleteRoom);
 router.get("/by-landlord", verifyJwt, RoomController.getRoomsByLandlord);
