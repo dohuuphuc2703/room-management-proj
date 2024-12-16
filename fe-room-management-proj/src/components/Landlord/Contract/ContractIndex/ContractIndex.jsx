@@ -24,7 +24,7 @@ const ContractIndex = () => {
   const [cancelRequestModalVisible, setCancelRequestModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(5);
+  const [size, setSize] = useState(3);
   const [total, setTotal] = useState(0);
   const nav = useNavigate();
 
@@ -79,20 +79,21 @@ const ContractIndex = () => {
   };
 
   const handleOpenCancelModal = (contractId) => {
-    setSelectedContractId(contractId);  // Lưu ID hợp đồng để gửi yêu cầu hủy
-    setCancelRequestModalVisible(true);  // Mở modal nhập lý do hủy
+    setSelectedContractId(contractId);
+    setCancelRequestModalVisible(true); 
   };
 
   const handleCancelModalOk = () => {
     if (reason.trim()) {
-      handleCancelRequest(selectedContractId);  // Gửi yêu cầu hủy
+      handleCancelRequest(selectedContractId);
+      setCancelRequestModalVisible(false);
     } else {
       message.error("Vui lòng nhập lý do hủy.");
     }
   };
 
   const handleCancelModalCancel = () => {
-    setCancelRequestModalVisible(false);  // Đóng modal nếu hủy
+    setCancelRequestModalVisible(false);
   };
 
   const handleApproveOrReject = async (contractId, action) => {
@@ -157,20 +158,20 @@ const ContractIndex = () => {
       title: "Phòng",
       dataIndex: "room",
       key: "room",
-      render: (room) => room.title
+      render: (room) => room?.title?room?.title:"Trống"
     },
     {
       title: "Địa chỉ",
       dataIndex: "room",
       key: "room",
-      render: (room) => room.address.province,
+      render: (room) => room?.address.province?room.address.province:"Trống",
     },
 
     {
       title: "Người thuê",
       dataIndex: "tenant",
       key: "tenant",
-      render: (tenant) => tenant.user.fullName + "-" + tenant.user.email,
+      render: (tenant) => tenant?.user.fullName + "-" + tenant?.user.email,
     },
     {
       title: "Số lượng TV",
@@ -219,12 +220,12 @@ const ContractIndex = () => {
             <Button
               type="primary"
               onClick={() => {
-                if (record.status === "confirmed") { // Kiểm tra nếu trạng thái là 'confirmed'
+                if (record.status === "confirmed") {
                   handleOpenCancelModal(record._id)
                 }
               }}
               loading={isSubmitting}
-              disabled={record.status !== "confirmed"} // Disable nút nếu trạng thái không phải là 'confirmed'
+              disabled={record.status !== "confirmed"} 
             >
               Tạo yêu cầu hủy
             </Button>
@@ -275,7 +276,7 @@ const ContractIndex = () => {
         title="Chi tiết yêu cầu hủy"
         visible={cancelRequestModal}
         onCancel={() => setCancelRequestModal(false)}
-        footer={user._id === selectedCancelRequest?.requestedBy._id ? [] : [
+        footer={user?._id === selectedCancelRequest?.requestedBy._id ? [] : [
           <Button
             key="approve"
             type="primary"

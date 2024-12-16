@@ -32,26 +32,26 @@ function ModalUpdateRoom({
 }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [servicerooms, setServicerooms] = useState([{}]); // State to store service rooms
+  const [servicerooms, setServicerooms] = useState([{}]);
 
   useEffect(() => {
     if (currentRoom?.servicerooms) {
-      setServicerooms(currentRoom.servicerooms); // Load existing services when Modal is opened
+      setServicerooms(currentRoom.servicerooms); 
     }
     if (currentRoom) {
       form.setFieldsValue(currentRoom);
       setImageUrls(Array.isArray(currentRoom.images) ? currentRoom.images : []);
     }
+    
   }, [currentRoom, form, setImageUrls]);
 
   const onFinish = async (values) => {
     setLoading(true);
-
     const images = imageUrls;
     console.log(images);
     // Gửi dữ liệu phòng
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         `http://localhost:8000/api/room/update/${currentRoom._id}`,
         {
           ...values,
@@ -64,9 +64,9 @@ function ModalUpdateRoom({
 
       message.success("Cập nhật phòng thành công.");
       setIsModalVisible(false);
-      setRooms(
-        rooms.map((room) =>
-          room._id === currentRoom._id ? { ...room, ...values } : room
+      setRooms((prevRooms) =>
+        prevRooms.map((room) =>
+          room._id === currentRoom._id ? { ...room, ...values, images } : room
         )
       );
     } catch (error) {
@@ -103,7 +103,6 @@ function ModalUpdateRoom({
         );
 
         setImageUrls((prevUrls) => {
-          // Nếu prevUrls chưa được khởi tạo (null), khởi tạo nó là mảng rỗng
           const updatedUrls = prevUrls
             ? [...prevUrls, response.data.roomImageUrl]
             : [response.data.roomImageUrl];
@@ -112,7 +111,7 @@ function ModalUpdateRoom({
         });
 
         if (onSuccess) {
-          onSuccess("Upload thành công"); // Thông báo upload thành công
+          onSuccess("Upload thành công");
         }
       } else {
         throw new Error("Không nhận được URL ảnh từ server");
@@ -123,7 +122,7 @@ function ModalUpdateRoom({
         error.response ? error.response.data : error.message
       );
       if (onError) {
-        onError(error); // Gọi onError để xử lý lỗi
+        onError(error);
       }
     }
   };
@@ -141,11 +140,10 @@ function ModalUpdateRoom({
     updatedServiceRooms.splice(index, 1);
     setServicerooms(updatedServiceRooms);
     form.setFieldsValue({
-      servicerooms: updatedServiceRooms, // Đảm bảo cập nhật lại giá trị của servicerooms trong form
+      servicerooms: updatedServiceRooms,
     });
   };
   const handleCancel = () => {
-    // Gọi onCancel từ props để đóng modal
     onCancel();
   };
 
@@ -154,10 +152,10 @@ function ModalUpdateRoom({
       title="Cập nhật thông tin phòng"
       visible={visible}
       onCancel={handleCancel}
-      footer={null} // Để tùy chỉnh nút bấm trong form
+      footer={null}
       width={"80%"}
-      style={{ top: 0, height: "100vh" }} // Đặt modal bắt đầu từ đầu trang và cao 100% viewport
-      bodyStyle={{ height: "calc(100% - 55px)", overflowY: "auto" }} // Đảm bảo nội dung cuộn khi cần
+      style={{ top: 0, height: "100vh" }}
+      bodyStyle={{ height: "calc(100% - 55px)", overflowY: "auto" }}
     >
       <Form
         form={form}
@@ -266,6 +264,9 @@ function ModalUpdateRoom({
                 min={1}
                 placeholder="Nhập giá phòng"
                 prefix="VNĐ"
+                formatter={(value) =>
+                  value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
+                }
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -301,18 +302,26 @@ function ModalUpdateRoom({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16}>
-          <Col span={2}>
-            <h3>Điện:</h3>
-          </Col>
 
+        <Row gutter={16}>
+          {/* Điện */}
+          <Col span={2}>
+            <h4 style={{ marginBottom: 0 }}>Điện:</h4>
+          </Col>
           <Col span={4}>
             <Form.Item
               label="Đơn giá"
               name={["electric", "price"]}
               rules={[{ required: true, message: "Vui lòng nhập giá điện" }]}
             >
-              <Input placeholder="Giá điện" />
+              <InputNumber
+                min={1}
+                placeholder="Giá điện"
+                formatter={(value) =>
+                  value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
+                }
+                style={{ width: "100%" }}
+              />
             </Form.Item>
           </Col>
           <Col span={4}>
@@ -324,20 +333,28 @@ function ModalUpdateRoom({
               <Input placeholder="Đơn vị tính" />
             </Form.Item>
           </Col>
-        </Row>
 
-        <Row gutter={16}>
+          {/* Khoảng cách giữa Điện và Nước */}
+          <Col span={2}></Col>
+
+          {/* Nước */}
           <Col span={2}>
-            <h3>Nước:</h3>
+            <h4 style={{ marginBottom: 0 }}>Nước:</h4>
           </Col>
-
           <Col span={4}>
             <Form.Item
               label="Đơn giá"
               name={["water", "price"]}
               rules={[{ required: true, message: "Vui lòng nhập giá nước" }]}
             >
-              <Input placeholder="Giá nước" />
+              <InputNumber
+                min={1}
+                placeholder="Giá nước"
+                formatter={(value) =>
+                  value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
+                }
+                style={{ width: "100%" }}
+              />
             </Form.Item>
           </Col>
           <Col span={4}>
@@ -350,6 +367,8 @@ function ModalUpdateRoom({
             </Form.Item>
           </Col>
         </Row>
+
+
         {/* Dịch vụ phòng */}
         <Row gutter={16}>
           <Col span={24}>
@@ -384,6 +403,9 @@ function ModalUpdateRoom({
                       <InputNumber
                         min={1}
                         placeholder="Giá dịch vụ"
+                        formatter={(value) =>
+                          value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
+                        }
                         style={{ width: "100%" }}
                       />
                     </Form.Item>
@@ -393,12 +415,12 @@ function ModalUpdateRoom({
                       name={["servicerooms", index, "description"]}
                       label="Mô tả dịch vụ"
                     >
-                      <Input.TextArea placeholder="Mô tả dịch vụ" />
+                      <Input placeholder="Mô tả dịch vụ" />
                     </Form.Item>
                   </Col>
-                  <Col span={6}>
+                  <Col span={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Button
-                      type="danger"
+                      type="primary"
                       onClick={() => handleRemoveServiceRoom(index)}
                       className={styles.removeServiceButton}
                     >
@@ -494,10 +516,8 @@ function ModalUpdateRoom({
               <Upload
                 name="image"
                 listType="picture-card"
-                multiple={true} // Cho phép chọn nhiều ảnh
-                showUploadList={{ showRemoveIcon: true }} // Hiển thị nút xóa
-                customRequest={handleImageChange} // Đảm bảo customRequest được truyền đúng
-                onRemove={handleRemove} // Xử lý khi xóa ảnh
+                multiple={true}
+                customRequest={handleImageChange}
               >
                 <div>
                   <UploadOutlined />

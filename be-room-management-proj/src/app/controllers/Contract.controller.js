@@ -226,7 +226,8 @@ class ContractController {
       }
       const limit = parseInt(size, 10) || 10;
       const skip = (parseInt(page, 10) - 1) * limit;
-      const contracts = await Contract.find(filter) // Tìm hợp đồng của landlord đó
+      const contracts = await Contract.find(filter)
+        .sort({ createdAt: -1 })
         .populate({
           path: "tenant",
           populate: {

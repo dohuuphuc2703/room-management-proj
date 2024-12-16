@@ -8,13 +8,17 @@ async function createPDFFromHTML(contract, tenant, landlord, room) {
     // Đảm bảo thư mục chứa file PDF tồn tại
 
     // Tạo file tạm thời, nhưng không cần sử dụng tên mặc định
-    const tempFile = tmp.tmpNameSync({ postfix: '.pdf' }); 
+    const tempFile = tmp.tmpNameSync({ postfix: ".pdf" });
 
     // HTML content mà bạn sẽ chuyển thành PDF
     const createdAt = new Date(contract.createdAt);
     const start_date = new Date(contract.start_date);
-    const formattedCreatedAt = `ngày ${createdAt.getDate()} tháng ${createdAt.getMonth() + 1} năm ${createdAt.getFullYear()}`;
-    const formattedStart_date = `ngày ${start_date.getDate()} tháng ${start_date.getMonth() + 1} năm ${start_date.getFullYear()}`;
+    const formattedCreatedAt = `ngày ${createdAt.getDate()} tháng ${
+      createdAt.getMonth() + 1
+    } năm ${createdAt.getFullYear()}`;
+    const formattedStart_date = `ngày ${start_date.getDate()} tháng ${
+      start_date.getMonth() + 1
+    } năm ${start_date.getFullYear()}`;
 
     console.log("contract.createdAt:", contract.createdAt);
     console.log("createdAt:", createdAt);
@@ -97,7 +101,7 @@ async function createPDFFromHTML(contract, tenant, landlord, room) {
             <h2>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h2>
             <p>Độc lập - Tự do - Hạnh phúc</p>
             <p class="align-right">Hà Nội, ${formattedCreatedAt}</p>
-            <h2>HỢP ĐỒNG THUÊ NHÀ</h2>
+            <h2>HỢP ĐỒNG THUÊ NHÀ/PHÒNG TRỌ</h2>
             <h5>${contract._id}</h5>
         </div>
     
@@ -115,13 +119,13 @@ async function createPDFFromHTML(contract, tenant, landlord, room) {
     
             <p class="section-title">BÊN CHO THUÊ (Bên A):</p>
             <p class="indent">Ông/Bà: ${landlord.user.fullName}</p>
-            <p class="indent">CMND số: ................ Cơ quan cấp:………...……….. Ngày cấp:..............</p>
-            <p class="indent">Nơi ĐKTT: .......................................................................................</p>
+            <p class="indent">Email: ${landlord.user.email}</p>
+            <p class="indent">Số điện thoại: ${landlord.user.phone}</p>
     
             <p class="section-title">BÊN THUÊ (Bên B):</p>
             <p class="indent">Ông/Bà: ${tenant.user.fullName}</p>
-            <p class="indent">CMND số: ................ Cơ quan cấp…………...……….. Ngày cấp:..............</p>
-            <p class="indent">Nơi ĐKTT: .......................................................................................</p>
+            <p class="indent">Email: ${tenant.user.email}</p>
+            <p class="indent">Số điện thoại: ${tenant.user.phone}</p>
     
             <p>Bên A và Bên B sau đây gọi chung là “Hai Bên” hoặc “Các Bên”.</p>
         </div>
@@ -129,7 +133,11 @@ async function createPDFFromHTML(contract, tenant, landlord, room) {
         <div class="section-content">
             <p><strong>Điều 1. Nhà ở và các tài sản cho thuê kèm theo nhà ở:</strong></p>
             <ul>
-                <li>Bên A đồng ý cho Bên B thuê và Bên B cũng đồng ý thuê quyền sử dụng đất và một căn phòng/nhà gắn liền với quyền sử dụng đất tại địa chỉ ${room.address.detail}, ${room.address.ward}, ${room.address.district}, ${room.address.province}  để sử dụng làm nơi để ở.</li>
+                <li>Bên A đồng ý cho Bên B thuê và Bên B cũng đồng ý thuê quyền sử dụng đất và một căn phòng/nhà gắn liền với quyền sử dụng đất tại địa chỉ ${
+                  room.address.detail
+                }, ${room.address.ward}, ${room.address.district}, ${
+      room.address.province
+    }  để sử dụng làm nơi để ở.</li>
                 <li>Diện tích quyền sử dụng đất: ${room.acreage}m2;</li>
                 <li>Diện tích căn nhà/phòng: ${room.acreage}m2;</li>
                 <li>Bên A cam kết quyền sử dụng đất và căn nhà gắn liền trên đất là tài sản sở hữu hợp pháp của Bên A. Mọi tranh chấp phát sinh từ tài sản cho thuê trên Bên A hoàn toàn chịu trách nhiệm trước pháp luật.</li>
@@ -155,7 +163,7 @@ async function createPDFFromHTML(contract, tenant, landlord, room) {
         <div class="section-content">
             <p><strong>Điều 4. Đặc cọc tiền thuê nhà:</strong></p>
             <ul>
-                <li>4.1. Bên B sẽ giao cho Bên A một khoản tiền là ${room.price} VNĐ (bằng chữ: ...............................................) ngay sau khi ký hợp đồng này.</li>
+                <li>4.1. Bên B sẽ giao cho Bên A một khoản tiền là ${room.price.toLocaleString()} ngay sau khi ký hợp đồng này.</li>
                 <li>4.2. Nếu Bên B đơn phương chấm dứt hợp đồng mà không thực hiện nghĩa vụ báo trước tới Bên A thì Bên A sẽ không phải hoàn trả lại Bên B số tiền đặt cọc này.</li>
                 <li>4.3. Tiền đặt cọc của Bên B sẽ không được dùng để thanh toán tiền thuê.</li>
                 <li>4.4. Vào thời điểm kết thúc thời hạn thuê hoặc kể từ ngày chấm dứt Hợp đồng, Bên A sẽ hoàn lại cho Bên B số tiền đặt cọc sau khi đã khấu trừ khoản tiền chi phí để khắc phục thiệt hại (nếu có).</li>
@@ -165,8 +173,19 @@ async function createPDFFromHTML(contract, tenant, landlord, room) {
         <div class="section-content">
             <p><strong>Điều 5. Tiền thuê nhà:</strong></p>
             <ul>
-                <li>5.1. Tiền thuê nhà đối với diện tích thuê nêu tại mục 1.1 Điều 1 là: ${room.price}  VNĐ/tháng (Bằng chữ: ...........................................)</li>
+                <li>5.1. Tiền thuê nhà đối với diện tích thuê nêu tại mục 1.1 Điều 1 là: ${room.price.toLocaleString()}  VNĐ/tháng</li>
                 <li>5.2. Tiền thuê nhà không bao gồm chi phí khác như tiền điện, nước, vệ sinh.... Khoản tiền này sẽ do Bên B trả theo khối lượng, công suất sử dụng thực tế của Bên B hàng tháng, được tính theo đơn giá của nhà nước.</li>
+                <li>5.3. Giá điện, nước và các dịch vụ khác:</li>
+                <ul>
+                    <li>5.3.1. Giá điện: ${room.electric.price.toLocaleString()} VNĐ/kWh</li>
+                    <li>5.3.2. Giá nước: ${room.water.price.toLocaleString()} VNĐ/m³</li>
+                     ${room.servicerooms && room.servicerooms.length > 0
+                        ? room.servicerooms.map((service, index) => (
+                            `<li>5.3.${index + 3}. ${service.name}: ${service.price.toLocaleString()} VNĐ/tháng</li>`
+                        )).join('')
+                        : ''
+                     }
+                </ul>
             </ul>
         </div>
     
@@ -206,7 +225,7 @@ async function createPDFFromHTML(contract, tenant, landlord, room) {
 
     await pdf.close();
 
-    return tempFile ;
+    return tempFile;
   } catch (error) {
     console.error("Error creating PDF:", error);
     throw new Error("Error creating PDF");

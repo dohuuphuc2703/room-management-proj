@@ -182,7 +182,7 @@ class LandlordController {
      
       const rooms = await Room.find(filter)
         .sort({ createdAt: -1 })
-        .select("address title acreage price maxSize amenities category servicerooms")
+        .select("address title acreage price maxSize amenities category servicerooms water electric")
         .populate("category")
       
   

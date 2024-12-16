@@ -78,7 +78,7 @@ class InvoiceController {
     try {
       const limit = parseInt(size, 10) || 10;
       const skip = (parseInt(page, 10) - 1) * limit;
-      const filter = status ? { status } : {};
+      const filter = status !== undefined ? { status: status === 'true' } : {}; 
       const invoices = await Invoice.find(filter)
         .populate({
           path: "contract",

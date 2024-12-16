@@ -271,7 +271,7 @@ const CreateRoom = () => {
                     </Col>
                 </Row>
 
-                
+
                 <Row gutter={16}>
                     <Col span={24}>
                         <Form.Item
@@ -283,35 +283,40 @@ const CreateRoom = () => {
                     </Col>
                 </Row>
 
-                <Row gutter={16}>
+                <Row gutter={[16, 16]} align="middle">
+                    {/* Điện */}
                     <Col span={2}>
-                        <h3>Điện:</h3>
+                        <h4 style={{ marginBottom: 0 }}>Điện:</h4>
                     </Col>
-
-                    <Col span={6}>
+                    <Col span={9}>
                         <Form.Item
                             label="Đơn giá"
                             name={["electric", "price"]}
-                            rules={[{ required: true,  message: "Vui lòng nhập giá điện"}]}>
-                            <Input placeholder="Giá điện" />
+                            labelCol={{ span: 6 }}
+                            wrapperCol={{ span: 18 }}
+                            rules={[{ required: true, message: "Vui lòng nhập giá điện" }]}
+                        >
+                            <Input placeholder="Nhập giá điện" />
                         </Form.Item>
-                    </Col>  
-                </Row>
-
-                <Row gutter={16}>
-                    <Col span={2}>
-                        <h3>Nước:</h3>
                     </Col>
-                        
-                    <Col span={6}>
+
+                    {/* Nước */}
+                    <Col span={2}>
+                        <h4 style={{ marginBottom: 0 }}>Nước:</h4>
+                    </Col>
+                    <Col span={9}>
                         <Form.Item
                             label="Đơn giá"
                             name={["water", "price"]}
-                            rules={[{ required: true, message: "Vui lòng nhập giá nước"}]}>
-                            <Input placeholder="Giá nước" />
+                            labelCol={{ span: 6 }}
+                            wrapperCol={{ span: 18 }}
+                            rules={[{ required: true, message: "Vui lòng nhập giá nước" }]}
+                        >
+                            <Input placeholder="Nhập giá nước" />
                         </Form.Item>
                     </Col>
                 </Row>
+
 
                 {/* Dịch vụ phòng */}
                 <Row gutter={16}>
@@ -339,10 +344,10 @@ const CreateRoom = () => {
                                         <Form.Item
                                             name={["servicerooms", index, "description"]}
                                             label="Mô tả dịch vụ">
-                                            <Input.TextArea placeholder="Mô tả dịch vụ" />
+                                            <Input placeholder="Mô tả dịch vụ" />
                                         </Form.Item>
                                     </Col>
-                                    <Col span={6}>
+                                    <Col span={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                         <Button
                                             type="danger"
                                             onClick={() => handleRemoveServiceRoom(index)}
