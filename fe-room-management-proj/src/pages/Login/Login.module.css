@@ -1,8 +1,7 @@
 .content {
-    background-image: url("../../../public/back-ground.jpg"); /* Đặt đường dẫn hình ảnh ở đây */
-    background-size: cover; /* Đảm bảo hình nền bao phủ toàn bộ chiều rộng và chiều cao */
+    background-image: url("../../../public/back-ground.jpg"); 
+    background-size: cover;
     background-position: center; /* Căn chỉnh hình ảnh ở giữa */
     width: 100%;
-    min-height: 150vh;
 }
 

@@ -5,7 +5,7 @@ import axios from "axios";
 import clsx from "clsx";
 
 import { LoadingOutlined } from '@ant-design/icons';
-
+import {useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import InputTexting from "../../InputTexting/InputTexting";
 import styles from "./LandlordChat.module.css";
@@ -42,7 +42,7 @@ function timeDifference(startDate) {
 }
 
 function LandlordChat({ socket }) {
-  const { user } = useOutletContext();
+  const user = useSelector((state) => state.userReducer)
 
   const nav = useNavigate();
   

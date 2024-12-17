@@ -14,7 +14,7 @@ const InvoiceIndex = () => {
   const [selectedInvoice, setSelectedInvoice] = useState(null); // Hóa đơn được chọn để xem chi tiết
   const nav = useNavigate();
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(1);
+  const [size, setSize] = useState(5);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
