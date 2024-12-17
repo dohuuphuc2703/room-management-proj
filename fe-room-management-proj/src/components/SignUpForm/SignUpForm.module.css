@@ -1,11 +1,23 @@
+.signup_container {
+  display: flex;
+  padding: 20px;
+}
+
 .signUp {
-  max-width: 400px;
+  width: 100%;
+  max-width: 700px;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.7);
+  transition: background-color 0.3s ease; /* Thêm hiệu ứng mượt khi thay đổi màu nền */
 }
+
+.signUp:hover {
+  background-color: rgba(255, 255, 255, 1); /* Màu nền trắng không trong suốt */
+}
+
 
 .title {
   font-size: 1.5em;
@@ -13,17 +25,16 @@
   text-align: center;
 }
 
-.lbSignUpFrm {
-  font-weight: 600;
-  font-size: 1rem;
+.lbSignupFrm {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .field {
   width: 100%;
-  padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
-  background-color: #f2f6fe;
+  border: none;
 }
 
 .icon {
@@ -34,7 +45,7 @@
   display: flex;
   justify-content: space-between;
   padding: 10px;
-  border: 2px dashed #ddd;
+  background-color: #f2f6fe;
   border-radius: 5px;
 }
 
@@ -65,4 +76,21 @@
 
 .confirmPolicy a:hover {
   text-decoration: underline;
+}
+
+/* Sử dụng Flexbox để chia form thành 2 cột */
+.formContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.formColumn {
+  flex: 1 1 45%; /* Chia đôi với độ rộng tối thiểu là 45% */
+}
+
+@media (max-width: 768px) {
+  .formColumn {
+    flex: 1 1 100%; /* Khi màn hình nhỏ, các cột sẽ chiếm 100% chiều rộng */
+  }
 }

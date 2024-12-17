@@ -61,7 +61,7 @@ function Header({user}) {
       <Menu.Divider />
       <Menu.Item key="4" icon={<LogoutOutlined />} onClick={handleLogout}>
         Đăng xuất
-      </Menu.Item>
+      </Menu.Item> 
     </Menu>
   );
   
@@ -77,13 +77,13 @@ function Header({user}) {
             <div className={styles.actions}>
               {user && user.fullName ? (
                 <div className={styles.userInfo}>
-                  <Badge count={5} offset={[10, 0]} style={{marginRight: "20px"}}>
+                  <Badge /*count={5} offset={[10, 0]}*/ style={{marginRight: "20px"}}>
                     <BellOutlined
                       className={styles.icon}
                       style={{ fontSize: "18px", marginRight: "20px", cursor: "pointer" }}
                     />
                   </Badge>
-                  <Badge count={3} offset={[10, 0]} style={{marginRight: "20px"}}>
+                  <Badge /*count={3} offset={[10, 0]}*/ style={{marginRight: "20px"}}>
                     <MessageOutlined
                       className={styles.icon}
                       style={{ fontSize: "18px", marginRight: "20px", cursor: "pointer" }}

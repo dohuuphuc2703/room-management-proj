@@ -143,37 +143,51 @@ class TenantController {
       return res.status(500).json({ message: error.toString() });
     }
   }
-  
-  // [GET] /api/tenant/all-saved-rooms 
-  async getAllSavedRooms(req, res) {
-    const { uid } = req.user;
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit); // Default limit to 10 items per page
 
-    try {
-      const tenant = await Tenant.findById(uid).populate({
-        path: "saveRooms",
-        options: {
-          skip: (page - 1) * limit,
-          limit: limit,
-        },
-      });
+// [GET] /api/tenant/all-saved-rooms 
+async getAllSavedRooms(req, res) {
+  const { uid } = req.user;
+  const page = parseInt(req.query.page) || 1; // Mặc định page = 1 nếu không truyền
+  const limit = parseInt(req.query.limit) || 10; // Mặc định limit = 10
 
-      const totalSavedRooms = tenant.saveRooms.length; // Get the total number of saved rooms for this tenant
-      const totalPages = Math.ceil(totalSavedRooms / limit);
+  try {
+    // Tìm tenant và populate saveRooms
+    const tenant = await Tenant.findById(uid).populate({
+      path: "saveRooms",
+      populate: {
+        path: "landlord", // Populate landlord từ saveRooms
+        populate: {
+          path: "user", // Populate user từ landlord
+          select: "fullName email phone avatar" // Chỉ lấy các trường cần thiết từ user
+        }
+      },
+      options: {
+        skip: (page - 1) * limit,
+        limit: limit,
+      },
+    });
 
-      return res.json({
-        saveRooms: tenant.saveRooms,
-        totalPages,
-        currentPage: page,
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-        message: error.toString(),
-      });
+    // Kiểm tra nếu tenant không tồn tại
+    if (!tenant) {
+      return res.status(404).json({ message: "Tenant not found" });
     }
+
+    // Tính toán tổng số saveRooms và số trang
+    const totalSavedRooms = await Tenant.findById(uid).select("saveRooms").populate("saveRooms").exec();
+    const totalPages = Math.ceil(totalSavedRooms.saveRooms.length / limit);
+
+    return res.json({
+      saveRooms: tenant.saveRooms,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: error.toString(),
+    });
   }
+}
 
 
   // [POST] /api/tenant/remove-saved-room/:roomId

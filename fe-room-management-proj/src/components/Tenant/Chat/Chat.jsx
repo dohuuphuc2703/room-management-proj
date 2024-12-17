@@ -196,12 +196,8 @@ function Chat({ socket }) {
                   ])}
                   key={friend._id}
                   onClick={() => {
-                    if (user?._id) {
                       setChatWith(friend);
                       handleLoadMessage({ owner: user._id, friend });
-                    } else {
-                      console.error("Dữ liệu user chưa sẵn sàng");
-                    }
                   }}
                 >
                   <div
@@ -218,7 +214,6 @@ function Chat({ socket }) {
                   </div>
                   <div className={styles.info}>
                     <h4>{friend.fullName}</h4>
-                    <p>Hãy gửi lời chào trước khi bắt đầu nhắn tin nhé!</p>
                   </div>
                 </div>
               ))
@@ -291,7 +286,7 @@ function Chat({ socket }) {
                           />
                         </div>
                         <h3>{chatWith.fullName}</h3>
-                        <p>Hãy bắt đầu cuộc trò chuyện bằng một lời chào 😍</p>
+                        <p>Hãy gửi những tin nhắn đầu tiên đến bạn bè của bạn...</p>
                       </div>
                     ) : (
                       <></>
@@ -320,7 +315,7 @@ function Chat({ socket }) {
                 alt="Không có cuộc trò chuyện nào"
                 className={styles.imgNoConversation}
               />
-              <p>Bạn hiện không chọn cuộc trò chuyện nào...</p>
+              <p>Hãy chọn một người bạn để bắt đầu nhắn tin nhé!</p>
             </div>
           )}
         </div>
