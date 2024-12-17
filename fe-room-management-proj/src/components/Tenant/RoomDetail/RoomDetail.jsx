@@ -118,7 +118,6 @@ function RoomDetail() {
     }, 300);
 
     if (!user || !user.role) {
-      // Hiển thị thông báo cảnh báo trong Modal
       Modal.warning({
         title: "Bạn chưa đăng nhập",
         content: (
@@ -130,7 +129,7 @@ function RoomDetail() {
         cancelText: "Để sau",
         closable: true,
         onOk: () => {
-          nav("/login"); // Điều hướng tới trang đăng nhập khi nhấn "Đăng nhập"
+          nav("/login");
         },
         onCancel: () => {
           notification.info({

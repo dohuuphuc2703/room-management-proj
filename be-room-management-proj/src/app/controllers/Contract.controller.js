@@ -378,8 +378,8 @@ class ContractController {
 
   async cancelRequestHandle(req, res) {
     try {
-      const { contractId } = req.params; // Lấy contractId từ URL
-      const { action } = req.body; // "approve" hoặc "reject"
+      const { contractId } = req.params;
+      const { action } = req.body;
 
       // Tìm hợp đồng
       const contract = await Contract.findById(contractId).populate("room");
