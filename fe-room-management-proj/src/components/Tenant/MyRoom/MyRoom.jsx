@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaWater } from 'react-icons/fa';
 import { useSelector } from "react-redux";
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate  } from 'react-router-dom';
 import styles from "./MyRoom.module.css";
 
 const { Content } = Layout;
@@ -22,6 +22,7 @@ const MyRoom = () => {
     const [hasContract, setHasContract] = useState(false);
     const [cancelRequest, setCancelRequest] = useState()
     const [bank, setBank] = useState()
+    
     useEffect(() => {
         const fetchContractInfo = async () => {
             try {
@@ -324,7 +325,7 @@ const Invoice = ({ contractId,bank, loading }) => {
             setIsPaymentProcessing(false);
         }
     };
-    
+
     const generateQRCode = async (invoice) => {
         try {
             const qrData = {
@@ -430,10 +431,11 @@ const Invoice = ({ contractId,bank, loading }) => {
 
 
 const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
-    const user = useSelector(state => state.userReducer); // Lấy thông tin người đăng nhập từ Redux
-    const [cancelRequest, setCancelRequest] = useState(initialCancelRequest); // Nhận cancelRequest từ prop
-    const [reason, setReason] = useState(""); // Lý do hủy
-    const [isSubmitting, setIsSubmitting] = useState(false); // Trạng thái gửi yêu cầu
+    const user = useSelector(state => state.userReducer);
+    const [cancelRequest, setCancelRequest] = useState(initialCancelRequest);
+    const [reason, setReason] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
     console.log(user)
     const handleCancelRequest = async () => {
         setIsSubmitting(true);
@@ -444,11 +446,9 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
                 { withCredentials: true }
             );
             message.success("Yêu cầu hủy hợp đồng đã được gửi!");
-            setReason(""); // Reset lý do
-
-            // Cập nhật trạng thái yêu cầu hủy
+            setReason(""); 
             setCancelRequest({
-                ...cancelRequest,
+                requestedBy: cancelRequest,
                 reason,
                 status: "pending",
             });
@@ -466,8 +466,9 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
                 { action }, // action là "approve" hoặc "reject"
                 { withCredentials: true }
             );
-
-            if (response.data && response.data.success) {
+            console.log(response.data)
+            if (response.data && response.data.message) {
+                
                 message.success(
                     action === "approve"
                         ? "Đã đồng ý hủy hợp đồng!"
@@ -479,6 +480,11 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
                     ...prev,
                     status: action === "approve" ? "approved" : "rejected",
                 }));
+
+                if (action === "approve") {
+                    // Điều hướng về trang chủ
+                    setTimeout(() => navigate("/"), 1000); // Đợi 1 giây rồi điều hướng
+                }
             }
         } catch (error) {
             message.error(
@@ -607,9 +613,5 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
         </div>
     );
 };
-
-
-
-
 
 export default MyRoom;
