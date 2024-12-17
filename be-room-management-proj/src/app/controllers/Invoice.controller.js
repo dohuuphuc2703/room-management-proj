@@ -52,7 +52,7 @@ class InvoiceController {
       // Tạo hóa đơn mới dựa trên thông tin hợp đồng
       const newInvoice = new Invoice({
         contract: contract._id,
-        title: `Hóa đơn tháng ${lastMonth} phòng "${contract.room.title}"`,
+        title: `Hóa đơn ${lastMonth} phòng ${contract.room.title}`,
         totalOfSv,
         status: false,
         total, // Tổng tiền đã tính

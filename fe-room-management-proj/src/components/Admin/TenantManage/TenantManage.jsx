@@ -12,7 +12,7 @@ const TenantManage = () => {
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState("");
     const [page, setPage] = useState(1);
-    const [size, setSize] = useState(1);
+    const [size, setSize] = useState(5);
     const [total, setTotal] = useState(0);
 
     useEffect(() => {

@@ -21,6 +21,7 @@ const MyRoom = () => {
     const [contractId, setContractId] = useState()
     const [hasContract, setHasContract] = useState(false);
     const [cancelRequest, setCancelRequest] = useState()
+    const [bank, setBank] = useState()
     useEffect(() => {
         const fetchContractInfo = async () => {
             try {
@@ -35,6 +36,7 @@ const MyRoom = () => {
                     setPdfPath(response.data.contract.pdfPath);
                     setContractId(response.data.contract._id);
                     setHasContract(true);
+                    setBank(response.data.contract.landlord.bankDetails)
                     setCancelRequest(response.data.contract.cancelRequest.requestedBy ? response.data.contract.cancelRequest : null);
                 } else {
                     setHasContract(false); // Nếu không có hợp đồng, không hiển thị TabPane
@@ -44,12 +46,14 @@ const MyRoom = () => {
                 console.log(error);
             }
         };
-
+        
         fetchContractInfo();
     }, []);
     if (!user?.role) { 
         return <Navigate to="/login" />;
       };
+
+      console.log(bank)
     return (
         <Layout className={styles.layout}>
             <Content className={styles.content}>
@@ -65,7 +69,7 @@ const MyRoom = () => {
                                 <Contract pdfPath={pdfPath} />
                             </TabPane>
                             <TabPane tab="Hóa đơn" key="3">
-                                <Invoice contractId={contractId} loading={loading} />
+                                <Invoice contractId={contractId} bank={bank} loading={loading} />
                             </TabPane>
                             <TabPane tab="Hủy hợp đồng" key="4">
                                 <CancelRequest contractId={contractId} initialCancelRequest={cancelRequest} loading={loading} />
@@ -201,7 +205,7 @@ const Contract = ({ pdfPath }) => {
     );
 };
 
-const Invoice = ({ contractId, loading }) => {
+const Invoice = ({ contractId,bank, loading }) => {
     const [invoices, setInvoices] = useState([]);
     const [statusFilter, setStatusFilter] = useState(null);
     const [qrCodeData, setQrCodeData] = useState(null);
@@ -211,6 +215,7 @@ const Invoice = ({ contractId, loading }) => {
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(1);
     const [total, setTotal] = useState(0);
+
 
     const fetchInvoices = async () => {
         try {
@@ -242,6 +247,8 @@ const Invoice = ({ contractId, loading }) => {
         setPage(1); 
     };
 
+    
+
     const columns = [
         {
             title: "STT",
@@ -256,7 +263,7 @@ const Invoice = ({ contractId, loading }) => {
             title: "Tổng tiền",
             dataIndex: "total",
             key: "total",
-            render: (total) => total.toLocaleString("vi-VN", { style: "currency", currency: "VND" }),
+            render: (total) => total.toLocaleString(),
         },
         
         {
@@ -297,8 +304,8 @@ const Invoice = ({ contractId, loading }) => {
     const handleViewInvoice = (invoice) => {
         setSelectedInvoice(invoice);
         setIsModalVisible(true);
-        setQrCodeData(null); // reset qrCodeData khi mở modal
-        generateQRCode(invoice); // tự động tạo mã QR khi mở modal
+        setQrCodeData(null);
+        generateQRCode(invoice);
     };
 
     const handleCloseModal = () => {
@@ -317,13 +324,13 @@ const Invoice = ({ contractId, loading }) => {
             setIsPaymentProcessing(false);
         }
     };
-
+    
     const generateQRCode = async (invoice) => {
         try {
             const qrData = {
-                accountNo: 113366668888,
-                accountName: "QUY VAC XIN PHONG CHONG COVID",
-                acqId: 970415,
+                accountNo:bank.accountNumber,
+                accountName: bank.accountName,
+                acqId: bank.bank,
                 amount: invoice.total,
                 addInfo: invoice.title,
                 format: "text",
@@ -392,14 +399,19 @@ const Invoice = ({ contractId, loading }) => {
                                         { title: "STT", render: (_, __, index) => index + 1 },
                                         { title: "Tên dịch vụ", dataIndex: "name", key: "name" },
                                         { title: "Số lượng", dataIndex: "quantity", key: "quantity" },
-                                        { title: "Tổng tiền", dataIndex: "totalAmount", key: "totalAmount" },
+                                        { 
+                                            title: "Tổng tiền", 
+                                            dataIndex: "totalAmount", 
+                                            key: "totalAmount",
+                                            render: (totalAmount) => totalAmount?.toLocaleString() 
+                                        },
                                     ]}
                                     dataSource={selectedInvoice.totalOfSv}
                                     pagination={false}
                                     rowKey="_id"
                                 />
                             </div>
-                            <p><strong>Tổng tiền:</strong> {selectedInvoice.total}</p>
+                            <p><strong>Tổng tiền:</strong> {selectedInvoice.total.toLocaleString()} VNĐ</p>
                             <p><strong>Trạng thái:</strong> {selectedInvoice.status ? "Đã thanh toán" : "Chưa thanh toán"}</p>
                         </div>
 
