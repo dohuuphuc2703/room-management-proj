@@ -45,7 +45,7 @@ const renderStars = (rating) => {
   return stars;
 };
 
-const ListReviewRoom = ({ roomId, averageRating }) => {
+const ListReviewRoom = ({ roomId, averageRating, refreshTrigger }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [ratingCounts, setRatingCounts] = useState({});
@@ -73,8 +73,9 @@ const ListReviewRoom = ({ roomId, averageRating }) => {
 
   useEffect(() => {
     fetchReviews();
-  }, [roomId]);
+  }, [roomId, refreshTrigger]);
 
+  console.log(reviews)
   return (
     <div className={styles.reviewContainer}>
       <h2>Đánh giá</h2>
