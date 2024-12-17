@@ -108,6 +108,7 @@ function RoomDetail() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [landlord, setLandlord] = useState(null);
   const [isClicked, setIsClicked] = useState(false);
+  const [refreshReviews, setRefreshReviews] = useState(false);
   const nav = useNavigate();
 
   const handleReviewSubmit = async (review) => {
@@ -147,6 +148,7 @@ function RoomDetail() {
         withCredentials: true,
       });
       messageApi.success("Đánh giá đã được gửi!");
+      setRefreshReviews(!refreshReviews)
     } catch (err) {
       if (err.status === 403) {
       }
@@ -321,8 +323,7 @@ function RoomDetail() {
 
   useEffect(() => {
     getDetailRoomInfo();
-    // getRoomByAddress();
-  }, [roomId]);
+  }, [roomId, refreshReviews]);
 
   return (
     <div className={styles.container}>
@@ -441,7 +442,7 @@ function RoomDetail() {
         )}
         <div>
           <ReviewRoom roomId={roomId} onReviewSubmit={handleReviewSubmit} />
-          <ListReviewRoom roomId={roomId} averageRating={averageRating} />
+          <ListReviewRoom roomId={roomId} averageRating={averageRating} refreshTrigger={refreshReviews} />
         </div>
       </div>
 
