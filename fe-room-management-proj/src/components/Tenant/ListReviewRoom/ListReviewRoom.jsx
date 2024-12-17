@@ -1,5 +1,5 @@
 import { StarFilled, StarOutlined } from "@ant-design/icons";
-import { List, Typography, Space, Avatar, Button } from "antd";
+import { Avatar, Button, List, Space, Typography } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styles from "./ListReviewRoom.module.css";
@@ -112,7 +112,7 @@ const ListReviewRoom = ({ roomId, averageRating }) => {
                 avatar={
                   <Avatar
                     size={38}
-                    src={`http://localhost:8000${review.tenant.user.avatar}`}
+                    src={review.tenant.user.avatar}
                   />
                 }
                 title={

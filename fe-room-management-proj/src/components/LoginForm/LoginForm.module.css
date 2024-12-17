@@ -10,11 +10,18 @@
 .login {
   width: 100%;
   max-width: 400px; /* Đặt giới hạn cho chiều rộng form */
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.7); /* Màu nền trắng trong suốt 80% */
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  transition: background-color 0.3s ease; /* Thêm hiệu ứng mượt khi thay đổi màu nền */
 }
+
+.login:hover {
+  background-color: rgba(255, 255, 255, 1); /* Màu nền trắng không trong suốt */
+}
+
+
 
 .title {
   font-size: 24px;

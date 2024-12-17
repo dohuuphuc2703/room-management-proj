@@ -48,6 +48,8 @@
   overflow: hidden;
   display: flex; /* Align image and text in one row */
   align-items: center; /* Center items vertically */
+  cursor: pointer; /* Đổi con trỏ chuột thành dạng pointer */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Hiệu ứng chuyển đổi mượt */
 }
 
 .featuredDetails,

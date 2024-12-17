@@ -44,8 +44,11 @@ function ListSavedRooms() {
   };
   
 
-  const handleChat = (phone) => {
-    window.open(`https://zalo.me/${phone}`, "_blank");
+  const handleDirectMessage = (landlord) => {
+    // Điều hướng đến giao diện chat với landlordId
+    nav(`/chat`, {
+      state: { landlord },
+    });
   };
 
   useEffect(() => {
@@ -69,7 +72,7 @@ function ListSavedRooms() {
                 actions={[
                   <Button
                     type="primary"
-                    onClick={() => handleChat(room.phone)}
+                    onClick={() => handleDirectMessage(room.landlord.user)}
                   >
                     Chat
                   </Button>,

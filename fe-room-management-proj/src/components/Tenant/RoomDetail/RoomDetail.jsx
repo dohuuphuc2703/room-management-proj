@@ -212,7 +212,9 @@ function RoomDetail() {
         `http://localhost:8000/api/room/byAddress?province=${province}&district=${district}&category=${category}`
       );
       const data = res.data;
-      setRoomByAddress(data.rooms);
+
+      const filteredRooms = data.rooms.filter((room) => room._id !== roomId);
+      setRoomByAddress(filteredRooms);
     } catch (err) {
       console.error(err);
       messageApi.error("Có lỗi xảy ra: " + err.toString());
@@ -537,7 +539,7 @@ function RoomDetail() {
                 </div>
               ))
             ) : (
-              <p>Không có tin nổi bật</p>
+              <p>Không có phòng gần đây</p>
             )}
           </div>
         </div>

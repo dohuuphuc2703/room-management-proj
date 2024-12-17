@@ -13,7 +13,7 @@ const SignUpForm = ({
   loading,
   openModal,
   resend,
-  sendMail
+  sendMail,
 }) => {
   const [role, setRole] = useState("NGƯỜI DÙNG");
   const [confirmPolicy, setConfirmPolicy] = useState(false);
@@ -35,7 +35,8 @@ const SignUpForm = ({
   });
 
   return (
-    <div className={styles.signUp}>
+    <div className={styles.signup_container}>
+      <div className={styles.signUp}>
       <Form
         layout="vertical"
         onFinish={handleSubmitSignUpFrm}
@@ -43,104 +44,125 @@ const SignUpForm = ({
       >
         <h2 className={styles.title}>Tạo tài khoản mới</h2>
 
-        <Form.Item
-          label="Họ và tên"
-          name="fullName"
-          rules={[{ required: true, message: "Vui lòng nhập họ tên của bạn" }]}
-        >
-          <Input
-            size="large"
-            placeholder="Họ và tên"
-            className={styles.field}
-            addonBefore={<FaUser className={styles.icon} />}
-          />
-        </Form.Item>
+        <div className={styles.formContainer}>
+          <div className={styles.formColumn}>
+            <Form.Item
+              label={<span className={styles.lbSignupFrm}>Họ và tên</span>}
+              name="fullName"
+              rules={[
+                { required: true, message: "Vui lòng nhập họ tên của bạn" },
+              ]}
+            >
+              <Input
+                size="large"
+                placeholder="Họ và tên"
+                className={styles.field}
+                addonBefore={<FaUser className={styles.icon} />}
+              />
+            </Form.Item>
 
-        <Form.Item
-          label="Số điện thoại"
-          name="phone"
-          rules={[{ required: true, message: "Vui lòng nhập số điện thoại của bạn" }]}
-        >
-          <Input
-            size="large"
-            placeholder="Số điện thoại"
-            className={styles.field}
-            addonBefore={<FaPhone className={styles.icon} />}
-          />
-        </Form.Item>
+            <Form.Item
+              label={<span className={styles.lbSignupFrm}>Số điện thoại</span>}
+              name="phone"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập số điện thoại của bạn",
+                },
+              ]}
+            >
+              <Input
+                size="large"
+                placeholder="Số điện thoại"
+                className={styles.field}
+                addonBefore={<FaPhone className={styles.icon} />}
+              />
+            </Form.Item>
 
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            { required: true, message: "Vui lòng nhập địa chỉ email của bạn" },
-            { type: "email", message: "Email bạn nhập không hợp lệ" },
-          ]}
-        >
-          <Input
-            size="large"
-            placeholder="Email"
-            className={styles.field}
-            addonBefore={<MdEmail className={styles.icon} />}
-          />
-        </Form.Item>
+            <Form.Item
+              label={<span className={styles.lbSignupFrm}>Email</span>}
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập địa chỉ email của bạn",
+                },
+                { type: "email", message: "Email bạn nhập không hợp lệ" },
+              ]}
+            >
+              <Input
+                size="large"
+                placeholder="Email"
+                className={styles.field}
+                addonBefore={<MdEmail className={styles.icon} />}
+              />
+            </Form.Item>
+          </div>
 
-        <Form.Item
-          label="Mật khẩu"
-          name="password"
-          rules={[
-            { required: true, message: "Vui lòng nhập mật khẩu của bạn" },
-            {
-              min: 6,
-              max: 25,
-              message: "Mật khẩu phải chứa từ 6 đến 25 ký tự",
-            },
-            {
-              pattern:
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&])[A-Za-z\d@$!%*?&].{6,25}$/,
-              message:
-                "Mật khẩu phải bao gồm ít nhất 1 chữ hoa, chữ thường, ký tự số và ký tự đặc biệt",
-            },
-          ]}
-        >
-          <Input.Password
-            size="large"
-            placeholder="Mật khẩu ( từ 6 đến 25 ký tự )"
-            className={styles.field}
-            addonBefore={<BsShieldLockFill className={styles.icon} />}
-          />
-        </Form.Item>
+          <div className={styles.formColumn}>
+          <Form.Item
+              label={<span className={styles.lbSignupFrm}>Mật khẩu</span>}
+              name="password"
+              rules={[
+                { required: true, message: "Vui lòng nhập mật khẩu của bạn" },
+                {
+                  min: 6,
+                  max: 25,
+                  message: "Mật khẩu phải chứa từ 6 đến 25 ký tự",
+                },
+                {
+                  pattern:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&])[A-Za-z\d@$!%*?&].{6,25}$/,
+                  message:
+                    "Mật khẩu phải bao gồm ít nhất 1 chữ hoa, chữ thường, ký tự số và ký tự đặc biệt",
+                },
+              ]}
+            >
+              <Input.Password
+                size="large"
+                placeholder="Mật khẩu ( từ 6 đến 25 ký tự )"
+                className={styles.field}
+                addonBefore={<BsShieldLockFill className={styles.icon} />}
+              />
+            </Form.Item>
 
-        <Form.Item
-          label="Xác nhận mật khẩu"
-          name="confirm-password"
-          dependencies={["password"]}
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng xác nhận lại mật khẩu của bạn",
-            },
-            validateRetypePassword,
-          ]}
-        >
-          <Input.Password
-            size="large"
-            placeholder="Xác nhận mật khẩu"
-            className={styles.field}
-            addonBefore={<BsShieldFillCheck className={styles.icon} />}
-          />
-        </Form.Item>
+            <Form.Item
+              label={
+                <span className={styles.lbSignupFrm}>Xác nhận mật khẩu</span>
+              }
+              name="confirm-password"
+              dependencies={["password"]}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng xác nhận lại mật khẩu của bạn",
+                },
+                validateRetypePassword,
+              ]}
+            >
+              <Input.Password
+                size="large"
+                placeholder="Xác nhận mật khẩu"
+                className={styles.field}
+                addonBefore={<BsShieldFillCheck className={styles.icon} />}
+              />
+            </Form.Item>
 
-        <Form.Item label="Loại Tài Khoản" name="role">
-          <Radio.Group
-            onChange={(e) => setRole(e.target.value)}
-            value={role}
-            className={styles.roleContainer}
-          >
-            <Radio value="tenant">NGƯỜI DÙNG</Radio>
-            <Radio value="landlord">CHỦ PHÒNG</Radio>
-          </Radio.Group>
-        </Form.Item>
+            <Form.Item
+              label={<span className={styles.lbSignupFrm}>Loại tài khoản</span>}
+              name="role"
+            >
+              <Radio.Group
+                onChange={(e) => setRole(e.target.value)}
+                value={role}
+                className={styles.roleContainer}
+              >
+                <Radio value="tenant">NGƯỜI DÙNG</Radio>
+                <Radio value="landlord">CHỦ PHÒNG</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </div>
+        </div>
 
         <Form.Item>
           <Checkbox
@@ -167,6 +189,7 @@ const SignUpForm = ({
           </Button>
         </Form.Item>
       </Form>
+
       <Modal
         title={
           <div className={styles.center}>
@@ -205,6 +228,8 @@ const SignUpForm = ({
         </div>
       </Modal>
     </div>
+    </div>
+    
   );
 };
 
