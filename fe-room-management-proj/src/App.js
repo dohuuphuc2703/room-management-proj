@@ -28,6 +28,7 @@ import Home from "./pages/Home/Home";
 import LandlordView from "./pages/LandlordView/LandlordView";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
+import VerifyContract from "./pages/VerifyContract/VerifyContract";
 import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 
 const socket = socketClient("http://127.0.0.1:8000", {
@@ -49,6 +50,7 @@ function App() {
       <ConfigProvider theme={themes}>
         <Routes>
         <Route path="/verify/:status" element={<VerifyEmail />} />
+        <Route path="/verify-contract/success" element={<VerifyContract />} />
           <Route path="" element={<Home />}>
             <Route path="/" element={<SearchRoom />} />
             <Route path="/detail-room/:roomId" element={<RoomDetail />} />

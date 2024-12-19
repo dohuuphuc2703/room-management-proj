@@ -166,9 +166,7 @@ class ContractController {
       room.status = "rented";
       await room.save();
 
-      return res
-        .status(200)
-        .json({ message: "Contract confirmed successfully" });
+      return res.redirect(`${process.env.URL_CLIENT}/verify-contract/success`);
     } catch (error) {
       return res.status(500).json({ message: error.toString() });
     }
