@@ -20,7 +20,7 @@ class AuthController {
     const user = await User.findOneAndUpdate(
       { email: email },
       {
-        onlineAt: Date.now(),
+        online: true,
       },
       { new: true }
     );
@@ -228,8 +228,7 @@ class AuthController {
           user.verifiedAt = new Date();
           await user.save();;
           
-        //   return res.redirect(`${process.env.URL_CLIENT}/verify/success`);
-            return res.sendStatus(200);
+          return res.redirect(`${process.env.URL_CLIENT}/verify/success`);
         }
       }
 

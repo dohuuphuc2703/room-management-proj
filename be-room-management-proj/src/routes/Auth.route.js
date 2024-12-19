@@ -10,5 +10,6 @@ router.get("/verify", AuthController.verifyEmail);
 router.post("/login", AuthController.loginWithPassword);
 router.get("/logout", verifyJwt, AuthController.logout);
 router.post("/send-mail", AuthController.sendEmail);
+router.get("/verify", AuthController.verifyEmail);
 
 module.exports = router;
