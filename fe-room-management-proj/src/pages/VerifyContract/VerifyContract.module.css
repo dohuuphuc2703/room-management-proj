@@ -1,0 +1,73 @@
+.verifyEmail {
+  height: 100vh;
+}
+
+.verifyEmail .iconSuccess,
+.verifyEmail .iconError {
+  font-size: 124px;
+  text-align: center;
+}
+
+.verifyEmail .iconSuccess {
+  color: var(--title-color);
+}
+
+.verifyEmail .iconError {
+  color: var(--error-color);
+}
+
+.verifyEmail .content {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.verifyEmail .content h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.verifyEmail .content .btnAction {
+  padding: 16px;
+  background-color: var(--bg-blur);
+  color: var(--title-color);
+  border: 1px var(--title-color) solid;
+  cursor: pointer;
+  margin-top: 24px;
+}
+
+.verifyEmail .content .btnAction:focus-within, 
+.verifyEmail .content .btnAction:hover {
+  color: var(--title-color) !important;
+  border: 1px var(--title-color) solid !important;
+}
+
+.icon {
+  color: var(--title-color);
+}
+
+.lbLoginFrm, 
+.field {
+  font-size: 14px;
+}
+
+.lbLoginFrm {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.center {
+  text-align: center;
+}
+
+.btnLogin, 
+.btnLogin:hover {
+  background-color: var(--title-color) !important;
+}
+
+.btnLogin {
+  font-size: 14px;
+}
+
+.btnLogin:hover {
+  opacity: .8;
+}

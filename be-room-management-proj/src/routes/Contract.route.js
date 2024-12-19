@@ -14,5 +14,6 @@ router.get('/verify', ContractController.verifyContract);
 router.post("/:contractId/cancel-request", verifyJwt, ContractController.cancelRequest);
 router.put("/:contractId/cancel-request/handle", verifyJwt, ContractController.cancelRequestHandle);
 router.get("/room",verifyJwt, ContractController.getRoomByContract);
+router.post("/send-mail", ContractController.sendContractEmail);
 
 module.exports = router;
