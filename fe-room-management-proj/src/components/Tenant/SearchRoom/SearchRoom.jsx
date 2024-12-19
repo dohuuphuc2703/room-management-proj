@@ -38,8 +38,8 @@ function SearchRoom() {
 
     // Lấy danh sách quận dựa trên tỉnh đã chọn
     try {
-      const res = await axios.get(`https://vapi.vnappmob.com/api/province/district/${value}`);
-      setDistricts(res.data.results.map(d => ({ label: d.district_name, value: d.district_id })));
+      const res = await axios.get(`https://open.oapi.vn/location/districts/${value}`);
+      setDistricts(res.data.data.map(d => ({ label: d.name, value: d.id })));
     } catch (error) {
       console.error(error);
       messageApi.error("Có lỗi khi tải danh sách quận.");
@@ -53,8 +53,8 @@ function SearchRoom() {
 
     // Lấy danh sách phường dựa trên quận đã chọn
     try {
-      const res = await axios.get(`https://vapi.vnappmob.com/api/province/ward/${value}`);
-      setWards(res.data.results.map(w => ({ label: w.ward_name, value: w.ward_id })));
+      const res = await axios.get(`https://open.oapi.vn/location/wards/${value}`);
+      setWards(res.data.data.map(w => ({ label: w.name, value: w.id })));
     } catch (error) {
       console.error(error);
       messageApi.error("Có lỗi khi tải danh sách phường.");
@@ -119,11 +119,11 @@ function SearchRoom() {
   useEffect(() => {
     // Lấy danh sách tỉnh và loại phòng
     Promise.all([
-      axios.get("https://vapi.vnappmob.com/api/province/"),
+      axios.get("https://open.oapi.vn/location/provinces?page=0&size=63"),
       axios.get("http://localhost:8000/api/room-category/all"),
     ]).then(([resCities, resRoomCates]) => {
-      resCities.data.results.unshift({ province_name: "Tất cả tỉnh", province_id: "" });
-      setProvinces(resCities.data.results.map(city => ({ label: city.province_name, value: city.province_id })));
+      resCities.data.data.unshift({ name: "Tất cả tỉnh", id: "" });
+      setProvinces(resCities.data.data.map(city => ({ label: city.name, value: city.id })));
 
       resRoomCates.data.categories.unshift({ _id: 0, category: "Tất cả loại phòng" });
       setCategories(resRoomCates.data.categories.map(category => ({ label: category.category, value: category._id })));

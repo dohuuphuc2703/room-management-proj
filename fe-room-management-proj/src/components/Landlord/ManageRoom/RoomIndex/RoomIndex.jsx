@@ -43,17 +43,17 @@ const LandlordListRoom = () => {
       }
     };
     Promise.all([
-      axios.get("https://vapi.vnappmob.com/api/province/"),
+      axios.get("https://open.oapi.vn/location/provinces?page=0&size=63"),
       axios.get("http://localhost:8000/api/room-category/all"),
     ]).then(([resCities]) => {
-      resCities.data.results.unshift({
-        province_name: "Tất cả tỉnh",
-        province_id: "",
+      resCities.data.data.unshift({
+        name: "Tất cả tỉnh",
+        id: "",
       });
       setProvinces(
-        resCities.data.results.map((city) => ({
-          label: city.province_name,
-          value: city.province_id,
+        resCities.data.data.map((city) => ({
+          label: city.name,
+          value: city.id,
         }))
       );
     });
