@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thông báo về tài khoản bị vô hiệu hóa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .email-container {
+      background-color: #ffffff;
+      margin: 40px auto;
+      padding: 20px;
+      border: 1px solid #dddddd;
+      border-radius: 10px;
+      max-width: 600px;
+    }
+
+    .email-header {
+      text-align: center;
+      padding-bottom: 20px;
+    }
+
+    .email-header img {
+      max-width: 100px;
+    }
+
+    .email-content {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #333333;
+    }
+
+    .email-content p {
+      margin: 0 0 10px;
+    }
+
+    .email-button {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .email-button a {
+      background-color: #00b14f;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .email-footer {
+      text-align: center;
+      font-size: 12px;
+      color: #777777;
+      padding-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="email-container">
+    <div class="email-header">
+      <h1>Phong Tro 123</h1>
+    </div>
+    <div class="email-content">
+      <h2>Chào bạn!</h2>
+      <p>{{message}}</p>
+      <p>Trân trọng!</p>
+      <p>Vui lòng gửi mail đến đội ngũ hỗ trợ của chúng tôi nếu có bất kỳ thắc mắc hay câu hỏi nào muốn được giải đáp:</p>
+      <p class="email-button">
+        <a href="mailto:hongduc20062002@gmail.com" class="btn">Liên hệ hỗ trợ</a>
+      </p>
+    </div>
+    <div class="email-footer">
+      <p>&copy; 2024 Phong Tro 123. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+
+</html>
