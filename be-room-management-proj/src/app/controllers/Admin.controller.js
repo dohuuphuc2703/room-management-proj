@@ -5,6 +5,10 @@ const Room = require("../models/Room.model");
 const RoomCategory = require("../models/RoomCategory.model");
 const Admin = require("../models/Admin.model");
 
+const mailer = require("../../utils/mail/index");
+const fs = require("fs");
+const path = require("path");
+
 class AdminController {
     // [GET] /api/admin/info/
     async getInfo(req, res) {
@@ -217,19 +221,27 @@ class AdminController {
                 hidden: true,
                 hiddenAt: new Date(),
             },
-            { new: true } // Trả về user sau khi cập nhật
+            { new: true, select: 'email' } // Trả về user sau khi cập nhật
             );
 
             if (!updatedUser) {
             return res.status(404).json({
                 success: false,
-                message: "Không tìm thấy tài khoản landlord.",
+                message: "Không tìm thấy tài khoản.",
             });
             }
+            const email = updatedUser.email
+            const emailTemplatePath = path.join(__dirname, '../../resources/views/form-notify.html');
+            const emailTemplate = fs.readFileSync(emailTemplatePath, 'utf8');
+            const emailContent = emailTemplate.replace('{{message}}', `
+                Tài khoản của bạn đã bị quản trị viên vô hiệu hóa. 
+                Hiện tại bạn không thể truy cập trang web của chúng tôi thông qua tài khoản đăng ký bởi email này.
+            `);
 
+            mailer.sendMail(email, "Vô hiệu hóa tài khoản", emailContent);
             res.status(200).json({
             success: true,
-            message: "Đã chặn tài khoản landlord thành công.",
+            message: "Đã chặn tài khoản thành công.",
             data: updatedUser,
             });
         } catch (error) {
@@ -247,27 +259,35 @@ class AdminController {
         const { uid } = req.params; // Lấy ID của landlord từ params
 
         try {
-          const updatedUser = await User.findByIdAndUpdate(
-            uid,
-            {
-              hidden: false,
-              hiddenAt: null,
-            },
-            { new: true } // Trả về user sau khi cập nhật
-          );
-      
-          if (!updatedUser) {
-            return res.status(404).json({
-              success: false,
-              message: "Không tìm thấy tài khoản landlord.",
-            });
-          }
-      
-          res.status(200).json({
+            const updatedUser = await User.findByIdAndUpdate(
+                uid,
+                {
+                hidden: false,
+                hiddenAt: null,
+                },
+                { new: true, select: 'email' } // Trả về user sau khi cập nhật
+            );
+        
+            if (!updatedUser) {
+                return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy tài khoản.",
+                });
+            }
+        const email = updatedUser.email
+        const emailTemplatePath = path.join(__dirname, '../../resources/views/form-notify.html');
+        const emailTemplate = fs.readFileSync(emailTemplatePath, 'utf8');
+        const emailContent = emailTemplate.replace('{{message}}', `
+            Tài khoản của bạn đã được quản trị viên mở khóa. 
+            Hiện tại bạn có thể tiếp tục truy cập trang web của chúng tôi thông qua tài khoản đăng ký bởi email này.
+        `);
+
+        mailer.sendMail(email, "Khôi phục tài khoản", emailContent);
+        res.status(200).json({
             success: true,
-            message: "Đã mở khóa tài khoản landlord thành công.",
+            message: "Đã mở khóa tài khoản thành công.",
             data: updatedUser,
-          });
+        });
         } catch (error) {
           console.error(error);
           res.status(500).json({
