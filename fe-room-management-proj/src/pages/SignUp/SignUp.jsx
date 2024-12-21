@@ -8,7 +8,6 @@ import { useState } from "react";
 import Footer from "../../components/Footer/Footer";
 import SignUpForm from "../../components/SignUpForm/SignUpForm";
 
-import { Outlet } from "react-router-dom";
 
 function SignUp() {
   const [loading, setLoading] = useState(false);
@@ -65,7 +64,7 @@ function SignUp() {
       <div>
         <Header />
         <div className={styles.content}>
-          <Outlet />
+          <div className={styles.signupFormContainer}>
           <SignUpForm
             loading={loading}
             handleSubmitSignUpFrm={handleSubmitSignUpFrm}
@@ -73,6 +72,7 @@ function SignUp() {
             openModal={openModal}
             resend={resend}
           />
+          </div>
         </div>
         <div
           className={styles.footer_main}

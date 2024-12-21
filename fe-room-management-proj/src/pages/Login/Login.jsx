@@ -11,7 +11,6 @@ import { login } from "../../actions";
 import Footer from "../../components/Footer/Footer";
 import LoginForm from "../../components/LoginForm/LoginForm";
 
-import { Outlet } from "react-router-dom";
 
 function Login() {
   const [loading, setLoading] = useState(false);
@@ -22,10 +21,11 @@ function Login() {
 
   const handleSubmitLoginFrm = (values) => {
     setLoading(true);
-    axios.post("http://localhost:8000/auth/login", values, {
-      withCredentials: true,
-    })
-      .then(res => {
+    axios
+      .post("http://localhost:8000/auth/login", values, {
+        withCredentials: true,
+      })
+      .then((res) => {
         console.log(res.data);
         dispatch(login(res.data));
         messageApi.success("Đăng nhập thành công", 1).then(() => {
@@ -41,13 +41,16 @@ function Login() {
           }
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err.response?.data);
-        console.log(err)
-        messageApi.error(`Đăng nhập thất bại. ${err.response?.data.message || ""}`, 10);
+        console.log(err);
+        messageApi.error(
+          `Đăng nhập thất bại. ${err.response?.data.message || ""}`,
+          10
+        );
       })
-      .finally(() => setLoading(false))
-  }
+      .finally(() => setLoading(false));
+  };
   return (
     <ConfigProvider
       theme={{
@@ -63,13 +66,14 @@ function Login() {
     >
       {contextHolder}
       <div>
-        <Header />  
+        <Header />
         <div className={styles.content}>
-          <Outlet />
-          <LoginForm 
-            loading={loading}
-            handleSubmitLoginFrm={handleSubmitLoginFrm}
-          />
+          <div className={styles.loginFormContainer}>
+            <LoginForm
+              loading={loading}
+              handleSubmitLoginFrm={handleSubmitLoginFrm}
+            />
+          </div>
         </div>
         <div
           className={styles.footer_main}
