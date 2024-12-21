@@ -6,3 +6,10 @@
     min-height: 150vh;
 }
 
+.loginFormContainer {
+    position: sticky; /* Hoặc dùng fixed nếu muốn cố định hoàn toàn */
+    top: 20px; /* Khoảng cách từ cạnh trên */
+    z-index: 10; /* Đảm bảo luôn nằm phía trên */
+    padding: 20px;
+    border-radius: 8px; /* Tùy chỉnh bo góc */
+}
