@@ -5,11 +5,10 @@ import {
   Form,
   Input,
   InputNumber,
-  Row,
-  Select,
-  Typography,
   message,
-  Modal
+  Modal,
+  Row,
+  Select
 } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -37,7 +36,7 @@ const CreateInvoiceForm = () => {
         );
         setContracts(response.data.data);
       } catch (error) {
-        console.error("Error fetching rooms:", error);
+        message.error("Error fetching rooms:", error);
       }
     };
 

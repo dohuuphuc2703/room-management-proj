@@ -1,5 +1,5 @@
 import { StarFilled, StarOutlined } from "@ant-design/icons";
-import { Avatar, Button, List, Space, Typography } from "antd";
+import { Avatar, Button, List, message, Space, Typography } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styles from "./ListReviewRoom.module.css";
@@ -60,7 +60,7 @@ const ListReviewRoom = ({ roomId, averageRating, refreshTrigger }) => {
       setReviews(reviewsData);
       setRatingCounts(counts);
     } catch (error) {
-      console.error("Error fetching reviews:", error);
+      message.error("Error fetching reviews:", error);
     } finally {
       setLoading(false);
     }
@@ -75,7 +75,6 @@ const ListReviewRoom = ({ roomId, averageRating, refreshTrigger }) => {
     fetchReviews();
   }, [roomId, refreshTrigger]);
 
-  console.log(reviews)
   return (
     <div className={styles.reviewContainer}>
       <h2>Đánh giá</h2>

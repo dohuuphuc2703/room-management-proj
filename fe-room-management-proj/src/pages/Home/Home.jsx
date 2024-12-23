@@ -1,4 +1,4 @@
-import { ConfigProvider } from "antd";
+import { ConfigProvider, message } from "antd";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +26,7 @@ function Home() {
           }));
         }
       } catch (error) {
-        console.error("Error fetching user:", error);
+        message.error("Error fetching user:", error);
       }
     };
 

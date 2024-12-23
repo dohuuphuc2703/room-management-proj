@@ -1,4 +1,4 @@
-import { ConfigProvider } from "antd";
+import { ConfigProvider, message } from "antd";
 import styles from "./AdminView.module.css";
 
 import axios from "axios";
@@ -12,7 +12,6 @@ function AdminView() {
   const admin = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
 
-  console.log(admin)
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -28,7 +27,7 @@ function AdminView() {
           );
         }
       } catch (error) {
-        console.error("Error fetching user:", error);
+        message.error("Error fetching user:", error);
       }
     };
     if(!admin?._id){

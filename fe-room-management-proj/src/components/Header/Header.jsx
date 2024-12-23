@@ -40,7 +40,6 @@ function Header() {
       dispatch(logout());
       navigate("/login"); // Redirect to login page after logout
     } catch (error) {
-      console.error("Error logging out:", error);
       message.error("Có lỗi xảy ra khi đăng xuất");
     }
   };
@@ -84,26 +83,27 @@ function Header() {
       </Menu.Item>
     </Menu>
   );
-  
 
   return (
     <div>
       <Layout>
         <div className={styles.header}>
-          <div className={styles.header_top}>
             <div className={styles.logo} onClick={() => navigate("/")}>
               <img src="/logo.png" alt="logo" />
+            </div>
+            <div className={styles.navMenu}>  {/* Đặt navMenu ở đây */}
+              {navMenu}
             </div>
             <div className={styles.actions}>
               {user && user.fullName ? (
                 <div className={styles.userInfo}>
-                  <Badge /*count={5} offset={[10, 0]}*/ style={{marginRight: "20px"}}>
+                  <Badge /*count={5} offset={[10, 0]}*/ style={{ marginRight: "20px" }}>
                     <BellOutlined
                       className={styles.icon}
                       style={{ fontSize: "18px", marginRight: "20px", cursor: "pointer" }}
                     />
                   </Badge>
-                  <Badge /*count={3} offset={[10, 0]}*/ style={{marginRight: "20px"}}>
+                  <Badge /*count={3} offset={[10, 0]}*/ style={{ marginRight: "20px" }}>
                     <MessageOutlined
                       className={styles.icon}
                       style={{ fontSize: "18px", marginRight: "20px", cursor: "pointer" }}
@@ -136,9 +136,7 @@ function Header() {
                     onClick={handleRegisterClick}
                     className={styles.register_button}
                     style={{
-                      backgroundColor: hoverRegister
-                        ? "rgb(230, 228, 228)"
-                        : "white",
+                      backgroundColor: hoverRegister ? "rgb(230, 228, 228)" : "white",
                       border: "1px solid #00b14f",
                       color: hoverRegister ? "#0fc862" : "#00b14f",
                     }}
@@ -150,12 +148,11 @@ function Header() {
                 </>
               )}
             </div>
-          </div>
-          {navMenu}
         </div>
       </Layout>
     </div>
   );
+  
 }
 
 export default Header;

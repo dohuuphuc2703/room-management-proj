@@ -18,17 +18,14 @@ function SignUp() {
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmitSignUpFrm = (values) => {
-    console.log(values);
     setLoading(true);
     axios
       .post(`http://localhost:8000/auth/sign-up`, values)
       .then((res) => {
-        console.log(res.data);
         setSendMail(values.email);
         setOpenModal(true);
       })
       .catch((err) => {
-        console.error(err);
         messageApi.error(err.response.data.message);
       })
       .finally(() => setLoading(false));
@@ -42,7 +39,6 @@ function SignUp() {
         messageApi.info("Đã gửi lại mail đến email của bạn!");
       })
       .catch((err) => {
-        console.error(err);
         messageApi.error(err.response?.data.message);
       })
       .finally(() => setResend(false));

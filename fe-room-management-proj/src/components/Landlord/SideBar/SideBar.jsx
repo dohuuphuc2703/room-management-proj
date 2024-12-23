@@ -36,7 +36,6 @@ function SideBar({user}) {
       dispatch(logout());
       navigate("/login"); // Redirect to login page after logout
     } catch (error) {
-      console.error("Error logging out:", error);
       message.error("Có lỗi xảy ra khi đăng xuất");
     }
   };

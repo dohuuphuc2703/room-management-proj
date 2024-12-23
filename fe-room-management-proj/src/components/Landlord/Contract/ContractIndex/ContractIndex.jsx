@@ -1,4 +1,4 @@
-import { EditOutlined, FilePdfOutlined } from '@ant-design/icons'; // Import icons từ Ant Design
+import { FilePdfOutlined } from '@ant-design/icons'; // Import icons từ Ant Design
 import { Button, Form, Input, message, Modal, Select, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -44,7 +44,7 @@ const ContractIndex = () => {
         setContracts(res.data.data || []);
         setTotal(res.data.pagination.total || 0);
       } catch (error) {
-        console.error(error);
+        message.error(error);
       } finally {
         setLoading(false);
       }
@@ -71,7 +71,6 @@ const ContractIndex = () => {
       );
 
     } catch (error) {
-      console.error(error);
       message.error("Không thể gửi yêu cầu hủy hợp đồng.");
     } finally {
       setIsSubmitting(false);
@@ -124,7 +123,6 @@ const ContractIndex = () => {
       );
       setCancelRequestModal(false);
     } catch (error) {
-      console.error(error);
       message.error(
         action === "approve"
           ? "Không thể đồng ý hủy hợp đồng"

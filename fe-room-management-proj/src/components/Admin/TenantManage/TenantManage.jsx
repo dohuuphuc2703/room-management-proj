@@ -1,8 +1,7 @@
-import { DeleteOutlined, EditOutlined, CheckCircleFilled, CloseCircleFilled,UnlockOutlined, LockOutlined } from "@ant-design/icons"; // Import icons từ Ant Design
-import { Button, message, Popconfirm, Select, Table, Avatar } from "antd";
+import { CheckCircleFilled, CloseCircleFilled, DeleteOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons"; // Import icons từ Ant Design
+import { Avatar, Button, message, Popconfirm, Select, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 
 const { Option } = Select;
@@ -34,7 +33,6 @@ const TenantManage = () => {
             setTenants(res.data.data || []);
             setTotal(res.data.pagination.total || 0); // Tổng số tenant từ backend
         } catch (error) {
-            console.error(error);
             message.error("Không thể tải dữ liệu người thuê.");
         } finally {
             setLoading(false);
@@ -59,7 +57,6 @@ const TenantManage = () => {
             message.error("Thao tác không thành công!");
           }
         } catch (error) {
-          console.error(error);
           message.error("Đã xảy ra lỗi trong quá trình khóa/mở khóa tài khoản.");
         }
       };

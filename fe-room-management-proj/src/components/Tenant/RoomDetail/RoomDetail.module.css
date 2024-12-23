@@ -298,4 +298,10 @@
   margin: 10px;
 }
 
+.available {
+  color: green; /* Màu xanh cho "Còn trống" */
+}
 
+.rented {
+  color: red; /* Màu đỏ cho "Đã cho thuê" */
+}

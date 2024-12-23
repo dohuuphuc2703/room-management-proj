@@ -37,7 +37,7 @@ const LandlordListRoom = () => {
         setRooms(res.data.rooms);
         setTotal(res.data.info.total || 0);
       } catch (error) {
-        console.error(error);
+        message.error(error);
       } finally {
         setLoading(false);
       }

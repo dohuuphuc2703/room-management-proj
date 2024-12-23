@@ -1,5 +1,5 @@
-import { DeleteOutlined, LockOutlined, UnlockOutlined, CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons"; // Import icons từ Ant Design
-import { Button, message, Popconfirm, Table, Avatar } from "antd";
+import { CheckCircleFilled, CloseCircleFilled, DeleteOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons"; // Import icons từ Ant Design
+import { Avatar, Button, message, Popconfirm, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +27,7 @@ const LandlordManage = () => {
           message.error("Không thể tải danh sách landlord.");
         }
       } catch (error) {
-        console.error(error);
+        message.error(error);
         message.error("Đã xảy ra lỗi khi tải dữ liệu.");
       } finally {
         setLoading(false);
@@ -50,7 +50,6 @@ const LandlordManage = () => {
         message.error("Thao tác không thành công!");
       }
     } catch (error) {
-      console.error(error);
       message.error("Đã xảy ra lỗi trong quá trình khóa/mở khóa tài khoản.");
     }
   };
@@ -61,7 +60,6 @@ const LandlordManage = () => {
       message.success("Xóa thành công!");
       setLandlords((prev) => prev.filter((item) => item._id !== record._id)); // Cập nhật danh sách
     } catch (error) {
-      console.error(error);
       message.error("Xóa thất bại!");
     }
   };
@@ -186,8 +184,6 @@ const LandlordManage = () => {
           pageSize: 1,
           total: total,
           onChange: (page) => {
-            // Xử lý phân trang nếu cần
-            console.log("Trang hiện tại:", page);
           },
         }}
       />

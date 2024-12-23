@@ -1,7 +1,6 @@
 import {
   AreaChartOutlined,
   CalendarOutlined,
-  DollarOutlined,
   HomeOutlined,
   MailOutlined,
   PhoneOutlined,
@@ -12,13 +11,13 @@ import {
   Col,
   Form,
   Input,
+  InputNumber,
   Layout,
   message,
   Row,
   Select,
   Table,
   Tabs,
-  InputNumber,
 } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -52,7 +51,6 @@ const CreateContract = () => {
           setRooms(response.data.rooms);
         }
       } catch (error) {
-        console.error("Error fetching rooms:", error);
         message.error("Không thể tải danh sách phòng.");
       }
     };
@@ -65,7 +63,6 @@ const CreateContract = () => {
     const room = rooms.find((r) => r._id === roomId);
     if (room) {
       setSelectedRoom(room);
-      console.log(selectedRoom)
       // Cập nhật thông tin phòng vào form
       form.setFieldsValue({
         roomTitle: room.title,
@@ -83,10 +80,8 @@ const CreateContract = () => {
         water: room.water.price
       });
     }
-    console.log(selectedRoom)
   };
   // Hàm để load thông tin người dùng dựa trên email
-  console.log(selectedRoom)
   const handleEmailChange = async (value) => {
     if (!value) return;
 
@@ -113,7 +108,6 @@ const CreateContract = () => {
         message.warning("Không tìm thấy thông tin người dùng.");
       }
     } catch (error) {
-      console.error("Error fetching user info:", error); // Log chi tiết lỗi
       message.error("Đã có lỗi xảy ra khi tải thông tin người dùng.");
     } finally {
       setLoading(false);
@@ -146,7 +140,6 @@ const CreateContract = () => {
         nav("/landlord/contract");
       }
     } catch (error) {
-      console.error("Error details:", error);
       if (error.response) {
         const { status, data } = error.response;
 
@@ -166,13 +159,11 @@ const CreateContract = () => {
         }
       } else if (error.request) {
         // Không nhận được phản hồi từ server
-        console.error("Request data:", error.request);
         message.error(
           "Không nhận được phản hồi từ server. Vui lòng kiểm tra kết nối mạng."
         );
       } else {
         // Lỗi không xác định
-        console.error("Error message:", error.message);
         message.error("Đã xảy ra lỗi. Vui lòng thử lại.");
       }
     } finally {

@@ -25,7 +25,6 @@ const AccountManagement = () => {
           { withCredentials: true }
         );
         const { info } = response.data;
-        console.log("info", info)
         setAvatarUrl(info.user.avatar); // Set avatar URL from fetched user info
         form.setFieldsValue({
           email: info.user.email,
@@ -44,7 +43,6 @@ const AccountManagement = () => {
   }, [form]);
 
   useEffect(() => {
-    console.log("Avatar URL:", avatarUrl); // Kiểm tra URL trong console
   }, [avatarUrl]);
 
   const onFinish = async (values) => {
@@ -73,8 +71,6 @@ const AccountManagement = () => {
   };
 
   const handleAvatarChange = async ({ file }) => {
-    console.log("File selected:", file);
-    console.log("File:", file.status);
     // Kiểm tra nếu file đã được tải lên thành công
     if (file.status === 'uploading') {
       try {
@@ -86,10 +82,8 @@ const AccountManagement = () => {
           { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } }
         );
 
-        console.log("Upload response:", response.data);
         setAvatarUrl(response.data.avatar);        
       } catch (error) {
-        console.error("Error uploading avatar:", error);
         message.error("Error uploading avatar");
       }
     }

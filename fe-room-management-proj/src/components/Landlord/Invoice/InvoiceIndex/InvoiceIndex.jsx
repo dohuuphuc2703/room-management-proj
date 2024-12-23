@@ -34,7 +34,7 @@ const InvoiceIndex = () => {
         setInvoices(res.data.data || []);
         setTotal(res.data.pagination.total || 0);
       } catch (error) {
-        console.error(error);
+        message.error(error);
       } finally {
         setLoading(false);
       }
@@ -53,7 +53,6 @@ const InvoiceIndex = () => {
       message.success("Hóa đơn đã được xóa.");
       setInvoices(invoices?.filter((invoice) => invoice._id !== invoiceId));
     } catch (error) {
-      console.error(error);
       message.error("Xóa hóa đơn thất bại.");
     }
   };

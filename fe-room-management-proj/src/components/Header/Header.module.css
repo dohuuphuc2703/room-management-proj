@@ -1,15 +1,11 @@
 .header {
     width: 100%;
-    background-color: white;
     border-bottom: 1px solid #e0e0e0;
-}
-
-.header_top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
     background-color: #f9f9f9;
+    height: 60px;
 }
 
 .logo {
@@ -31,6 +27,7 @@
 .actions {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
 }
 
 .heart {
@@ -56,11 +53,12 @@
     border: none;
     display: flex;
     justify-content: center;
-    font-size: 18px;
-    font-weight: bold;
-    background-color: #e0efff;
+    font-size: 17px;
+    background-color: #f9f9f9;
+    width: 60%;
+    padding-top: 7px;
 }
 
 .navMenu :hover {
-    color: #007bff; /* Màu chữ trắng */
+    color: #007bff;
 }

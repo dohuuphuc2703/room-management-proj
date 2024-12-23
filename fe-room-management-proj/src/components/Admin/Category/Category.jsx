@@ -1,5 +1,4 @@
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'; // Import icons từ Ant Design
-import { Button, Form, Input, message, Modal, Popconfirm, Select, Table } from "antd";
+import { Button, Form, Input, message, Modal, Select, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -31,7 +30,7 @@ const Category = () => {
       setCategory(res.data.data || []);
       setTotal(res.data.pagination.total || 0);
     } catch (error) {
-      console.error(error);
+      message.error(error);
     } finally {
       setLoading(false);
     }
@@ -56,7 +55,7 @@ const Category = () => {
       setIsModalVisible(false);
       form.resetFields();
     } catch (error) {
-      console.error(error);
+      message.error(error);
       message.error("Có lỗi xảy ra, vui lòng thử lại.");
     } finally {
       setIsSubmitting(false);

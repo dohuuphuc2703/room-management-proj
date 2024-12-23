@@ -44,7 +44,6 @@ const AccountLandlord = () => {
           { withCredentials: true }
         );
         const { info } = response.data;
-        console.log("info", info);
         setAvatarUrl(info.user.avatar); // Set avatar URL from fetched user info
         form.setFieldsValue({
           email: info.user.email,
@@ -68,7 +67,6 @@ const AccountLandlord = () => {
   }, [form]);
 
   useEffect(() => {
-    console.log("Avatar URL:", avatarUrl); // Kiểm tra URL trong console
   }, [avatarUrl]);
 
   useEffect(() => {
@@ -80,10 +78,10 @@ const AccountLandlord = () => {
         if (result.code === "00") {
           setBanks(result.data);
         } else {
-          console.error("Failed to fetch banks:", result.desc);
+          message.error("Failed to fetch banks:", result.desc);
         }
       } catch (error) {
-        console.error("Error fetching banks:", error);
+        message.error("Error fetching banks:", error);
       } finally {
         setLoading(false);
       }
@@ -109,8 +107,6 @@ const AccountLandlord = () => {
         }
         
       );
-      console.log(updatedValues)
-
       message.success("Thông tin đã được cập nhật thành công");
       dispatch(
         setTenantInfo({
@@ -139,10 +135,8 @@ const AccountLandlord = () => {
           }
         );
 
-        console.log("Upload response:", response.data);
         setAvatarUrl(response.data.avatar);
       } catch (error) {
-        console.error("Error uploading avatar:", error);
         message.error("Error uploading avatar");
       }
     }
