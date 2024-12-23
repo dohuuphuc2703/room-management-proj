@@ -13,7 +13,6 @@ function Home() {
   const user = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
 
-  console.log(user)
   useEffect(() => {
     const fetchUser = async () => {
       try {

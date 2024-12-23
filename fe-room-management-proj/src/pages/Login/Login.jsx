@@ -26,7 +26,6 @@ function Login() {
         withCredentials: true,
       })
       .then((res) => {
-        console.log(res.data);
         dispatch(login(res.data));
         messageApi.success("Đăng nhập thành công", 1).then(() => {
           switch (res.data.role) {
@@ -42,8 +41,6 @@ function Login() {
         });
       })
       .catch((err) => {
-        console.error(err.response?.data);
-        console.log(err);
         messageApi.error(
           `Đăng nhập thất bại. ${err.response?.data.message || ""}`,
           10

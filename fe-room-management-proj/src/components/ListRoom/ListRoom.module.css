@@ -11,8 +11,7 @@
 
 .sidebar {
   flex: 2;
-  
-  padding: 16px;
+  padding-top: 5px;
   border-radius: 8px;
 }
 
@@ -85,7 +84,6 @@
 
 .roomItem {
   border: 1px solid #f0f0f0;
-  padding: 16px;
   margin-bottom: 16px;
   border-radius: 8px;
   overflow: hidden;

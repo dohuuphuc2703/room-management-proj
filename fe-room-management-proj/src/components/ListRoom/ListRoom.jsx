@@ -93,7 +93,7 @@ const ListRoom = ({
   const [featuredRooms, setFeaturedRooms] = useState([]); // Top-rated rooms
   const [latestRooms, setLatestRooms] = useState([]); // Latest rooms
 
-  const getRoomsSuggestion = async (page = 1, pageSize = 3) => {
+  const getRoomsSuggestion = async (page = 1, pageSize = 5) => {
     try {
       const res = await axios.get(
         `http://localhost:8000/api/room/suggestion?page=${page}&size=${pageSize}`,
@@ -157,7 +157,6 @@ const ListRoom = ({
           }}
           dataSource={rooms}
           renderItem={(item) => {
-            const landlord = item.landlord;
             return (
               <List.Item
                 key={item.title}
@@ -185,7 +184,6 @@ const ListRoom = ({
                           {renderStars(item.rating)}{item.title}
                         </span>
                       }
-                      // description={<Text type="secondary">{landlord.introduction}</Text>}
                     />
                     <Text strong className={styles.price}>
                       Giá: {item.price.toLocaleString()}VNĐ/Tháng

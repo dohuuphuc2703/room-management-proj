@@ -1,6 +1,7 @@
 const Review = require("../models/Review.model");
 const Room = require("../models/Room.model");
 const Tenant = require("../models/Tenant.model");
+const Contract = require("../models/Contract.model");
 const { calculateRatingForRoom } = require("../services/ratingServices");
 
 class ReviewController {
@@ -79,6 +80,18 @@ class ReviewController {
       const tenant = await Tenant.findOne({ user: user.id });
       if (!tenant) {
         return res.status(404).json({ message: "Tenant không tồn tại!" });
+      }
+
+      const contract = await Contract.findOne({
+        tenant: tenant.id,
+        room: roomId,
+        status: { $in: ["confirmed", "canceled"] }, // Chấp nhận cả confirmed và canceled      
+      });
+  
+      if (!contract) {
+        return res.status(403).json({
+          message: "Bạn cần thuê phòng này trước khi đánh giá!",
+        });
       }
 
       // Kiểm tra nếu tenant đã review cho room này
