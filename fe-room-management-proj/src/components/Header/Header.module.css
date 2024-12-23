@@ -52,39 +52,15 @@
     border-radius: 20px;
 }
 
-.nav {
-    background-color: #1e73e8;
-}
-
-.nav ul {
-    list-style: none;
+.navMenu {
+    border: none;
     display: flex;
     justify-content: center;
-    margin: 0;
-    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #e0efff;
 }
 
-.nav li {
-    margin: 0 15px;
-}
-
-.nav a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-
-.nav ul li a:hover {
-    background-color: #f0f0f0;
-    /* Màu nền khi di chuột qua */
-    text-decoration: none;
-}
-
-.nav ul li a:active {
-    background-color: #cccccc;
-    /* Màu nền xám nhẹ khi giữ chuột */
-    color: #333;
-    /* Giữ màu chữ đậm để dễ đọc */
-    text-decoration: none;
+.navMenu :hover {
+    color: #007bff; /* Màu chữ trắng */
 }

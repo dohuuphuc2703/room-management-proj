@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaWater } from 'react-icons/fa';
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate  } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import styles from "./MyRoom.module.css";
 
 const { Content } = Layout;
@@ -13,7 +13,7 @@ const { Text, Title } = Typography;
 const { Option } = Select;
 
 const MyRoom = () => {
-      const user = useSelector(state => state.userReducer)
+    const user = useSelector(state => state.userReducer)
     
     const [loading, setLoading] = useState(false);
     const [roomInfo, setRoomInfo] = useState();

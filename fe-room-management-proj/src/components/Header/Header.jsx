@@ -10,12 +10,13 @@ import {
 import { Avatar, Badge, Button, Dropdown, Layout, Menu, message } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../actions";
 import styles from "./Header.module.css";
 
-function Header({user}) {
+function Header() {
+  const user = useSelector(state => state.userReducer)
   const [hoverLogin, setHoverLogin] = useState(false);
   const [hoverRegister, setHoverRegister] = useState(false);
   const navigate = useNavigate();
@@ -62,6 +63,25 @@ function Header({user}) {
       <Menu.Item key="4" icon={<LogoutOutlined />} onClick={handleLogout}>
         Đăng xuất
       </Menu.Item> 
+    </Menu>
+  );
+
+  const navMenu = (
+    <Menu
+      mode="horizontal"
+      className={styles.navMenu}
+      defaultSelectedKeys={["/"]}
+      onClick={({ key }) => navigate(key)}
+    >
+      <Menu.Item key="/">
+        Trang chủ
+      </Menu.Item>
+      <Menu.Item key="/my-room">
+        Phòng trọ của tôi
+      </Menu.Item>
+      <Menu.Item key="/saved-rooms">
+        Phòng đã lưu
+      </Menu.Item>
     </Menu>
   );
   
@@ -131,34 +151,7 @@ function Header({user}) {
               )}
             </div>
           </div>
-          <nav className={styles.nav}>
-            <ul>
-              <li>
-                <a href="/">Trang chủ</a>
-              </li>
-              <li>
-                <a href="/cho-thue-phong-tro">Cho thuê phòng trọ</a>
-              </li>
-              <li>
-                <a href="/nha-cho-thue">Nhà cho thuê</a>
-              </li>
-              <li>
-                <a href="/cho-thue-can-ho">Cho thuê căn hộ</a>
-              </li>
-              <li>
-                <a href="/cho-thue-mat-bang">Cho thuê Mặt bằng</a>
-              </li>
-              <li>
-                <a href="/tim-nguoi-o-ghep">Tìm người ở ghép</a>
-              </li>
-              <li>
-                <a href="/tin-tuc">Tin tức</a>
-              </li>
-              <li>
-                <a href="/bang-gia-dich-vu">Bảng giá dịch vụ</a>
-              </li>
-            </ul>
-          </nav>
+          {navMenu}
         </div>
       </Layout>
     </div>
