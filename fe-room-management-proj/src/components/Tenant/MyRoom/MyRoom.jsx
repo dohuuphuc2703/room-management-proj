@@ -30,7 +30,6 @@ const MyRoom = () => {
                     "http://localhost:8000/api/contract/byTenant",
                     { withCredentials: true }
                 );
-                console.log(response.data.contract)
             
                 if (response.data && response.data.contract) {
                     setRoomInfo(response.data.contract.room);
@@ -44,7 +43,7 @@ const MyRoom = () => {
                 }
 
             } catch (error) {
-                console.log(error);
+                message.log(error);
             }
         };
         
@@ -54,7 +53,6 @@ const MyRoom = () => {
         return <Navigate to="/login" />;
       };
 
-      console.log(bank)
     return (
         <Layout className={styles.layout}>
             <Content className={styles.content}>
@@ -436,7 +434,6 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
-    console.log(user)
     const handleCancelRequest = async () => {
         setIsSubmitting(true);
         try {
@@ -466,7 +463,6 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
                 { action }, // action là "approve" hoặc "reject"
                 { withCredentials: true }
             );
-            console.log(response.data)
             if (response.data && response.data.message) {
                 
                 message.success(

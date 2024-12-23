@@ -25,7 +25,7 @@ function ListSavedRooms() {
       setCurrentPage(res.data.currentPage);
       setLoading(false);
     } catch (error) {
-      message.error("Failed to load saved rooms.");
+      message.error("Tải danh sách phòng đã lưu không thành công!");
       setLoading(false);
     }
   };
@@ -36,10 +36,9 @@ function ListSavedRooms() {
         withCredentials: true,
       });
       setSavedRooms(savedRooms.filter(room => room._id !== roomId));
-      message.success("Room removed from saved list.");
+      message.success("Đã bỏ lưu phòng!");
     } catch (error) {
-      message.error("Failed to remove room from saved list");
-      console.error(error);
+      message.error("Xóa phòng thất bại!");
     }
   };
   

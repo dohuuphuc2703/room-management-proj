@@ -33,7 +33,7 @@ const CreateRoom = () => {
             const res = await axios.get(`https://open.oapi.vn/location/districts/${value}`);
             setDistricts(res.data.data.map(d => ({ label: d.name, value: d.id })));
         } catch (error) {
-            console.error(error);
+            message.error(error);
         }
     };
 
@@ -47,7 +47,7 @@ const CreateRoom = () => {
             const res = await axios.get(`https://open.oapi.vn/location/wards/${value}`);
             setWards(res.data.data.map(w => ({ label: w.name, value: w.id })));
         } catch (error) {
-            console.error(error);
+            message.error(error);
 
         }
     };
@@ -74,7 +74,6 @@ const CreateRoom = () => {
         };
 
         const images = imageUrls;
-        console.log(images);
         // Gửi dữ liệu phòng cùng với address
         try {
             const response = await axios.post("http://localhost:8000/api/room/addRoom", {
@@ -96,13 +95,9 @@ const CreateRoom = () => {
 
     const handleImageChange = async (options) => {
         const { file, onSuccess, onError } = options;
-        console.log("File:", file);  // Log chi tiết file
-
         try {
             const formData = new FormData();
             formData.append("image", file);  // Thêm ảnh vào formData
-
-            console.log("Gửi ảnh lên server...");
 
             // Gửi ảnh lên server
             const response = await axios.post(
@@ -113,12 +108,9 @@ const CreateRoom = () => {
 
             // Kiểm tra phản hồi từ server
             if (response.data && response.data.roomImageUrl) {
-                console.log("Ảnh đã được tải lên thành công: ", response.data.roomImageUrl);
-
                 setImageUrls((prevUrls) => {
                     // Nếu prevUrls chưa được khởi tạo (null), khởi tạo nó là mảng rỗng
                     const updatedUrls = prevUrls ? [...prevUrls, response.data.roomImageUrl] : [response.data.roomImageUrl];
-                    console.log("Cập nhật imageUrls:", updatedUrls);
                     return updatedUrls;
                 });
 
@@ -129,7 +121,6 @@ const CreateRoom = () => {
                 throw new Error("Không nhận được URL ảnh từ server");
             }
         } catch (error) {
-            console.error("Lỗi khi tải ảnh lên: ", error.response ? error.response.data : error.message);
             if (onError) {
                 onError(error);  // Gọi onError để xử lý lỗi
             }

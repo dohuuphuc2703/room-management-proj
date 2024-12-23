@@ -1,12 +1,12 @@
 import { ConfigProvider, message as notify, Skeleton, Spin } from "antd";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 import clsx from "clsx";
 
 import { LoadingOutlined } from '@ant-design/icons';
-import {useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import InputTexting from "../../InputTexting/InputTexting";
 import styles from "./LandlordChat.module.css";
 
@@ -74,36 +74,28 @@ function LandlordChat({ socket }) {
   }
 
   const handleReceiveMessage = (data) => {
-    // console.log(data, chatWith?.member._id);
     if (data.load)
       setSentMessages(data.messages);
     else {
-      // console.log(data);
       setSentMessages(prev => [...prev, ...data]);
     }
   }
 
   const handleLoadMessage = ({ owner, friend }) => {
-    // if (!chatWith || friend._id === chatWith?._id) {
-    // } else {
-    // }
     socket.emit("leave");
     setSentMessages(null);
     socket.emit("load", { owner, friend: friend._id });
   }
 
   useEffect(() => {
-    // console.log("Chat.jsx call api");
     axios.get("http://localhost:8000/api/landlord/list-friends", {
       withCredentials: true,
     })
       .then(res => {
-        // console.log(res.data.members);
         socket.on("receiver", handleReceiveMessage);
         setListFriends(res.data.users);
       })
       .catch(err => {
-        console.log(err);
         messageApi.error(`Đã có lỗi xảy ra: ${err?.response?.data?.message}`);
         const code = err?.response?.status;
         if (code === 401 || code === 403)

@@ -79,10 +79,8 @@ function Chat({ socket }) {
   };
 
   const handleReceiveMessage = (data) => {
-    // console.log(data, chatWith?.member._id);
     if (data.load) setSentMessages(data.messages);
     else {
-      // console.log(data);
       setSentMessages((prev) => [...prev, ...data]);
     }
   };
@@ -129,7 +127,6 @@ function Chat({ socket }) {
         });
       })
       .catch((err) => {
-        console.error(err);
         messageApi.error(
           `Đã có lỗi xảy ra: ${
             err?.response?.data?.message || "Không xác định"

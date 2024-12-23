@@ -1,4 +1,4 @@
-import { Card, Col, Row, Select } from "antd";
+import { Card, Col, message, Row, Select } from "antd";
 import axios from "axios";
 import {
   ArcElement,
@@ -54,13 +54,12 @@ const AdminStatistical = () => {
         });
         setMonthlyRooms(roomCountByMonth);
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        message.error("Failed to fetch data:", error);
       }
     };
 
     fetchData();
   }, [selectedYear]);
-  console.log(admin)
   if (admin?.role !== 'admin') {
     return <Navigate to="/login" />;
   };

@@ -105,7 +105,6 @@ const ListRoom = ({
       setPage(data.info.page);
       setPageSize(data.info.size);
     } catch (err) {
-      console.error(err);
       messageApi.error("Có lỗi xảy ra: " + err.toString());
     }
   };
@@ -117,7 +116,6 @@ const ListRoom = ({
       const data = await res.data;
       setFeaturedRooms(data.rooms);
     } catch (err) {
-      console.error(err);
       messageApi.error("Có lỗi xảy ra: " + err.toString());
     }
   };
@@ -129,7 +127,6 @@ const ListRoom = ({
       const data = await res.data;
       setLatestRooms(data.rooms);
     } catch (err) {
-      console.error(err);
       messageApi.error("Có lỗi xảy ra: " + err.toString());
     }
   };

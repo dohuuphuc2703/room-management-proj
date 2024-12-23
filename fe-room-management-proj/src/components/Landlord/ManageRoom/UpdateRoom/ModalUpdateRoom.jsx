@@ -48,7 +48,6 @@ function ModalUpdateRoom({
   const onFinish = async (values) => {
     setLoading(true);
     const images = imageUrls;
-    console.log(images);
     // Gửi dữ liệu phòng
     try {
       const response = await axios.put(
@@ -70,20 +69,16 @@ function ModalUpdateRoom({
         )
       );
     } catch (error) {
-      console.error(error);
       message.error("Cập nhật phòng thất bại.");
     }
   };
 
   const handleImageChange = async (options) => {
     const { file, onSuccess, onError } = options;
-    console.log("File:", file); // Log chi tiết file
 
     try {
       const formData = new FormData();
       formData.append("image", file); // Thêm ảnh vào formData
-
-      console.log("Gửi ảnh lên server...");
 
       // Gửi ảnh lên server
       const response = await axios.post(
@@ -97,16 +92,10 @@ function ModalUpdateRoom({
 
       // Kiểm tra phản hồi từ server
       if (response.data && response.data.roomImageUrl) {
-        console.log(
-          "Ảnh đã được tải lên thành công: ",
-          response.data.roomImageUrl
-        );
-
         setImageUrls((prevUrls) => {
           const updatedUrls = prevUrls
             ? [...prevUrls, response.data.roomImageUrl]
             : [response.data.roomImageUrl];
-          console.log("Cập nhật imageUrls:", updatedUrls);
           return updatedUrls;
         });
 
@@ -117,7 +106,7 @@ function ModalUpdateRoom({
         throw new Error("Không nhận được URL ảnh từ server");
       }
     } catch (error) {
-      console.error(
+      message.error(
         "Lỗi khi tải ảnh lên: ",
         error.response ? error.response.data : error.message
       );

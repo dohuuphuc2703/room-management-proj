@@ -1,10 +1,10 @@
-import { Button, Form, Input, message, Select, Modal } from "antd";
-import ListRoom from "../../ListRoom/ListRoom";
-import styles from "./SearchRoom.module.css";
-import { useEffect, useState } from "react";
+import { Button, Form, message, Modal, Select } from "antd";
 import axios from "axios";
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import { useEffect, useState } from "react";
+import ListRoom from "../../ListRoom/ListRoom";
+import styles from "./SearchRoom.module.css";
 
 function SearchRoom() {
   const [province, setProvince] = useState("Tất cả tỉnh");
@@ -41,7 +41,6 @@ function SearchRoom() {
       const res = await axios.get(`https://open.oapi.vn/location/districts/${value}`);
       setDistricts(res.data.data.map(d => ({ label: d.name, value: d.id })));
     } catch (error) {
-      console.error(error);
       messageApi.error("Có lỗi khi tải danh sách quận.");
     }
   };
@@ -56,7 +55,6 @@ function SearchRoom() {
       const res = await axios.get(`https://open.oapi.vn/location/wards/${value}`);
       setWards(res.data.data.map(w => ({ label: w.name, value: w.id })));
     } catch (error) {
-      console.error(error);
       messageApi.error("Có lỗi khi tải danh sách phường.");
     }
   };
@@ -83,7 +81,6 @@ function SearchRoom() {
         minPrice: minPrice,
         maxPrice: maxPrice,
       };
-      console.log("Payload gửi đi:", payload);
       try {
         const res = await axios.get(
           `http://localhost:8000/api/room/search?province=${payload.province}&district=${payload.district}&ward=${payload.ward}&category=${payload.category}&minArea=${payload.minArea}&maxArea=${payload.maxArea}&minPrice=${payload.minPrice}&maxPrice=${payload.maxPrice}&page=${page}&size=${pageSize}`
@@ -94,7 +91,6 @@ function SearchRoom() {
         setPageSize(res.data.info.size);
         setIsSearch(true);
       } catch (err) {
-        console.error(err);
         messageApi.error("Có lỗi xảy ra: " + err?.response?.data?.message);
       } finally {
         window.scrollTo({ top: 284, behavior: "smooth" });

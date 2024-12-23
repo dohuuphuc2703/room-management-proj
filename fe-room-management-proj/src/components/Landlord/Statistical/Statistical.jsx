@@ -1,4 +1,4 @@
-import { Card, Col, Row, Select, Table } from "antd";
+import { Card, Col, message, Row, Select, Table } from "antd";
 import axios from "axios";
 import {
   ArcElement,
@@ -36,7 +36,6 @@ const Statistical = () => {
         const { data } = await axios.get("http://localhost:8000/api/landlord/statistics", {
           withCredentials: true,
         });
-        console.log(data);
         setStats({
           roomStatus: data.statusStats.rented || 0,
           roomAvailable: data.statusStats.available || 0,
@@ -44,7 +43,7 @@ const Statistical = () => {
           unpaidInvoices: data.invoicesFalse || [],
         });
       } catch (error) {
-        console.error("Failed to fetch statistics:", error);
+        message.error("Failed to fetch statistics:", error);
       }
     };
 

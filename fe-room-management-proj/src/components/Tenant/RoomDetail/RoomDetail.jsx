@@ -98,7 +98,7 @@ const timeAgo = (date) => {
 };
 
 function RoomDetail() {
-  const user = useSelector(state => state.userReducer);
+  const user = useSelector((state) => state.userReducer);
   const { roomId } = useParams();
   const [roomInfo, setRoomInfo] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
@@ -148,7 +148,7 @@ function RoomDetail() {
         withCredentials: true,
       });
       messageApi.success("Đánh giá đã được gửi!");
-      setRefreshReviews(!refreshReviews)
+      setRefreshReviews(!refreshReviews);
     } catch (err) {
       if (err.status === 403) {
       }
@@ -175,7 +175,6 @@ function RoomDetail() {
         messageApi.error("Không tìm thấy tọa độ cho địa chỉ này.");
       }
     } catch (error) {
-      console.error(error);
       messageApi.error("Có lỗi xảy ra khi lấy tọa độ.");
     }
   };
@@ -201,7 +200,6 @@ function RoomDetail() {
         );
       }
     } catch (err) {
-      console.error(err);
       messageApi.error("Có lỗi xảy ra: " + err.toString());
     }
   };
@@ -216,7 +214,6 @@ function RoomDetail() {
       const filteredRooms = data.rooms.filter((room) => room._id !== roomId);
       setRoomByAddress(filteredRooms);
     } catch (err) {
-      console.error(err);
       messageApi.error("Có lỗi xảy ra: " + err.toString());
     }
   };
@@ -380,7 +377,16 @@ function RoomDetail() {
                   Đánh giá: {renderStars(roomInfo.rating)}
                 </Text>
                 <Text className={styles.roomStatus}>
-                  Trạng thái: {roomInfo.status}
+                  Trạng thái:
+                  <span
+                    className={
+                      roomInfo.status === "rented"
+                        ? styles.rented
+                        : styles.available
+                    }
+                  >
+                    {roomInfo.status === "rented" ? " Đã cho thuê" : " Còn trống"}
+                  </span>
                 </Text>
                 <Text>{timeAgo(roomInfo.createdAt)}</Text>
               </div>
@@ -442,7 +448,11 @@ function RoomDetail() {
         )}
         <div>
           <ReviewRoom roomId={roomId} onReviewSubmit={handleReviewSubmit} />
-          <ListReviewRoom roomId={roomId} averageRating={averageRating} refreshTrigger={refreshReviews} />
+          <ListReviewRoom
+            roomId={roomId}
+            averageRating={averageRating}
+            refreshTrigger={refreshReviews}
+          />
         </div>
       </div>
 
