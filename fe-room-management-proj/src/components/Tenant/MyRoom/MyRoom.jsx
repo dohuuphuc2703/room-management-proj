@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from 'react-router-dom';
 import styles from "./MyRoom.module.css";
 
+
 const { Content } = Layout;
 const { TabPane } = Tabs;
 const { Text, Title } = Typography;
@@ -314,11 +315,37 @@ const Invoice = ({ contractId,bank, loading }) => {
     };
 
     const handlePayment = async () => {
+        if (!selectedInvoice) {
+            message.error("Không có hóa đơn được chọn để thanh toán");
+            return;
+        }
+    
         setIsPaymentProcessing(true);
         try {
-            message.success("Thanh toán thành công!");
+            // Dữ liệu gửi lên server để tạo URL thanh toán
+            const payload = {
+                amount: selectedInvoice.total, // Số tiền cần thanh toán
+                bankCode: "VNBANK", // Mã ngân hàng (nếu có)
+                orderDescription: selectedInvoice.title, // Mô tả hóa đơn
+                orderType: "billpayment", // Loại giao dịch
+                language: "vn", 
+                invoiceId:selectedInvoice._id
+            };
+    
+            const response = await axios.post(
+                "http://localhost:8000/api/invoice/create_payment_url",
+                payload,
+                { withCredentials: true }
+            );
+            if (response.data?.paymentUrl) {
+                // Chuyển hướng người dùng tới URL thanh toán
+                window.location.href = response.data.paymentUrl;
+            } else {
+                message.error("Không thể tạo URL thanh toán");
+            }
         } catch (error) {
-            message.error("Lỗi khi thanh toán");
+            console.error("Lỗi khi tạo URL thanh toán:", error);
+            message.error("Lỗi khi tạo URL thanh toán");
         } finally {
             setIsPaymentProcessing(false);
         }
