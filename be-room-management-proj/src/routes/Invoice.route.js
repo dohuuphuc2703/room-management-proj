@@ -12,5 +12,6 @@ router.get("/allInvoice", InvoiceController.getInvoices);
 router.put("/update/:invoiceId", InvoiceController.updateInvoice);
 router.delete("/delete/:invoiceId", InvoiceController.deleteInvoice);
 router.get("/byContract", InvoiceController.getInvoiceByContract);
-
+router.post('/create_payment_url', InvoiceController.createPaymentUrl);
+router.get('/vnpay_return', InvoiceController.vnpayReturn);
 module.exports = router;
