@@ -60,7 +60,10 @@ const ListReviewRoom = ({ roomId, averageRating, refreshTrigger }) => {
       setReviews(reviewsData);
       setRatingCounts(counts);
     } catch (error) {
-      message.error("Error fetching reviews:", error);
+      if (error.status === 404){
+        message.error(error.response?.data.message);
+      }
+      
     } finally {
       setLoading(false);
     }

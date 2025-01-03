@@ -62,3 +62,8 @@
 .navMenu :hover {
     color: #007bff;
 }
+
+.notificationMenu {
+    max-height: 400px; /* Giới hạn chiều cao menu */
+    overflow-y: auto; /* Cho phép cuộn dọc */
+}

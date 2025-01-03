@@ -12,6 +12,7 @@ const cookieParser = require("cookie-parser");
 
 const route = require("./routes");
 const { runMessageService } = require("./app/services/MessageService");
+const { runNotificationService } = require("./app/services/NotificationService");
 
 const db = require("./config/database");
 
@@ -45,13 +46,15 @@ route(app);
 // require("../src/app/models/User.model");
 // require("../src/app/models/Tenant.model");
 // require("../src/app/models/Landlord.model");
-require("../src/app/models/Contract.model");
+require("../src/app/models/Notification.model");
 // require("../src/app/models/Chat.model");
 // require("../src/app/models/Review.model");
 // require("../src/app/models/Admin.model");
 
 // Connect message service
 runMessageService(server);
+runNotificationService(server);
+
 
 const PORT = process.env.PORT || 8000;
 

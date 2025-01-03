@@ -49,9 +49,9 @@ function App() {
     <div className="App">
       <ConfigProvider theme={themes}>
         <Routes>
-        <Route path="/verify/:status" element={<VerifyEmail />} />
-        <Route path="/verify-contract/success" element={<VerifyContract />} />
-          <Route path="" element={<Home />}>
+          <Route path="/verify/:status" element={<VerifyEmail />} />
+          <Route path="/verify-contract/success" element={<VerifyContract />} />
+          <Route path="" element={<Home socket={socket}/>}>
             <Route path="/" element={<SearchRoom />} />
             <Route path="/detail-room/:roomId" element={<RoomDetail />} />
             <Route path="/account" element={<AccountManagement />} />
@@ -68,9 +68,9 @@ function App() {
             <Route path="createRoom" element={<CreateRoom />} />
             <Route path="rooms" element={<LandlordListRoom />} />
             <Route path="contract" element={<ContractIndex />} />
-            <Route path="createContract" element={<CreateContract />} />
+            <Route path="createContract" element={<CreateContract socket={socket} />} />
             <Route path="invoice" element={<InvoiceIndex />} />
-            <Route path="newInvoice" element={<NewInvoice />} />
+            <Route path="newInvoice" element={<NewInvoice socket={socket} />} />
             <Route path="account" element={<AccountLandlord />} />
             <Route path="chat" element={<LandlordChat socket={socket}/>} />
           </Route>

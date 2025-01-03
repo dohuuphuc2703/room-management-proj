@@ -1,4 +1,4 @@
-import { ConfigProvider, message } from "antd";
+import { ConfigProvider } from "antd";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +9,7 @@ import styles from "./Home.module.css";
 
 import { Outlet } from "react-router-dom";
 
-function Home() {
+function Home({socket}) {
   const user = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
 
@@ -26,7 +26,7 @@ function Home() {
           }));
         }
       } catch (error) {
-        message.error("Error fetching user:", error);
+        console.log("Error fetching user:", error);
       }
     };
 
@@ -50,7 +50,7 @@ function Home() {
       }}
     >
       <div>
-        <Header user = {user}/>
+        <Header user = {user} socket={socket}/>
         <div className={styles.content}>
           <Outlet />
         </div>
