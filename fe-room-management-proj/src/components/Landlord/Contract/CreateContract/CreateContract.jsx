@@ -27,7 +27,7 @@ import styles from "./CreateContract.module.css";
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
-const CreateContract = () => {
+const CreateContract = ({socket}) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [rooms, setRooms] = useState([]); // Danh sách phòng
@@ -137,6 +137,16 @@ const CreateContract = () => {
 
       if (response) {
         message.success("Tạo hợp đồng thành công!");
+        // Gửi thông báo qua socket đến khách thuê
+      if (socket && user) {
+        const notification = {
+          type: `contract`,
+          message: `Bạn có hợp đồng thuê phòng mới cần xác nhận.`,
+          recipient: user._id, // ID người thuê
+        };
+
+        socket.emit("send_notification", notification);
+      }
         nav("/landlord/contract");
       }
     } catch (error) {

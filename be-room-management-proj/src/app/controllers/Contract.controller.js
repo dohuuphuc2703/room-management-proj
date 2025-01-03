@@ -429,8 +429,18 @@ class ContractController {
     try {
       const filter = { landlord: landlordId, status: "confirmed" };
       const contracts = await Contract.find(filter)
-        .populate("room", "-__v")
-        .lean();
+      .populate({
+          path: "room",
+          select: "-__v"
+      })
+      .populate({
+          path: "tenant",
+          populate: {
+              path: "user",
+              select: "fullName email" // Loại bỏ password và version
+          }
+      })
+      .lean();
       return res.status(200).json({
         data: contracts,
       });

@@ -16,13 +16,14 @@ import styles from "./NewInvoice.module.css";
 
 const { Option } = Select;
 
-const CreateInvoiceForm = () => {
+const CreateInvoiceForm = ({socket}) => {
   const [contracts, setContracts] = useState([]);
   const [selectedContract, setSelectedContract] = useState(null);
   const [newElectricIndex, setNewElectricIndex] = useState(null);
   const [newWaterIndex, setNewWaterIndex] = useState(null);
   const [totalServices, setTotalServices] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [user, setUser] = useState(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -46,6 +47,7 @@ const CreateInvoiceForm = () => {
   const handleRoomChange = (roomId) => {
     const contract = contracts.find((c) => c.room._id === roomId);
     setSelectedContract(contract);
+    setUser(contract.tenant.user);
     form.resetFields();
     setNewElectricIndex(null);
     setNewWaterIndex(null);
@@ -155,6 +157,16 @@ const CreateInvoiceForm = () => {
       );
 
       message.success("Hóa đơn được tạo và chỉ số điện/nước đã được cập nhật!");
+      console.log(socket, user);
+      if (socket && user) {
+        const notification = {
+          type: `invoice`,
+          message: `Bạn có hóa đơn mới cần thanh toán.`,
+          recipient: user._id, // ID người thuê
+        };
+
+        socket.emit("send_notification", notification);
+      }
       setSelectedContract(null);
       form.resetFields();
       setTotalServices([]);

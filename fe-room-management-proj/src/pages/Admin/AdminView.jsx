@@ -1,4 +1,4 @@
-import { ConfigProvider, message } from "antd";
+import { ConfigProvider } from "antd";
 import styles from "./AdminView.module.css";
 
 import axios from "axios";
@@ -27,7 +27,7 @@ function AdminView() {
           );
         }
       } catch (error) {
-        message.error("Error fetching user:", error);
+        console.log("Error fetching user:", error);
       }
     };
     if(!admin?._id){

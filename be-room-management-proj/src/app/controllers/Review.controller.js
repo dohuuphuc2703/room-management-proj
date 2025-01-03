@@ -23,7 +23,7 @@ class ReviewController {
   
       if (reviews.length === 0) {
         return res.status(404).json({
-          message: "Không có đánh giá nào cho phòng này!",
+          message: "Chưa có đánh giá nào cho phòng này!",
         });
       }
   
