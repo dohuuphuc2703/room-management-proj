@@ -138,15 +138,15 @@ const CreateContract = ({socket}) => {
       if (response) {
         message.success("Tạo hợp đồng thành công!");
         // Gửi thông báo qua socket đến khách thuê
-      if (socket && user) {
-        const notification = {
-          type: `contract`,
-          message: `Bạn có hợp đồng thuê phòng mới cần xác nhận.`,
-          recipient: user._id, // ID người thuê
-        };
+        if (socket && user) {
+          const notification = {
+            type: `contract`,
+            message: `Bạn có hợp đồng thuê phòng mới cần xác nhận.`,
+            recipient: user.user._id, // ID người thuê
+          };
 
-        socket.emit("send_notification", notification);
-      }
+          socket.emit("send_notification", notification);
+        }
         nav("/landlord/contract");
       }
     } catch (error) {
