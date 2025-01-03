@@ -11,8 +11,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
 const route = require("./routes");
-const { runMessageService } = require("./app/services/MessageService");
-const { runNotificationService } = require("./app/services/NotificationService");
+const { socketService } = require("./app/services/SocketService");
 
 const db = require("./config/database");
 
@@ -52,9 +51,7 @@ require("../src/app/models/Notification.model");
 // require("../src/app/models/Admin.model");
 
 // Connect message service
-runMessageService(server);
-runNotificationService(server);
-
+socketService(server);
 
 const PORT = process.env.PORT || 8000;
 
