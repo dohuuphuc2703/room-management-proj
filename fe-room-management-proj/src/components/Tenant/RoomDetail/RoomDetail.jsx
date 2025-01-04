@@ -473,12 +473,12 @@ function RoomDetail() {
                   <span
                     className={styles.statusIndicator}
                     style={{
-                      backgroundColor: roomInfo.landlord.active
+                      backgroundColor: roomInfo.landlord.user.online
                         ? "#4caf50"
                         : "#999",
                     }}
                   ></span>
-                  {roomInfo.landlord.active ? "Hoạt động" : "Không hoạt động"}
+                  {roomInfo.landlord.user.online ? "Đang hoạt động" : "Không hoạt động"}
                 </div>
 
                 <div>

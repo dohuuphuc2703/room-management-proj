@@ -565,7 +565,7 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
             title: 'Thao tác',
             key: 'action',
             render: (_, record) => (
-                cancelRequest && cancelRequest.status === "pending" && user._id !== cancelRequest.requestedBy._id ? (
+                record && record.status === "pending" && user._id !== record.requestedBy._id ? (
                     <div className={styles.actionButtons}>
                         <Button
                             type="primary"
@@ -582,7 +582,7 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
                             Từ chối hủy
                         </Button>
                     </div>
-                ) : cancelRequest && cancelRequest.status === "rejected" ? (
+                ) : record && record.status === "rejected" ? (
                     <Button
                         type="dashed"
                         onClick={() => setCancelRequest(null)} // Reset lại yêu cầu hủy để tạo mới
