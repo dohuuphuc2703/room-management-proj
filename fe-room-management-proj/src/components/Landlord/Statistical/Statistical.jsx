@@ -26,8 +26,8 @@ const Statistical = () => {
     revenue: [],  // Doanh thu mặc định (có thể thay thế bằng giá trị từ API)
     unpaidInvoices: [],
   });
-
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Mặc định là năm hiện tại
+  const currentYear = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(currentYear);
   const [yearlyRevenue, setYearlyRevenue] = useState(stats.revenue);
 
   useEffect(() => {
@@ -115,18 +115,18 @@ const Statistical = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       render: (createdAt) => {
-        if (!createdAt) return "N/A"; // Kiểm tra nếu không có giá trị
-        const date = new Date(createdAt); // Tạo đối tượng Date từ chuỗi createdAt
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Lấy tháng và thêm 0 nếu cần
-        const year = date.getFullYear(); // Lấy năm
-        return `${month}/${year}`; // Trả về định dạng MM/YYYY
+        if (!createdAt) return "N/A";
+        const date = new Date(createdAt);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${month}/${year}`;
       },
     },
     {
       title: "Tổng tiền",
       dataIndex: "total",
       key: "total",
-      render: (total) => total.toLocaleString() + " ₫", // Hiển thị tổng tiền với định dạng tiền tệ
+      render: (total) => total.toLocaleString() + " ₫",
     },
   ];
 
@@ -171,8 +171,8 @@ const Statistical = () => {
                     style={{ width: 120 }}
                   >
                     {[...Array(5)].map((_, i) => (
-                      <Option key={2020 + i} value={2020 + i}>
-                        {2020 + i}
+                      <Option key={currentYear - i} value={currentYear - i}>
+                        {currentYear - i}
                       </Option>
                     ))}
                   </Select>

@@ -22,7 +22,9 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale,
 
 const AdminStatistical = () => {
   const admin = useSelector(state => state.userReducer);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const currentYear = new Date().getFullYear();
+  const [selectedYear1, setSelectedYear1] = useState(currentYear);
+  const [selectedYear2, setSelectedYear2] = useState(currentYear);
   const [monthlyTenants, setMonthlyTenants] = useState([]);
   const [monthlyLandlords, setMonthlyLandlords] = useState([]);
   const [monthlyRooms, setMonthlyRooms] = useState([]);
@@ -31,9 +33,9 @@ const AdminStatistical = () => {
     const fetchData = async () => {
       try {
         const [tenantResponse, landlordResponse, roomResponse] = await Promise.all([
-          axios.get(`http://localhost:8000/api/admin/tenant-stats?year=${selectedYear}`, { withCredentials: true }),
-          axios.get(`http://localhost:8000/api/admin/landlord-stats?year=${selectedYear}`, { withCredentials: true }),
-          axios.get(`http://localhost:8000/api/admin/room-stats?year=${selectedYear}`, { withCredentials: true }),
+          axios.get(`http://localhost:8000/api/admin/tenant-stats?year=${selectedYear1}`, { withCredentials: true }),
+          axios.get(`http://localhost:8000/api/admin/landlord-stats?year=${selectedYear1}`, { withCredentials: true }),
+          axios.get(`http://localhost:8000/api/admin/room-stats?year=${selectedYear2}`, { withCredentials: true }),
         ]);
 
         const tenantCountByMonth = Array(12).fill(0);
@@ -59,10 +61,7 @@ const AdminStatistical = () => {
     };
 
     fetchData();
-  }, [selectedYear]);
-  if (admin?.role !== 'admin') {
-    return <Navigate to="/login" />;
-  };
+  }, [selectedYear1, selectedYear2]);
   
   return (
     <div className="main-content">
@@ -76,13 +75,13 @@ const AdminStatistical = () => {
                 </Col>
                 <Col>
                   <Select
-                    defaultValue={selectedYear}
-                    onChange={(value) => setSelectedYear(value)}
+                    defaultValue={selectedYear1}
+                    onChange={(value) => setSelectedYear1(value)}
                     style={{ width: 120 }}
                   >
                     {[...Array(5)].map((_, i) => (
-                      <Option key={2020 + i} value={2020 + i}>
-                        {2020 + i}
+                      <Option key={currentYear - i} value={currentYear - i}>
+                        {currentYear - i}
                       </Option>
                     ))}
                   </Select>
@@ -138,13 +137,13 @@ const AdminStatistical = () => {
                 </Col>
                 <Col>
                   <Select
-                    defaultValue={selectedYear}
-                    onChange={(value) => setSelectedYear(value)}
+                    defaultValue={selectedYear2}
+                    onChange={(value) => setSelectedYear2(value)}
                     style={{ width: 120 }}
                   >
                     {[...Array(5)].map((_, i) => (
-                      <Option key={2020 + i} value={2020 + i}>
-                        {2020 + i}
+                      <Option key={currentYear - i} value={currentYear - i}>
+                        {currentYear - i}
                       </Option>
                     ))}
                   </Select>

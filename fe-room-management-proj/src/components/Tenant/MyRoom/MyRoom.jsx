@@ -44,15 +44,11 @@ const MyRoom = () => {
                 }
 
             } catch (error) {
-                message.log(error);
             }
         };
         
         fetchContractInfo();
     }, []);
-    if (!user?.role) { 
-        return <Navigate to="/login" />;
-      };
 
     return (
         <Layout className={styles.layout}>
@@ -213,7 +209,7 @@ const Invoice = ({ contractId,bank, loading }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
     const [page, setPage] = useState(1);
-    const [size, setSize] = useState(1);
+    const [size, setSize] = useState(5);
     const [total, setTotal] = useState(0);
 
 
@@ -234,7 +230,6 @@ const Invoice = ({ contractId,bank, loading }) => {
             setInvoices(res.data.data || []);
             setTotal(res.data.pagination.total || 0);
         } catch (error) {
-            message.error("Lỗi khi tải hóa đơn");
         }
     };
 
@@ -295,6 +290,7 @@ const Invoice = ({ contractId,bank, loading }) => {
                     icon={<FilePdfOutlined />}
                     type="primary"
                     shape="circle"
+                    disabled={record.status}
                     onClick={() => handleViewInvoice(record)}
                 />
             ),

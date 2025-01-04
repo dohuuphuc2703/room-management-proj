@@ -25,7 +25,6 @@ function ListSavedRooms() {
       setCurrentPage(res.data.currentPage);
       setLoading(false);
     } catch (error) {
-      message.error("Tải danh sách phòng đã lưu không thành công!");
       setLoading(false);
     }
   };
@@ -53,9 +52,6 @@ function ListSavedRooms() {
   useEffect(() => {
     fetchSavedRooms(currentPage);
   }, [currentPage]);
-  if (!user?.role) { 
-      return nav('/login');
-    };
 
   return (
     <div className={styles.savedRoomsContainer}>

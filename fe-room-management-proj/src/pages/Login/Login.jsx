@@ -30,7 +30,7 @@ function Login() {
         messageApi.success("Đăng nhập thành công", 1).then(() => {
           switch (res.data.role) {
             case "admin":
-              nav("/admin");
+              nav("/admin/statistical");
               break;
             case "landlord":
               nav("/landlord/statistical");
