@@ -309,7 +309,7 @@ class InvoiceController {
             invoice.status = true;
             await invoice.save();
 
-            res.redirect("http://localhost:3000");
+            res.redirect("http://localhost:3000/my-room");
           } else {
             res.status(404).json({ message: "Invoice not found" });
           }

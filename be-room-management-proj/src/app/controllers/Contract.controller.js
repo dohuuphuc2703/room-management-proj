@@ -49,13 +49,22 @@ class ContractController {
         return res.status(404).json({ message: "Landlord not found" });
       }
 
-      // Kiểm tra xem room có tồn tại không
       const foundRoom = await Room.findById(room);
       if (!foundRoom) {
         return res.status(404).json({ message: "Room not found" });
       }
 
-      // Tạo hợp đồng nếu tất cả đều tồn tại
+      // Kiểm tra xem tenant đã có hợp đồng với trạng thái "waiting" hoặc "confirmed" không
+      const existingContract = await Contract.findOne({
+        tenant,
+        status: { $in: ["waiting", "confirmed"] },
+      });
+      if (existingContract) {
+        return res.status(400).json({
+          message:
+            "Khách hàng đang trong một hợp đồng khác.",
+        });
+      }
       const newContract = new Contract({
         tenant,
         landlord,
@@ -77,8 +86,8 @@ class ContractController {
       );
 
       const cloudinaryResponse = await cloudinary.uploader.upload(pdfPath, {
-        folder: "contracts", // Đặt thư mục lưu trữ trên Cloudinary
-        resource_type: "raw", // Lưu file PDF dưới dạng raw file
+        folder: "contracts",
+        resource_type: "raw",
         access_mode: "public",
       });
       // Cập nhật trường linkPDF với đường dẫn của file PDF
@@ -240,7 +249,7 @@ class ContractController {
         .limit(limit)
         .lean();
       const total = await Contract.countDocuments(filter);
-      console.log(total)
+      console.log(total);
       return res.status(200).json({
         data: contracts,
         pagination: {
@@ -429,18 +438,18 @@ class ContractController {
     try {
       const filter = { landlord: landlordId, status: "confirmed" };
       const contracts = await Contract.find(filter)
-      .populate({
+        .populate({
           path: "room",
-          select: "-__v"
-      })
-      .populate({
+          select: "-__v",
+        })
+        .populate({
           path: "tenant",
           populate: {
-              path: "user",
-              select: "fullName email" // Loại bỏ password và version
-          }
-      })
-      .lean();
+            path: "user",
+            select: "fullName email", // Loại bỏ password và version
+          },
+        })
+        .lean();
       return res.status(200).json({
         data: contracts,
       });

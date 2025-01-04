@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styles from "./NewInvoice.module.css";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -25,6 +26,7 @@ const CreateInvoiceForm = ({socket}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [user, setUser] = useState(null);
   const [form] = Form.useForm();
+  const nav = useNavigate();
 
   useEffect(() => {
     const fetchContracts = async () => {
@@ -155,9 +157,9 @@ const CreateInvoiceForm = ({socket}) => {
           withCredentials: true,
         }
       );
-
+      
       message.success("Hóa đơn được tạo và chỉ số điện/nước đã được cập nhật!");
-      console.log(socket, user);
+      nav("/landlord/invoice");
       if (socket && user) {
         const notification = {
           type: `invoice`,
