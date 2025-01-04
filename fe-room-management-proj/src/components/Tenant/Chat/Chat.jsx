@@ -157,10 +157,6 @@ function Chat({ socket }) {
       chatFrameRef.current.scrollTop = chatFrameRef.current.scrollHeight;
   }, [sentMessages]);
 
-  if (user?.role !== 'tenant') {
-      return nav('/login');
-    };
-
   return (
     <div className={styles.chat}>
       {contextHolder}

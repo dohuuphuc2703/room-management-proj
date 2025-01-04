@@ -67,10 +67,10 @@ const CreateRoom = () => {
 
         // Tạo đối tượng address từ các trường đã chọn
         const address = {
-            province: province,    // Lấy giá trị tỉnh
-            district: district,    // Lấy giá trị quận
-            ward: ward,            // Lấy giá trị phường
-            detail: values.detail, // Lấy chi tiết địa chỉ từ form
+            province: province,    
+            district: district,   
+            ward: ward,          
+            detail: values.detail, 
         };
 
         const images = imageUrls;
@@ -334,8 +334,10 @@ const CreateRoom = () => {
                                     <Col span={6}>
                                         <Form.Item
                                             name={["servicerooms", index, "description"]}
-                                            label="Mô tả dịch vụ">
-                                            <Input placeholder="Mô tả dịch vụ" />
+                                            label="Mô tả dịch vụ"
+                                            initialValue="/tháng" 
+                                            >  
+                                            <Input placeholder="Mô tả dịch vụ" readOnly />
                                         </Form.Item>
                                     </Col>
                                     <Col span={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

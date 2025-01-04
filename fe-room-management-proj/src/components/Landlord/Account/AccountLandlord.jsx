@@ -59,7 +59,6 @@ const AccountLandlord = () => {
           },
         });
       } catch (error) {
-        message.error("Error fetching user info");
       }
     };
 
@@ -81,7 +80,7 @@ const AccountLandlord = () => {
           message.error("Failed to fetch banks:", result.desc);
         }
       } catch (error) {
-        message.error("Error fetching banks:", error);
+
       } finally {
         setLoading(false);
       }

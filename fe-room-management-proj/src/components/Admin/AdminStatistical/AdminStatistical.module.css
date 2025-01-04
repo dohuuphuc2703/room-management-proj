@@ -13,9 +13,9 @@
   }
   
   .main-content {
-    height: 100vh; /* Chiều cao khớp với cửa sổ trình duyệt */
-    overflow: hidden; /* Ẩn thanh cuộn nếu cần */
-    padding: 16px; /* Khoảng cách giữa nội dung và viền */
+    height: 150vh; 
+    overflow: hidden; 
+    padding: 16px; 
     display: flex;
     flex-direction: column;
   }
@@ -32,6 +32,6 @@
   
   .layout {
     display: flex;
-    height: 100vh;
+    height: 150vh;
   }
   

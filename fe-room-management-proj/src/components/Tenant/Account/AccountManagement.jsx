@@ -35,7 +35,6 @@ const AccountManagement = () => {
           gender: info.user.gender?info.user.gender:"",
         });
       } catch (error) {
-        message.error("Error fetching user info");
       }
     };
 
@@ -103,10 +102,6 @@ const AccountManagement = () => {
       setLoading(false);
     }
   };
-
-  if (user?.role !== 'tenant') {
-      return <Navigate to="/login" />;
-    };
 
   return (
     <Layout className={styles.layout}>

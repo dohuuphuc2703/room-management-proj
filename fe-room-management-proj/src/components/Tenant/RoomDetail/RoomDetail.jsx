@@ -141,7 +141,7 @@ function RoomDetail() {
         },
       });
 
-      return; // Dừng việc thêm vào yêu thích nếu chưa đăng nhập
+      return;
     }
     try {
       await axios.post(`http://localhost:8000/api/review/create`, review, {
@@ -172,7 +172,6 @@ function RoomDetail() {
           lng: parseFloat(location.lon),
         });
       } else {
-        messageApi.error("Không tìm thấy tọa độ cho địa chỉ này.");
       }
     } catch (error) {
       messageApi.error("Có lỗi xảy ra khi lấy tọa độ.");
