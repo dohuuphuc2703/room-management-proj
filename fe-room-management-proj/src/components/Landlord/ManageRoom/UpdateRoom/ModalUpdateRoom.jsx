@@ -117,7 +117,7 @@ function ModalUpdateRoom({
   };
 
   const handleRemove = (file) => {
-    setImageUrls(imageUrls.filter((url) => url !== file.url)); // Loại bỏ ảnh khỏi mảng khi xóa
+    setImageUrls(imageUrls.filter((url) => url !== file.url)); 
   };
 
   const handleAddServiceRoom = () => {
