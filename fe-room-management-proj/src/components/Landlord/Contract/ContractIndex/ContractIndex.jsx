@@ -65,7 +65,7 @@ const ContractIndex = () => {
       setContracts((prev) =>
         prev.map((contract) =>
           contract._id === contractId
-            ? { ...contract, cancelRequest: { status: "pending", reason } }
+            ? { ...contract, cancelRequest: { status: "pending", reason, requestedBy: user } }
             : contract
         )
       );
@@ -274,7 +274,7 @@ const ContractIndex = () => {
         title="Chi tiết yêu cầu hủy"
         visible={cancelRequestModal}
         onCancel={() => setCancelRequestModal(false)}
-        footer={user?._id === selectedCancelRequest?.requestedBy._id ? [] : [
+        footer={user?._id === selectedCancelRequest?.requestedBy?._id ? [] : [
           <Button
             key="approve"
             type="primary"

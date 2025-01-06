@@ -469,7 +469,7 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading, user }) => {
             message.success("Yêu cầu hủy hợp đồng đã được gửi!");
             setReason("");
             setCancelRequest({
-                requestedBy: cancelRequest,
+                requestedBy: user,
                 reason,
                 status: "pending",
             });
@@ -565,7 +565,8 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading, user }) => {
             title: 'Thao tác',
             key: 'action',
             render: (_, record) => (
-                record && record.status === "pending" && user._id !== record.requestedBy._id ? (
+                
+                record && record.status === "pending" && user._id !== record?.requestedBy?._id ? (
                     <div className={styles.actionButtons}>
                         <Button
                             type="primary"
