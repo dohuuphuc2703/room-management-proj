@@ -48,7 +48,6 @@ function ModalUpdateRoom({
   const onFinish = async (values) => {
     setLoading(true);
     const images = imageUrls;
-    // Gửi dữ liệu phòng
     try {
       const response = await axios.put(
         `http://localhost:8000/api/room/update/${currentRoom._id}`,
