@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaWater } from 'react-icons/fa';
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from "./MyRoom.module.css";
 
 
@@ -15,7 +15,7 @@ const { Option } = Select;
 
 const MyRoom = () => {
     const user = useSelector(state => state.userReducer)
-    
+
     const [loading, setLoading] = useState(false);
     const [roomInfo, setRoomInfo] = useState();
     const [pdfPath, setPdfPath] = useState();
@@ -23,7 +23,7 @@ const MyRoom = () => {
     const [hasContract, setHasContract] = useState(false);
     const [cancelRequest, setCancelRequest] = useState()
     const [bank, setBank] = useState()
-    
+
     useEffect(() => {
         const fetchContractInfo = async () => {
             try {
@@ -31,7 +31,7 @@ const MyRoom = () => {
                     "http://localhost:8000/api/contract/byTenant",
                     { withCredentials: true }
                 );
-            
+
                 if (response.data && response.data.contract) {
                     setRoomInfo(response.data.contract.room);
                     setPdfPath(response.data.contract.pdfPath);
@@ -40,13 +40,13 @@ const MyRoom = () => {
                     setBank(response.data.contract.landlord.bankDetails)
                     setCancelRequest(response.data.contract.cancelRequest.requestedBy ? response.data.contract.cancelRequest : null);
                 } else {
-                    setHasContract(false); // Nếu không có hợp đồng, không hiển thị TabPane
+                    setHasContract(false);
                 }
 
             } catch (error) {
             }
         };
-        
+
         fetchContractInfo();
     }, []);
 
@@ -55,7 +55,7 @@ const MyRoom = () => {
             <Content className={styles.content}>
                 <div>
                     {!hasContract ? (
-                        <div> Bạn chưa thuê phòng </div> // Hiển thị thông báo nếu không có hợp đồng
+                        <div> Bạn chưa thuê phòng </div>
                     ) : (
                         <Tabs defaultActiveKey="1" tabBarStyle={{ fontWeight: 'bold' }}>
                             <TabPane tab="Thông tin phòng" key="1">
@@ -114,7 +114,7 @@ const RoomInfoForm = ({ roomInfo }) => {
                     <Text strong>Giá phòng:</Text>
                     <div>
                         <DollarOutlined style={{ marginRight: '8px' }} />
-                        <Text>{roomInfo?.price.toLocaleString()  || 'N/A'} VND</Text>
+                        <Text>{roomInfo?.price.toLocaleString() || 'N/A'} VND</Text>
                     </div>
                 </Col>
                 <Col span={8}>
@@ -127,16 +127,16 @@ const RoomInfoForm = ({ roomInfo }) => {
                 <Col span={12}>
                     <Text strong>Điện:</Text>
                     <div>
-                 
+
                         <BulbOutlined style={{ marginRight: '8px' }} />
-                        <Text>{roomInfo?.electric.price.toLocaleString()  || 'N/A'}/{roomInfo?.electric.description || 'N/A'}</Text>
+                        <Text>{roomInfo?.electric.price.toLocaleString() || 'N/A'}/{roomInfo?.electric.description || 'N/A'}</Text>
                     </div>
                 </Col>
                 <Col span={12}>
                     <Text strong>Nước:</Text>
                     <div>
                         <FaWater style={{ marginRight: '8px' }} />
-                        <Text>{roomInfo?.water.price.toLocaleString()  || 'N/A'}/{roomInfo?.water.description || 'N/A'}</Text>
+                        <Text>{roomInfo?.water.price.toLocaleString() || 'N/A'}/{roomInfo?.water.description || 'N/A'}</Text>
 
                     </div>
                 </Col>
@@ -146,9 +146,9 @@ const RoomInfoForm = ({ roomInfo }) => {
                         <div style={{ marginTop: '8px' }}>
                             {roomInfo.servicerooms.map((service, index) => (
                                 <div key={service._id || index} style={{ marginBottom: '8px' }}>
-                                    
+
                                     <Text>
-                                        -  {service.name} - {service.price.toLocaleString() } VND ({service.description || ''})
+                                        -  {service.name} - {service.price.toLocaleString()} VND ({service.description || ''})
                                     </Text>
                                 </div>
                             ))}
@@ -163,7 +163,7 @@ const RoomInfoForm = ({ roomInfo }) => {
                         <div style={{ marginTop: '8px' }}>
                             {roomInfo.amenities.map((amenitie, index) => (
                                 <div key={amenitie._id || index} style={{ marginBottom: '8px' }}>
-                                    
+
                                     <Text>
                                         -  {amenitie}
                                     </Text>
@@ -201,7 +201,7 @@ const Contract = ({ pdfPath }) => {
     );
 };
 
-const Invoice = ({ contractId,bank, loading }) => {
+const Invoice = ({ contractId, bank, loading }) => {
     const [invoices, setInvoices] = useState([]);
     const [statusFilter, setStatusFilter] = useState(null);
     const [qrCodeData, setQrCodeData] = useState(null);
@@ -239,10 +239,10 @@ const Invoice = ({ contractId,bank, loading }) => {
 
     const handleStatusChange = (value) => {
         setStatusFilter(value === "" ? null : value === "true");
-        setPage(1); 
+        setPage(1);
     };
 
-    
+
 
     const columns = [
         {
@@ -260,7 +260,7 @@ const Invoice = ({ contractId,bank, loading }) => {
             key: "total",
             render: (total) => total.toLocaleString(),
         },
-        
+
         {
             title: "Trạng thái",
             render: (text, record) => (
@@ -315,7 +315,7 @@ const Invoice = ({ contractId,bank, loading }) => {
             message.error("Không có hóa đơn được chọn để thanh toán");
             return;
         }
-    
+
         setIsPaymentProcessing(true);
         try {
             // Dữ liệu gửi lên server để tạo URL thanh toán
@@ -324,10 +324,10 @@ const Invoice = ({ contractId,bank, loading }) => {
                 bankCode: "VNBANK", // Mã ngân hàng (nếu có)
                 orderDescription: selectedInvoice.title, // Mô tả hóa đơn
                 orderType: "billpayment", // Loại giao dịch
-                language: "vn", 
-                invoiceId:selectedInvoice._id
+                language: "vn",
+                invoiceId: selectedInvoice._id
             };
-    
+
             const response = await axios.post(
                 "http://localhost:8000/api/invoice/create_payment_url",
                 payload,
@@ -350,7 +350,7 @@ const Invoice = ({ contractId,bank, loading }) => {
     const generateQRCode = async (invoice) => {
         try {
             const qrData = {
-                accountNo:bank.accountNumber,
+                accountNo: bank.accountNumber,
                 accountName: bank.accountName,
                 acqId: bank.bank,
                 amount: invoice.total,
@@ -421,11 +421,11 @@ const Invoice = ({ contractId,bank, loading }) => {
                                         { title: "STT", render: (_, __, index) => index + 1 },
                                         { title: "Tên dịch vụ", dataIndex: "name", key: "name" },
                                         { title: "Số lượng", dataIndex: "quantity", key: "quantity" },
-                                        { 
-                                            title: "Tổng tiền", 
-                                            dataIndex: "totalAmount", 
+                                        {
+                                            title: "Tổng tiền",
+                                            dataIndex: "totalAmount",
                                             key: "totalAmount",
-                                            render: (totalAmount) => totalAmount?.toLocaleString() 
+                                            render: (totalAmount) => totalAmount?.toLocaleString()
                                         },
                                     ]}
                                     dataSource={selectedInvoice.totalOfSv}
@@ -466,7 +466,7 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
                 { withCredentials: true }
             );
             message.success("Yêu cầu hủy hợp đồng đã được gửi!");
-            setReason(""); 
+            setReason("");
             setCancelRequest({
                 requestedBy: cancelRequest,
                 reason,
@@ -483,26 +483,24 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
         try {
             const response = await axios.put(
                 `http://localhost:8000/api/contract/${contractId}/cancel-request/handle`,
-                { action }, // action là "approve" hoặc "reject"
+                { action },
                 { withCredentials: true }
             );
             if (response.data && response.data.message) {
-                
+
                 message.success(
                     action === "approve"
                         ? "Đã đồng ý hủy hợp đồng!"
                         : "Đã từ chối yêu cầu hủy hợp đồng!"
                 );
 
-                // Cập nhật trạng thái sau khi xử lý
                 setCancelRequest((prev) => ({
                     ...prev,
                     status: action === "approve" ? "approved" : "rejected",
                 }));
 
                 if (action === "approve") {
-                    // Điều hướng về trang chủ
-                    setTimeout(() => navigate("/"), 1000); // Đợi 1 giây rồi điều hướng
+                    setTimeout(() => navigate("/"), 1000);
                 }
             }
         } catch (error) {
@@ -585,7 +583,7 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
                 ) : record && record.status === "rejected" ? (
                     <Button
                         type="dashed"
-                        onClick={() => setCancelRequest(null)} // Reset lại yêu cầu hủy để tạo mới
+                        onClick={() => setCancelRequest(null)}
                     >
                         Tạo yêu cầu hủy mới
                     </Button>

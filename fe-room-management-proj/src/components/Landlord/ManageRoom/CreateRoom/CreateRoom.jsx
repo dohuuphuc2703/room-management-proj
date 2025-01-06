@@ -30,7 +30,7 @@ const CreateRoom = () => {
 
         // Lấy danh sách quận dựa trên tỉnh đã chọn
         try {
-            const res = await axios.get(`https://open.oapi.vn/location/districts/${value}`);
+            const res = await axios.get(`https://open.oapi.vn/location/districts/${value}?page=0&size=50`);
             setDistricts(res.data.data.map(d => ({ label: d.name, value: d.id })));
         } catch (error) {
             message.error(error);
@@ -44,7 +44,7 @@ const CreateRoom = () => {
 
         // Lấy danh sách phường dựa trên quận đã chọn
         try {
-            const res = await axios.get(`https://open.oapi.vn/location/wards/${value}`);
+            const res = await axios.get(`https://open.oapi.vn/location/wards/${value}?page=0&size=50`);
             setWards(res.data.data.map(w => ({ label: w.name, value: w.id })));
         } catch (error) {
             message.error(error);
@@ -109,7 +109,6 @@ const CreateRoom = () => {
             // Kiểm tra phản hồi từ server
             if (response.data && response.data.roomImageUrl) {
                 setImageUrls((prevUrls) => {
-                    // Nếu prevUrls chưa được khởi tạo (null), khởi tạo nó là mảng rỗng
                     const updatedUrls = prevUrls ? [...prevUrls, response.data.roomImageUrl] : [response.data.roomImageUrl];
                     return updatedUrls;
                 });

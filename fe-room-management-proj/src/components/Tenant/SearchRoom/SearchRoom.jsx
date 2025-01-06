@@ -38,7 +38,7 @@ function SearchRoom() {
 
     // Lấy danh sách quận dựa trên tỉnh đã chọn
     try {
-      const res = await axios.get(`https://open.oapi.vn/location/districts/${value}`);
+      const res = await axios.get(`https://open.oapi.vn/location/districts/${value}?page=0&size=50`);
       res.data.data.unshift({ name: "Tất cả quận", id: "" });
       setDistricts(res.data.data.map(d => ({ label: d.name, value: d.id })));
     } catch (error) {
@@ -51,9 +51,8 @@ function SearchRoom() {
     setDistrict(selectedDistrict ? selectedDistrict.label : "Tất cả quận");
     setWard("Tất cả phường");
 
-    // Lấy danh sách phường dựa trên quận đã chọn
     try {
-      const res = await axios.get(`https://open.oapi.vn/location/wards/${value}`);
+      const res = await axios.get(`https://open.oapi.vn/location/wards/${value}?page=0&size=50`);
       res.data.data.unshift({ name: "Tất cả phường", id: "" });
       setWards(res.data.data.map(w => ({ label: w.name, value: w.id })));
     } catch (error) {
