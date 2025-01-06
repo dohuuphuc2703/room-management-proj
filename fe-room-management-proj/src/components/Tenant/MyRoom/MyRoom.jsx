@@ -1,5 +1,5 @@
 import { AreaChartOutlined, BulbOutlined, DollarOutlined, EnvironmentOutlined, FilePdfOutlined, HomeOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Layout, message, Modal, Row, Select, Table, Tabs, Typography } from "antd";
+import { Button, Col, Form, Layout, message, Modal, Row, Select, Table, Tabs, Typography } from 'antd';
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaWater } from 'react-icons/fa';
@@ -68,7 +68,7 @@ const MyRoom = () => {
                                 <Invoice contractId={contractId} bank={bank} loading={loading} />
                             </TabPane>
                             <TabPane tab="Hủy hợp đồng" key="4">
-                                <CancelRequest contractId={contractId} initialCancelRequest={cancelRequest} loading={loading} />
+                                <CancelRequest contractId={contractId} initialCancelRequest={cancelRequest} loading={loading} user = {user}/>
                             </TabPane>
                         </Tabs>
                     )}
@@ -451,14 +451,15 @@ const Invoice = ({ contractId, bank, loading }) => {
 };
 
 
-const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
-    const user = useSelector(state => state.userReducer);
+const CancelRequest = ({ contractId, initialCancelRequest, loading, user }) => {
     const [cancelRequest, setCancelRequest] = useState(initialCancelRequest);
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [loadingData, setLoadingData] = useState(false);
     const navigate = useNavigate();
     const handleCancelRequest = async () => {
         setIsSubmitting(true);
+        setLoadingData(true);
         try {
             await axios.post(
                 `http://localhost:8000/api/contract/${contractId}/cancel-request`,
@@ -476,6 +477,7 @@ const CancelRequest = ({ contractId, initialCancelRequest, loading }) => {
             message.error("Không thể gửi yêu cầu hủy hợp đồng");
         } finally {
             setIsSubmitting(false);
+            setLoadingData(false);
         }
     };
 

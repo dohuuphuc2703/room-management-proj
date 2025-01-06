@@ -304,6 +304,7 @@ const CreateContract = ({socket}) => {
                           value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
                         }
                         style={{ width: "100%" }}
+                        readOnly
                       />
                     </Form.Item>
                   </Col>
@@ -349,7 +350,7 @@ const CreateContract = ({socket}) => {
 
                   <Col span={12}>
                     <Form.Item label="Dịch vụ" name="roomServices">
-                      <Input.TextArea readOnly rows={1} />
+                      <Input.TextArea readOnly rows={2} />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -407,6 +408,7 @@ const CreateContract = ({socket}) => {
                           value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
                         }
                         style={{ width: "100%" }}
+                        readOnly
                       />
                     </Form.Item>
                   </Col>
@@ -421,6 +423,7 @@ const CreateContract = ({socket}) => {
                           value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
                         }
                         style={{ width: "100%" }}
+                        readOnly
                       />
                     </Form.Item>
                   </Col>
