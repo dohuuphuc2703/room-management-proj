@@ -27,8 +27,6 @@ function Header({ socket }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  console.log(socket, user);
-
   useEffect(() => {
     if (socket && user?._id) {
       // Subscribe vào phòng của user
