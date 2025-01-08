@@ -23,7 +23,7 @@ class RoomController {
           path: "landlord",
           populate: {
             path: "user",
-            select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+            select: "email fullName phone avatar online onlineAt",
           },
         })
         .populate("category");
@@ -48,15 +48,15 @@ class RoomController {
   async searchRooms(req, res) {
     const {
       page = 1,
-      size = 10, // Giá trị mặc định cho kích thước trang
-      province = null, // Tỉnh
-      district = null, // Quận
-      ward = null, // Phường
-      category = null, // Danh mục
-      minArea = 0, // Giá trị mặc định cho diện tích tối thiểu
-      maxArea = 100, // Giá trị mặc định cho diện tích tối đa
-      minPrice = 0, // Giá trị mặc định cho giá tối thiểu
-      maxPrice = 10000000, // Giá trị mặc định cho giá tối đa
+      size = 10,
+      province = null, 
+      district = null, 
+      ward = null,
+      category = null,
+      minArea = 0,
+      maxArea = 100,
+      minPrice = 0,
+      maxPrice = 10000000,
     } = req.query;
 
     try {
@@ -64,17 +64,17 @@ class RoomController {
 
       // Thêm điều kiện cho tỉnh
       if (province) {
-        conditions["address.province"] = province; // Sử dụng đường dẫn để truy cập trường tỉnh trong address
+        conditions["address.province"] = province; 
       }
 
       // Thêm điều kiện cho quận
       if (district) {
-        conditions["address.district"] = district; // Sử dụng đường dẫn để truy cập trường quận trong address
+        conditions["address.district"] = district;
       }
 
       // Thêm điều kiện cho phường
       if (ward) {
-        conditions["address.ward"] = ward; // Sử dụng đường dẫn để truy cập trường phường trong address
+        conditions["address.ward"] = ward; 
       }
 
       // Thêm điều kiện cho danh mục
@@ -84,12 +84,12 @@ class RoomController {
 
       // Thêm điều kiện cho diện tích
       if (minArea || maxArea) {
-        conditions.acreage = { $gte: minArea, $lte: maxArea }; // Thay thế "acreage" với trường hợp đúng trong model của bạn
+        conditions.acreage = { $gte: minArea, $lte: maxArea }; 
       }
 
       // Thêm điều kiện cho giá
       if (minPrice || maxPrice) {
-        conditions.price = { $gte: minPrice, $lte: maxPrice }; // Thay thế "price" với trường hợp đúng trong model của bạn
+        conditions.price = { $gte: minPrice, $lte: maxPrice }; 
       }
 
       const total = await Room.countDocuments(conditions);
@@ -104,7 +104,7 @@ class RoomController {
           path: "landlord",
           populate: {
             path: "user",
-            select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+            select: "email fullName phone avatar online onlineAt", 
           },
         });
 
@@ -127,18 +127,18 @@ class RoomController {
 
   // [GET] /api/room/byAddress
   async getRoomsByAddressAndCat(req, res) {
-    const { province, district, category } = req.query; // Lấy province và district từ query parameters
+    const { province, district, category } = req.query;
     try {
       const conditions = {};
 
       // Thêm điều kiện cho tỉnh
       if (province) {
-        conditions["address.province"] = province; // Sử dụng đường dẫn để truy cập trường tỉnh trong address
+        conditions["address.province"] = province;
       }
 
       // Thêm điều kiện cho quận
       if (district) {
-        conditions["address.district"] = district; // Sử dụng đường dẫn để truy cập trường quận trong address
+        conditions["address.district"] = district; 
       }
 
       if (category) {
@@ -152,17 +152,17 @@ class RoomController {
           path: "landlord",
           populate: {
             path: "user",
-            select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+            select: "email fullName phone avatar online onlineAt",
           },
         });
 
       return res.json({
-        rooms: rooms, // Trả về danh sách các phòng
+        rooms: rooms,
       });
     } catch (error) {
       console.log(error);
       return res.status(500).json({
-        message: error.toString(), // Trả về thông báo lỗi
+        message: error.toString(),
       });
     }
   }
@@ -180,7 +180,7 @@ class RoomController {
           path: "landlord",
           populate: {
             path: "user",
-            select: "email fullName phone avatar online onlineAt", // Chỉ lấy các trường mong muốn
+            select: "email fullName phone avatar online onlineAt",
           },
         })
         .populate("category");
@@ -323,10 +323,10 @@ class RoomController {
   async getLatestRooms(req, res) {
     try {
       const latestRooms = await Room.find()
-        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-        .limit(6) // Limit to 6 results
-        .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
-        .populate("category"); // Populate the category field
+        .sort({ createdAt: -1 }) 
+        .limit(6) 
+        .select("-__v -updatedAt -hiddenAt -hiddenBy")
+        .populate("category");
 
       return res.json({
         rooms: latestRooms,
@@ -342,10 +342,10 @@ class RoomController {
   async getTopRatedRooms(req, res) {
     try {
       const topRatedRooms = await Room.find()
-        .sort({ rating: -1 }) // Sort by rating in descending order
-        .limit(6) // Limit to 6 results
-        .select("-__v -updatedAt -hiddenAt -hiddenBy") // Exclude unnecessary fields
-        .populate("category"); // Populate the category field
+        .sort({ rating: -1 })
+        .limit(6)
+        .select("-__v -updatedAt -hiddenAt -hiddenBy") 
+        .populate("category");
 
       return res.json({
         rooms: topRatedRooms,
@@ -375,7 +375,7 @@ class RoomController {
 
       // Thêm điều kiện cho tỉnh
       if (province) {
-        conditions["address.province"] = province; // Sử dụng đường dẫn để truy cập trường tỉnh trong address
+        conditions["address.province"] = province; 
       }
 
       if (category) {

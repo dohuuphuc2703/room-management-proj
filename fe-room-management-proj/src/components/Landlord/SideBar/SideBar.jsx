@@ -7,7 +7,8 @@ import {
   HomeOutlined,
   MessageOutlined,
   PieChartOutlined,
-  PoweroffOutlined
+  PoweroffOutlined,
+  SettingOutlined
 } from '@ant-design/icons';
 import { Menu, message } from 'antd';
 import axios from "axios";
@@ -66,14 +67,14 @@ function SideBar({user}) {
           <Menu.Item key="2" icon={<HomeOutlined />}>
             <Link to="/landlord/rooms">Phòng</Link>
           </Menu.Item>
-          <Menu.Item key="3" icon={<DollarOutlined />}>
+          <Menu.Item key="3" icon={<FileTextOutlined />}>
           <Link to="/landlord/contract">Hợp đồng</Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<DollarOutlined />}>
           <Link to="/landlord/invoice">Hóa đơn</Link>
           </Menu.Item>
-          <Menu.Item key="5" icon={<FileTextOutlined />}>
-          <Link to="/landlord/account">Account</Link>
+          <Menu.Item key="5" icon={<SettingOutlined />}>
+          <Link to="/landlord/account">Tài khoản</Link>
           </Menu.Item>
           <Menu.Item key="6" icon={<MessageOutlined />}>
           <Link to="/landlord/chat">Nhắn tin</Link>

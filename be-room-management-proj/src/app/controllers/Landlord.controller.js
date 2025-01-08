@@ -323,8 +323,7 @@ class LandlordController {
         message: `Có lỗi xảy ra: Error code <${error.code}>`,
       });
     }
-  }
-  
+  } 
 
 }
 

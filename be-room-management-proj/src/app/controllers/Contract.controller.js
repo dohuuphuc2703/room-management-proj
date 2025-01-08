@@ -54,7 +54,6 @@ class ContractController {
         return res.status(404).json({ message: "Room not found" });
       }
 
-      // Kiểm tra xem tenant đã có hợp đồng với trạng thái "waiting" hoặc "confirmed" không
       const existingContract = await Contract.findOne({
         tenant,
         status: { $in: ["waiting", "confirmed"] },
