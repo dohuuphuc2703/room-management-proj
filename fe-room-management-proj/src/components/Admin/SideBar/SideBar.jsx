@@ -66,7 +66,7 @@ function SideBar() {
           <Link to="/admin/landlord-manage">Chủ trọ</Link>
         </Menu.Item>
         <Menu.Item key="4" icon={<SettingOutlined />}>
-          <Link to="/admin/category-manage">Category</Link>
+          <Link to="/admin/category-manage">Danh mục phòng</Link>
         </Menu.Item>
       </Menu>
       <button onClick={toggleCollapse} className={styles.collapseButton}>

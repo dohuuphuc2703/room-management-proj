@@ -5,7 +5,6 @@ const tmp = require("tmp");
 
 async function createPDFFromHTML(contract, tenant, landlord, room) {
   try {
-    // Đảm bảo thư mục chứa file PDF tồn tại
 
     // Tạo file tạm thời, nhưng không cần sử dụng tên mặc định
     const tempFile = tmp.tmpNameSync({ postfix: ".pdf" });

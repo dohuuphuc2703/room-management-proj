@@ -236,8 +236,6 @@ class AuthController {
     });
   }
 
-  // [POST] /auth/navigation
-  async navigation(req, res) {}
 }
 
 module.exports = new AuthController();
