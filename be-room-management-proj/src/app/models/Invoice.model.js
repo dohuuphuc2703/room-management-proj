@@ -7,7 +7,7 @@ const InvoiceSchema = new Schema({
         type: Schema.Types.ObjectId, 
         ref: "Contract",
         required: true,
-    }, 
+    },
 
     title: {
         type: String,

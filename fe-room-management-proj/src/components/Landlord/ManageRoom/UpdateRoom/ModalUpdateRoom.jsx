@@ -255,6 +255,7 @@ function ModalUpdateRoom({
                 formatter={(value) =>
                   value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
                 }
+                parser={(value) => value.replace(/\D/g, "")}
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -308,6 +309,7 @@ function ModalUpdateRoom({
                 formatter={(value) =>
                   value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
                 }
+                parser={(value) => value.replace(/\D/g, "")}
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -341,6 +343,7 @@ function ModalUpdateRoom({
                 formatter={(value) =>
                   value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
                 }
+                parser={(value) => value.replace(/\D/g, "")}
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -394,6 +397,7 @@ function ModalUpdateRoom({
                         formatter={(value) =>
                           value ? `${parseInt(value).toLocaleString("vi-VN")}` : ""
                         }
+                        parser={(value) => value.replace(/\D/g, "")}
                         style={{ width: "100%" }}
                       />
                     </Form.Item>
